@@ -1,3 +1,3 @@
-module github.com/aretaja/godevman-db
+module github.com/aretaja/godevmandb
 
 go 1.18
