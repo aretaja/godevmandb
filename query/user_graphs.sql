@@ -1,7 +1,9 @@
 -- name: GetUserGraphs :many
 SELECT *
 FROM user_graphs
-ORDER BY username;
+ORDER BY username
+LIMIT $1
+OFFSET $2;
 
 -- name: GetUserGraph :one
 SELECT *

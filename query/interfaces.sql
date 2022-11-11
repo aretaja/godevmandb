@@ -1,8 +1,9 @@
 -- name: GetInterfaces :many
 SELECT *
 FROM interfaces
-ORDER BY dev_id,
-  ifindex;
+ORDER BY dev_id, ifindex
+LIMIT $1
+OFFSET $2;
 
 -- name: GetInterface :one
 SELECT *

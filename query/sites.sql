@@ -1,7 +1,9 @@
 -- name: GetSites :many
 SELECT *
 FROM sites
-ORDER BY descr;
+ORDER BY descr
+LIMIT $1
+OFFSET $2;
 
 -- name: GetSite :one
 SELECT *

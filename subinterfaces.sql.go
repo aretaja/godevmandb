@@ -175,10 +175,17 @@ const GetSubinterfaces = `-- name: GetSubinterfaces :many
 SELECT sif_id, if_id, ifindex, descr, alias, oper, adm, speed, type_enum, mac, notes, updated_on, created_on
 FROM subinterfaces
 ORDER BY descr
+LIMIT $1
+OFFSET $2
 `
 
-func (q *Queries) GetSubinterfaces(ctx context.Context) ([]Subinterface, error) {
-	rows, err := q.db.Query(ctx, GetSubinterfaces)
+type GetSubinterfacesParams struct {
+	Limit  int32 `json:"limit"`
+	Offset int32 `json:"offset"`
+}
+
+func (q *Queries) GetSubinterfaces(ctx context.Context, arg GetSubinterfacesParams) ([]Subinterface, error) {
+	rows, err := q.db.Query(ctx, GetSubinterfaces, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}

@@ -124,10 +124,17 @@ const GetDeviceCredentials = `-- name: GetDeviceCredentials :many
 SELECT cred_id, dev_id, username, enc_secret, updated_on, created_on
 FROM device_credentials
 ORDER BY username
+LIMIT $1
+OFFSET $2
 `
 
-func (q *Queries) GetDeviceCredentials(ctx context.Context) ([]DeviceCredential, error) {
-	rows, err := q.db.Query(ctx, GetDeviceCredentials)
+type GetDeviceCredentialsParams struct {
+	Limit  int32 `json:"limit"`
+	Offset int32 `json:"offset"`
+}
+
+func (q *Queries) GetDeviceCredentials(ctx context.Context, arg GetDeviceCredentialsParams) ([]DeviceCredential, error) {
+	rows, err := q.db.Query(ctx, GetDeviceCredentials, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}

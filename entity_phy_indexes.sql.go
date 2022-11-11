@@ -112,10 +112,18 @@ func (q *Queries) GetEntityPhyIndexEntity(ctx context.Context, eiID int64) (Enti
 const GetEntityPhyIndexes = `-- name: GetEntityPhyIndexes :many
 SELECT ei_id, ent_id, phy_index, descr, updated_on, created_on
 FROM entity_phy_indexes
+ORDER BY ei_id
+LIMIT $1
+OFFSET $2
 `
 
-func (q *Queries) GetEntityPhyIndexes(ctx context.Context) ([]EntityPhyIndex, error) {
-	rows, err := q.db.Query(ctx, GetEntityPhyIndexes)
+type GetEntityPhyIndexesParams struct {
+	Limit  int32 `json:"limit"`
+	Offset int32 `json:"offset"`
+}
+
+func (q *Queries) GetEntityPhyIndexes(ctx context.Context, arg GetEntityPhyIndexesParams) ([]EntityPhyIndex, error) {
+	rows, err := q.db.Query(ctx, GetEntityPhyIndexes, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}

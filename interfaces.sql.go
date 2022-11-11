@@ -636,12 +636,18 @@ func (q *Queries) GetInterfaceVlans(ctx context.Context, ifID int64) ([]Vlan, er
 const GetInterfaces = `-- name: GetInterfaces :many
 SELECT if_id, con_id, parent, otn_if_id, dev_id, ent_id, ifindex, descr, alias, oper, adm, speed, minspeed, type_enum, mac, monstatus, monerrors, monload, updated_on, created_on, montraffic
 FROM interfaces
-ORDER BY dev_id,
-  ifindex
+ORDER BY dev_id, ifindex
+LIMIT $1
+OFFSET $2
 `
 
-func (q *Queries) GetInterfaces(ctx context.Context) ([]Interface, error) {
-	rows, err := q.db.Query(ctx, GetInterfaces)
+type GetInterfacesParams struct {
+	Limit  int32 `json:"limit"`
+	Offset int32 `json:"offset"`
+}
+
+func (q *Queries) GetInterfaces(ctx context.Context, arg GetInterfacesParams) ([]Interface, error) {
+	rows, err := q.db.Query(ctx, GetInterfaces, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}

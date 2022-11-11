@@ -157,12 +157,18 @@ func (q *Queries) GetDeviceLicenseDevice(ctx context.Context, licID int64) (Devi
 const GetDeviceLicenses = `-- name: GetDeviceLicenses :many
 SELECT lic_id, dev_id, product, descr, installed, unlocked, tot_inst, used, condition, updated_on, created_on
 FROM device_licenses
-ORDER BY dev_id,
-  descr
+ORDER BY dev_id, descr
+LIMIT $1
+OFFSET $2
 `
 
-func (q *Queries) GetDeviceLicenses(ctx context.Context) ([]DeviceLicense, error) {
-	rows, err := q.db.Query(ctx, GetDeviceLicenses)
+type GetDeviceLicensesParams struct {
+	Limit  int32 `json:"limit"`
+	Offset int32 `json:"offset"`
+}
+
+func (q *Queries) GetDeviceLicenses(ctx context.Context, arg GetDeviceLicensesParams) ([]DeviceLicense, error) {
+	rows, err := q.db.Query(ctx, GetDeviceLicenses, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}

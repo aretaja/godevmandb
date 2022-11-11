@@ -1,6 +1,9 @@
 -- name: GetEntities :many
 SELECT *
-FROM entities;
+FROM entities
+ORDER BY ent_id
+LIMIT $1
+OFFSET $2;
 
 -- name: GetEntity :one
 SELECT *

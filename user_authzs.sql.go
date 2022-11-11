@@ -132,10 +132,17 @@ const GetUserAuthzs = `-- name: GetUserAuthzs :many
 SELECT username, dom_id, userlevel
 FROM user_authzs
 ORDER BY username
+LIMIT $1
+OFFSET $2
 `
 
-func (q *Queries) GetUserAuthzs(ctx context.Context) ([]UserAuthz, error) {
-	rows, err := q.db.Query(ctx, GetUserAuthzs)
+type GetUserAuthzsParams struct {
+	Limit  int32 `json:"limit"`
+	Offset int32 `json:"offset"`
+}
+
+func (q *Queries) GetUserAuthzs(ctx context.Context, arg GetUserAuthzsParams) ([]UserAuthz, error) {
+	rows, err := q.db.Query(ctx, GetUserAuthzs, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}

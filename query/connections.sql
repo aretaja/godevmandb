@@ -1,6 +1,9 @@
 -- name: GetConnections :many
 SELECT *
-FROM connections;
+FROM connections
+ORDER BY con_id
+LIMIT $1
+OFFSET $2;
 
 -- name: GetConnection :one
 SELECT *

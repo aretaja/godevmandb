@@ -1,7 +1,9 @@
 -- name: GetCustomEntities :many
 SELECT *
 FROM custom_entities
-ORDER BY label;
+ORDER BY label
+LIMIT $1
+OFFSET $2;
 
 -- name: GetCustomEntity :one
 SELECT *

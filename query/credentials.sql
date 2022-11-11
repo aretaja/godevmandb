@@ -1,7 +1,9 @@
 -- name: GetCredentials :many
 SELECT *
 FROM credentials
-ORDER BY label;
+ORDER BY label
+LIMIT $1
+OFFSET $2;
 
 -- name: GetCredential :one
 SELECT *

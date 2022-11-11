@@ -177,12 +177,18 @@ func (q *Queries) GetDeviceTypeDevices(ctx context.Context, sysID string) ([]Dev
 const GetDeviceTypes = `-- name: GetDeviceTypes :many
 SELECT sys_id, class_id, manufacturer, model, hc, snmp_ver, updated_on, created_on
 FROM device_types
-ORDER BY manufacturer,
-  model
+ORDER BY manufacturer, model
+LIMIT $1
+OFFSET $2
 `
 
-func (q *Queries) GetDeviceTypes(ctx context.Context) ([]DeviceType, error) {
-	rows, err := q.db.Query(ctx, GetDeviceTypes)
+type GetDeviceTypesParams struct {
+	Limit  int32 `json:"limit"`
+	Offset int32 `json:"offset"`
+}
+
+func (q *Queries) GetDeviceTypes(ctx context.Context, arg GetDeviceTypesParams) ([]DeviceType, error) {
+	rows, err := q.db.Query(ctx, GetDeviceTypes, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}

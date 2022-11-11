@@ -1,8 +1,9 @@
 -- name: GetVlans :many
 SELECT *
 FROM vlans
-ORDER BY dev_id,
-  vlan;
+ORDER BY dev_id, vlan
+LIMIT $1
+OFFSET $2;
 
 -- name: GetVlan :one
 SELECT *

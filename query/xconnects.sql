@@ -1,8 +1,9 @@
 -- name: GetXconnects :many
 SELECT *
 FROM xconnects
-ORDER BY dev_id,
-    if_id;
+ORDER BY dev_id, if_id
+LIMIT $1
+OFFSET $2;
 
 -- name: GetXconnect :one
 SELECT *

@@ -118,10 +118,17 @@ const GetConProviders = `-- name: GetConProviders :many
 SELECT con_prov_id, descr, notes, updated_on, created_on
 FROM con_providers
 ORDER BY descr
+LIMIT $1
+OFFSET $2
 `
 
-func (q *Queries) GetConProviders(ctx context.Context) ([]ConProvider, error) {
-	rows, err := q.db.Query(ctx, GetConProviders)
+type GetConProvidersParams struct {
+	Limit  int32 `json:"limit"`
+	Offset int32 `json:"offset"`
+}
+
+func (q *Queries) GetConProviders(ctx context.Context, arg GetConProvidersParams) ([]ConProvider, error) {
+	rows, err := q.db.Query(ctx, GetConProviders, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}

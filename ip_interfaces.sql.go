@@ -144,12 +144,18 @@ func (q *Queries) GetIpInterfaceDevice(ctx context.Context, ipID int64) (Device,
 const GetIpInterfaces = `-- name: GetIpInterfaces :many
 SELECT ip_id, dev_id, ifindex, ip_addr, descr, alias, updated_on, created_on
 FROM ip_interfaces
-ORDER BY dev_id,
-    descr
+ORDER BY dev_id, descr
+LIMIT $1
+OFFSET $2
 `
 
-func (q *Queries) GetIpInterfaces(ctx context.Context) ([]IpInterface, error) {
-	rows, err := q.db.Query(ctx, GetIpInterfaces)
+type GetIpInterfacesParams struct {
+	Limit  int32 `json:"limit"`
+	Offset int32 `json:"offset"`
+}
+
+func (q *Queries) GetIpInterfaces(ctx context.Context, arg GetIpInterfacesParams) ([]IpInterface, error) {
+	rows, err := q.db.Query(ctx, GetIpInterfaces, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}

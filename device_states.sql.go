@@ -131,10 +131,17 @@ const GetDeviceStates = `-- name: GetDeviceStates :many
 SELECT dev_id, up_time, down_time, method, updated_on, created_on
 FROM device_states
 ORDER BY updated_on
+LIMIT $1
+OFFSET $2
 `
 
-func (q *Queries) GetDeviceStates(ctx context.Context) ([]DeviceState, error) {
-	rows, err := q.db.Query(ctx, GetDeviceStates)
+type GetDeviceStatesParams struct {
+	Limit  int32 `json:"limit"`
+	Offset int32 `json:"offset"`
+}
+
+func (q *Queries) GetDeviceStates(ctx context.Context, arg GetDeviceStatesParams) ([]DeviceState, error) {
+	rows, err := q.db.Query(ctx, GetDeviceStates, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}

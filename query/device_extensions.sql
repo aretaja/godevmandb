@@ -1,8 +1,9 @@
 -- name: GetDeviceExtensions :many
 SELECT *
 FROM device_extensions
-ORDER BY dev_id,
-  field;
+ORDER BY dev_id, field
+LIMIT $1
+OFFSET $2;
 
 -- name: GetDeviceExtension :one
 SELECT *

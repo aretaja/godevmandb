@@ -69,10 +69,17 @@ const GetCustomEntities = `-- name: GetCustomEntities :many
 SELECT cent_id, manufacturer, serial_nr, part, descr, updated_on, created_on
 FROM custom_entities
 ORDER BY label
+LIMIT $1
+OFFSET $2
 `
 
-func (q *Queries) GetCustomEntities(ctx context.Context) ([]CustomEntity, error) {
-	rows, err := q.db.Query(ctx, GetCustomEntities)
+type GetCustomEntitiesParams struct {
+	Limit  int32 `json:"limit"`
+	Offset int32 `json:"offset"`
+}
+
+func (q *Queries) GetCustomEntities(ctx context.Context, arg GetCustomEntitiesParams) ([]CustomEntity, error) {
+	rows, err := q.db.Query(ctx, GetCustomEntities, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}

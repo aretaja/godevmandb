@@ -1,7 +1,9 @@
 -- name: GetConTypes :many
 SELECT *
 FROM con_types
-ORDER BY descr;
+ORDER BY descr
+LIMIT $1
+OFFSET $2;
 
 -- name: GetConType :one
 SELECT *

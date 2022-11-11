@@ -124,12 +124,18 @@ func (q *Queries) GetDeviceExtensionDevice(ctx context.Context, extID int64) (De
 const GetDeviceExtensions = `-- name: GetDeviceExtensions :many
 SELECT ext_id, dev_id, field, content, updated_on, created_on
 FROM device_extensions
-ORDER BY dev_id,
-  field
+ORDER BY dev_id, field
+LIMIT $1
+OFFSET $2
 `
 
-func (q *Queries) GetDeviceExtensions(ctx context.Context) ([]DeviceExtension, error) {
-	rows, err := q.db.Query(ctx, GetDeviceExtensions)
+type GetDeviceExtensionsParams struct {
+	Limit  int32 `json:"limit"`
+	Offset int32 `json:"offset"`
+}
+
+func (q *Queries) GetDeviceExtensions(ctx context.Context, arg GetDeviceExtensionsParams) ([]DeviceExtension, error) {
+	rows, err := q.db.Query(ctx, GetDeviceExtensions, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}

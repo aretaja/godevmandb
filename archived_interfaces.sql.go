@@ -150,10 +150,17 @@ const GetArchivedInterfaces = `-- name: GetArchivedInterfaces :many
 SELECT ifa_id, ifindex, otn_if_id, cisco_opt_power_index, hostname, host_ip4, host_ip6, manufacturer, model, descr, alias, type_enum, mac, updated_on, created_on
 FROM archived_interfaces
 ORDER BY descr
+LIMIT $1
+OFFSET $2
 `
 
-func (q *Queries) GetArchivedInterfaces(ctx context.Context) ([]ArchivedInterface, error) {
-	rows, err := q.db.Query(ctx, GetArchivedInterfaces)
+type GetArchivedInterfacesParams struct {
+	Limit  int32 `json:"limit"`
+	Offset int32 `json:"offset"`
+}
+
+func (q *Queries) GetArchivedInterfaces(ctx context.Context, arg GetArchivedInterfacesParams) ([]ArchivedInterface, error) {
+	rows, err := q.db.Query(ctx, GetArchivedInterfaces, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}

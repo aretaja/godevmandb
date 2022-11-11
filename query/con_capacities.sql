@@ -1,7 +1,9 @@
 -- name: GetConCapacities :many
 SELECT *
 FROM con_capacities
-ORDER BY descr;
+ORDER BY descr
+LIMIT $1
+OFFSET $2;
 
 -- name: GetConCapacity :one
 SELECT *

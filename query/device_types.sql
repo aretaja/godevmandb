@@ -1,8 +1,9 @@
 -- name: GetDeviceTypes :many
 SELECT *
 FROM device_types
-ORDER BY manufacturer,
-  model;
+ORDER BY manufacturer, model
+LIMIT $1
+OFFSET $2;
 
 -- name: GetDeviceType :one
 SELECT *

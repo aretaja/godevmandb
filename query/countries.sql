@@ -1,7 +1,9 @@
 -- name: GetCountries :many
 SELECT *
 FROM countries
-ORDER BY descr;
+ORDER BY descr
+LIMIT $1
+OFFSET $2;
 
 -- name: GetCountry :one
 SELECT *

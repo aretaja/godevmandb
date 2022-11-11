@@ -272,12 +272,18 @@ func (q *Queries) GetXconnectPeerDevice(ctx context.Context, xcID int64) (Device
 const GetXconnects = `-- name: GetXconnects :many
 SELECT xc_id, dev_id, peer_dev_id, if_id, vc_idx, vc_id, peer_ip, peer_ifalias, xname, descr, op_stat, op_stat_in, op_stat_out, updated_on, created_on
 FROM xconnects
-ORDER BY dev_id,
-    if_id
+ORDER BY dev_id, if_id
+LIMIT $1
+OFFSET $2
 `
 
-func (q *Queries) GetXconnects(ctx context.Context) ([]Xconnect, error) {
-	rows, err := q.db.Query(ctx, GetXconnects)
+type GetXconnectsParams struct {
+	Limit  int32 `json:"limit"`
+	Offset int32 `json:"offset"`
+}
+
+func (q *Queries) GetXconnects(ctx context.Context, arg GetXconnectsParams) ([]Xconnect, error) {
+	rows, err := q.db.Query(ctx, GetXconnects, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}

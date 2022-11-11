@@ -1,7 +1,9 @@
 -- name: GetSubinterfaces :many
 SELECT *
 FROM subinterfaces
-ORDER BY descr;
+ORDER BY descr
+LIMIT $1
+OFFSET $2;
 
 -- name: GetSubinterface :one
 SELECT *

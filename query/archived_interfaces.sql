@@ -1,7 +1,9 @@
 -- name: GetArchivedInterfaces :many
 SELECT *
 FROM archived_interfaces
-ORDER BY descr;
+ORDER BY descr
+LIMIT $1
+OFFSET $2;
 
 -- name: GetArchivedInterface :one
 SELECT *

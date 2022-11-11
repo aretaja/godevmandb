@@ -1,7 +1,9 @@
 -- name: GetConProviders :many
 SELECT *
 FROM con_providers
-ORDER BY descr;
+ORDER BY descr
+LIMIT $1
+OFFSET $2;
 
 -- name: GetConProvider :one
 SELECT *

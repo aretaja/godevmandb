@@ -906,10 +906,17 @@ const GetDevices = `-- name: GetDevices :many
 SELECT dev_id, site_id, dom_id, snmp_main_id, snmp_ro_id, parent, sys_id, ip4_addr, ip6_addr, host_name, sys_name, sys_location, sys_contact, sw_version, ext_model, installed, monitor, graph, backup, source, type_changed, backup_failed, validation_failed, unresponsive, notes, updated_on, created_on
 FROM devices
 ORDER BY host_name
+LIMIT $1
+OFFSET $2
 `
 
-func (q *Queries) GetDevices(ctx context.Context) ([]Device, error) {
-	rows, err := q.db.Query(ctx, GetDevices)
+type GetDevicesParams struct {
+	Limit  int32 `json:"limit"`
+	Offset int32 `json:"offset"`
+}
+
+func (q *Queries) GetDevices(ctx context.Context, arg GetDevicesParams) ([]Device, error) {
+	rows, err := q.db.Query(ctx, GetDevices, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}

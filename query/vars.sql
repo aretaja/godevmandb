@@ -1,7 +1,9 @@
 -- name: GetVars :many
 SELECT *
 FROM vars
-ORDER BY descr;
+ORDER BY descr
+LIMIT $1
+OFFSET $2;
 
 -- name: GetVar :one
 SELECT *

@@ -60,10 +60,17 @@ const GetCountries = `-- name: GetCountries :many
 SELECT country_id, code, descr, updated_on, created_on
 FROM countries
 ORDER BY descr
+LIMIT $1
+OFFSET $2
 `
 
-func (q *Queries) GetCountries(ctx context.Context) ([]Country, error) {
-	rows, err := q.db.Query(ctx, GetCountries)
+type GetCountriesParams struct {
+	Limit  int32 `json:"limit"`
+	Offset int32 `json:"offset"`
+}
+
+func (q *Queries) GetCountries(ctx context.Context, arg GetCountriesParams) ([]Country, error) {
+	rows, err := q.db.Query(ctx, GetCountries, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}

@@ -1,7 +1,9 @@
 -- name: GetConClasses :many
 SELECT *
 FROM con_classes
-ORDER BY descr;
+ORDER BY descr
+LIMIT $1
+OFFSET $2;
 
 -- name: GetConClass :one
 SELECT *

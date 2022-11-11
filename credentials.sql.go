@@ -82,10 +82,17 @@ const GetCredentials = `-- name: GetCredentials :many
 SELECT cred_id, label, username, enc_secret, updated_on, created_on
 FROM credentials
 ORDER BY label
+LIMIT $1
+OFFSET $2
 `
 
-func (q *Queries) GetCredentials(ctx context.Context) ([]Credential, error) {
-	rows, err := q.db.Query(ctx, GetCredentials)
+type GetCredentialsParams struct {
+	Limit  int32 `json:"limit"`
+	Offset int32 `json:"offset"`
+}
+
+func (q *Queries) GetCredentials(ctx context.Context, arg GetCredentialsParams) ([]Credential, error) {
+	rows, err := q.db.Query(ctx, GetCredentials, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}

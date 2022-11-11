@@ -1,7 +1,9 @@
 -- name: GetSnmpCredentials :many
 SELECT *
 FROM snmp_credentials
-ORDER BY label;
+ORDER BY label
+LIMIT $1
+OFFSET $2;
 
 -- name: GetSnmpCredential :one
 SELECT *

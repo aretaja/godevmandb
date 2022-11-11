@@ -1,7 +1,9 @@
 -- name: GetDeviceCredentials :many
 SELECT *
 FROM device_credentials
-ORDER BY username;
+ORDER BY username
+LIMIT $1
+OFFSET $2;
 
 -- name: GetDeviceCredential :one
 SELECT *

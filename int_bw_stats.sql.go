@@ -172,10 +172,18 @@ func (q *Queries) GetIntBwStatInterface(ctx context.Context, bwID int64) (Interf
 const GetIntBwStats = `-- name: GetIntBwStats :many
 SELECT bw_id, if_id, to50in, to75in, to90in, to100in, to50out, to75out, to90out, to100out, if_group, updated_on, created_on
 FROM int_bw_stats
+ORDER BY bw_id
+LIMIT $1
+OFFSET $2
 `
 
-func (q *Queries) GetIntBwStats(ctx context.Context) ([]IntBwStat, error) {
-	rows, err := q.db.Query(ctx, GetIntBwStats)
+type GetIntBwStatsParams struct {
+	Limit  int32 `json:"limit"`
+	Offset int32 `json:"offset"`
+}
+
+func (q *Queries) GetIntBwStats(ctx context.Context, arg GetIntBwStatsParams) ([]IntBwStat, error) {
+	rows, err := q.db.Query(ctx, GetIntBwStats, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}

@@ -144,10 +144,17 @@ const GetUsers = `-- name: GetUsers :many
 SELECT username, userlevel, notes, updated_on, created_on
 FROM users
 ORDER BY username
+LIMIT $1
+OFFSET $2
 `
 
-func (q *Queries) GetUsers(ctx context.Context) ([]User, error) {
-	rows, err := q.db.Query(ctx, GetUsers)
+type GetUsersParams struct {
+	Limit  int32 `json:"limit"`
+	Offset int32 `json:"offset"`
+}
+
+func (q *Queries) GetUsers(ctx context.Context, arg GetUsersParams) ([]User, error) {
+	rows, err := q.db.Query(ctx, GetUsers, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}

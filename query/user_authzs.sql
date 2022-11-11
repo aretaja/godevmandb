@@ -1,7 +1,9 @@
 -- name: GetUserAuthzs :many
 SELECT *
 FROM user_authzs
-ORDER BY username;
+ORDER BY username
+LIMIT $1
+OFFSET $2;
 
 -- name: GetUserAuthz :one
 SELECT *

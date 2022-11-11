@@ -110,10 +110,17 @@ const GetUserGraphs = `-- name: GetUserGraphs :many
 SELECT graph_id, username, uri, descr, shared, updated_on, created_on
 FROM user_graphs
 ORDER BY username
+LIMIT $1
+OFFSET $2
 `
 
-func (q *Queries) GetUserGraphs(ctx context.Context) ([]UserGraph, error) {
-	rows, err := q.db.Query(ctx, GetUserGraphs)
+type GetUserGraphsParams struct {
+	Limit  int32 `json:"limit"`
+	Offset int32 `json:"offset"`
+}
+
+func (q *Queries) GetUserGraphs(ctx context.Context, arg GetUserGraphsParams) ([]UserGraph, error) {
+	rows, err := q.db.Query(ctx, GetUserGraphs, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}

@@ -176,12 +176,18 @@ func (q *Queries) GetVlanInterfaces(ctx context.Context, vID int64) ([]Interface
 const GetVlans = `-- name: GetVlans :many
 SELECT v_id, dev_id, vlan, descr, updated_on, created_on
 FROM vlans
-ORDER BY dev_id,
-  vlan
+ORDER BY dev_id, vlan
+LIMIT $1
+OFFSET $2
 `
 
-func (q *Queries) GetVlans(ctx context.Context) ([]Vlan, error) {
-	rows, err := q.db.Query(ctx, GetVlans)
+type GetVlansParams struct {
+	Limit  int32 `json:"limit"`
+	Offset int32 `json:"offset"`
+}
+
+func (q *Queries) GetVlans(ctx context.Context, arg GetVlansParams) ([]Vlan, error) {
+	rows, err := q.db.Query(ctx, GetVlans, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}

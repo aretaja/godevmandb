@@ -1,7 +1,9 @@
 -- name: GetDevices :many
 SELECT *
 FROM devices
-ORDER BY host_name;
+ORDER BY host_name
+LIMIT $1
+OFFSET $2;
 
 -- name: GetDevice :one
 SELECT *

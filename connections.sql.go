@@ -272,10 +272,18 @@ func (q *Queries) GetConnectionSite(ctx context.Context, conID int64) (Site, err
 const GetConnections = `-- name: GetConnections :many
 SELECT con_id, site_id, con_prov_id, con_type_id, con_cap_id, con_class_id, hint, notes, in_use, updated_on, created_on
 FROM connections
+ORDER BY con_id
+LIMIT $1
+OFFSET $2
 `
 
-func (q *Queries) GetConnections(ctx context.Context) ([]Connection, error) {
-	rows, err := q.db.Query(ctx, GetConnections)
+type GetConnectionsParams struct {
+	Limit  int32 `json:"limit"`
+	Offset int32 `json:"offset"`
+}
+
+func (q *Queries) GetConnections(ctx context.Context, arg GetConnectionsParams) ([]Connection, error) {
+	rows, err := q.db.Query(ctx, GetConnections, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}

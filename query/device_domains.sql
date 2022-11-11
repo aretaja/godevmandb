@@ -1,7 +1,9 @@
 -- name: GetDeviceDomains :many
 SELECT *
 FROM device_domains
-ORDER BY descr;
+ORDER BY descr
+LIMIT $1
+OFFSET $2;
 
 -- name: GetDeviceDomain :one
 SELECT *

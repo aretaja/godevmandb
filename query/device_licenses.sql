@@ -1,8 +1,9 @@
 -- name: GetDeviceLicenses :many
 SELECT *
 FROM device_licenses
-ORDER BY dev_id,
-  descr;
+ORDER BY dev_id, descr
+LIMIT $1
+OFFSET $2;
 
 -- name: GetDeviceLicense :one
 SELECT *

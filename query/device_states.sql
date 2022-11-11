@@ -1,7 +1,9 @@
 -- name: GetDeviceStates :many
 SELECT *
 FROM device_states
-ORDER BY updated_on;
+ORDER BY updated_on
+LIMIT $1
+OFFSET $2;
 
 -- name: GetDeviceState :one
 SELECT *

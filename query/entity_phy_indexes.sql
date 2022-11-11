@@ -1,6 +1,9 @@
 -- name: GetEntityPhyIndexes :many
 SELECT *
-FROM entity_phy_indexes;
+FROM entity_phy_indexes
+ORDER BY ei_id
+LIMIT $1
+OFFSET $2;
 
 -- name: GetEntityPhyIndex :one
 SELECT *

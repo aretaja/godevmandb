@@ -115,10 +115,17 @@ const GetSnmpCredentials = `-- name: GetSnmpCredentials :many
 SELECT snmp_cred_id, label, variant, auth_name, auth_proto, auth_pass, sec_level, priv_proto, priv_pass, updated_on, created_on
 FROM snmp_credentials
 ORDER BY label
+LIMIT $1
+OFFSET $2
 `
 
-func (q *Queries) GetSnmpCredentials(ctx context.Context) ([]SnmpCredential, error) {
-	rows, err := q.db.Query(ctx, GetSnmpCredentials)
+type GetSnmpCredentialsParams struct {
+	Limit  int32 `json:"limit"`
+	Offset int32 `json:"offset"`
+}
+
+func (q *Queries) GetSnmpCredentials(ctx context.Context, arg GetSnmpCredentialsParams) ([]SnmpCredential, error) {
+	rows, err := q.db.Query(ctx, GetSnmpCredentials, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}

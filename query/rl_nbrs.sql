@@ -1,7 +1,9 @@
 -- name: GetRlfNbrs :many
 SELECT *
 FROM rl_nbrs
-ORDER BY nbr_sysname;
+ORDER BY nbr_sysname
+LIMIT $1
+OFFSET $2;
 
 -- name: GetRlfNbr :one
 SELECT *

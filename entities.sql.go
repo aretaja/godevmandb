@@ -123,10 +123,18 @@ func (q *Queries) DeleteEntity(ctx context.Context, entID int64) error {
 const GetEntities = `-- name: GetEntities :many
 SELECT ent_id, parent_ent_id, snmp_ent_id, dev_id, slot, descr, model, hw_product, hw_revision, serial_nr, sw_product, sw_revision, manufacturer, physical, updated_on, created_on
 FROM entities
+ORDER BY ent_id
+LIMIT $1
+OFFSET $2
 `
 
-func (q *Queries) GetEntities(ctx context.Context) ([]Entity, error) {
-	rows, err := q.db.Query(ctx, GetEntities)
+type GetEntitiesParams struct {
+	Limit  int32 `json:"limit"`
+	Offset int32 `json:"offset"`
+}
+
+func (q *Queries) GetEntities(ctx context.Context, arg GetEntitiesParams) ([]Entity, error) {
+	rows, err := q.db.Query(ctx, GetEntities, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}

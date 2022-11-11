@@ -118,10 +118,17 @@ const GetConTypes = `-- name: GetConTypes :many
 SELECT con_type_id, descr, notes, updated_on, created_on
 FROM con_types
 ORDER BY descr
+LIMIT $1
+OFFSET $2
 `
 
-func (q *Queries) GetConTypes(ctx context.Context) ([]ConType, error) {
-	rows, err := q.db.Query(ctx, GetConTypes)
+type GetConTypesParams struct {
+	Limit  int32 `json:"limit"`
+	Offset int32 `json:"offset"`
+}
+
+func (q *Queries) GetConTypes(ctx context.Context, arg GetConTypesParams) ([]ConType, error) {
+	rows, err := q.db.Query(ctx, GetConTypes, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}

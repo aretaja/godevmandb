@@ -1,6 +1,9 @@
 -- name: GetIntBwStats :many
 SELECT *
-FROM int_bw_stats;
+FROM int_bw_stats
+ORDER BY bw_id
+LIMIT $1
+OFFSET $2;
 
 -- name: GetIntBwStat :one
 SELECT *

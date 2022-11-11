@@ -80,10 +80,17 @@ const GetVars = `-- name: GetVars :many
 SELECT descr, content, notes, updated_on, created_on
 FROM vars
 ORDER BY descr
+LIMIT $1
+OFFSET $2
 `
 
-func (q *Queries) GetVars(ctx context.Context) ([]Var, error) {
-	rows, err := q.db.Query(ctx, GetVars)
+type GetVarsParams struct {
+	Limit  int32 `json:"limit"`
+	Offset int32 `json:"offset"`
+}
+
+func (q *Queries) GetVars(ctx context.Context, arg GetVarsParams) ([]Var, error) {
+	rows, err := q.db.Query(ctx, GetVars, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}

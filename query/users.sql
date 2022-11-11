@@ -1,7 +1,9 @@
 -- name: GetUsers :many
 SELECT *
 FROM users
-ORDER BY username;
+ORDER BY username
+LIMIT $1
+OFFSET $2;
 
 -- name: GetUser :one
 SELECT *

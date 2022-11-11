@@ -60,10 +60,17 @@ const GetConCapacities = `-- name: GetConCapacities :many
 SELECT con_cap_id, descr, notes, updated_on, created_on
 FROM con_capacities
 ORDER BY descr
+LIMIT $1
+OFFSET $2
 `
 
-func (q *Queries) GetConCapacities(ctx context.Context) ([]ConCapacity, error) {
-	rows, err := q.db.Query(ctx, GetConCapacities)
+type GetConCapacitiesParams struct {
+	Limit  int32 `json:"limit"`
+	Offset int32 `json:"offset"`
+}
+
+func (q *Queries) GetConCapacities(ctx context.Context, arg GetConCapacitiesParams) ([]ConCapacity, error) {
+	rows, err := q.db.Query(ctx, GetConCapacities, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}

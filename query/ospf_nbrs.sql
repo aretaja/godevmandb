@@ -1,7 +1,9 @@
 -- name: GetOspfNbrs :many
 SELECT *
 FROM ospf_nbrs
-ORDER BY descr;
+ORDER BY descr
+LIMIT $1
+OFFSET $2;
 
 -- name: GetOspfNbr :one
 SELECT *

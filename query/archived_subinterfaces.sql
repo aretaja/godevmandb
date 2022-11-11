@@ -1,7 +1,9 @@
 -- name: GetArchivedSubInterfaces :many
 SELECT *
 FROM archived_subinterfaces
-ORDER BY descr;
+ORDER BY descr
+LIMIT $1
+OFFSET $2;
 
 -- name: GetArchivedSubInterface :one
 SELECT *

@@ -109,10 +109,17 @@ const GetDeviceClasses = `-- name: GetDeviceClasses :many
 SELECT class_id, descr, updated_on, created_on
 FROM device_classes
 ORDER BY descr
+LIMIT $1
+OFFSET $2
 `
 
-func (q *Queries) GetDeviceClasses(ctx context.Context) ([]DeviceClass, error) {
-	rows, err := q.db.Query(ctx, GetDeviceClasses)
+type GetDeviceClassesParams struct {
+	Limit  int32 `json:"limit"`
+	Offset int32 `json:"offset"`
+}
+
+func (q *Queries) GetDeviceClasses(ctx context.Context, arg GetDeviceClassesParams) ([]DeviceClass, error) {
+	rows, err := q.db.Query(ctx, GetDeviceClasses, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}

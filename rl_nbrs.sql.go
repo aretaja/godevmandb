@@ -161,10 +161,17 @@ const GetRlfNbrs = `-- name: GetRlfNbrs :many
 SELECT nbr_id, dev_id, nbr_ent_id, nbr_sysname, updated_on, created_on
 FROM rl_nbrs
 ORDER BY nbr_sysname
+LIMIT $1
+OFFSET $2
 `
 
-func (q *Queries) GetRlfNbrs(ctx context.Context) ([]RlNbr, error) {
-	rows, err := q.db.Query(ctx, GetRlfNbrs)
+type GetRlfNbrsParams struct {
+	Limit  int32 `json:"limit"`
+	Offset int32 `json:"offset"`
+}
+
+func (q *Queries) GetRlfNbrs(ctx context.Context, arg GetRlfNbrsParams) ([]RlNbr, error) {
+	rows, err := q.db.Query(ctx, GetRlfNbrs, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}

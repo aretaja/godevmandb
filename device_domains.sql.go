@@ -154,10 +154,17 @@ const GetDeviceDomains = `-- name: GetDeviceDomains :many
 SELECT dom_id, descr, updated_on, created_on
 FROM device_domains
 ORDER BY descr
+LIMIT $1
+OFFSET $2
 `
 
-func (q *Queries) GetDeviceDomains(ctx context.Context) ([]DeviceDomain, error) {
-	rows, err := q.db.Query(ctx, GetDeviceDomains)
+type GetDeviceDomainsParams struct {
+	Limit  int32 `json:"limit"`
+	Offset int32 `json:"offset"`
+}
+
+func (q *Queries) GetDeviceDomains(ctx context.Context, arg GetDeviceDomainsParams) ([]DeviceDomain, error) {
+	rows, err := q.db.Query(ctx, GetDeviceDomains, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}

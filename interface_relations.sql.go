@@ -192,10 +192,18 @@ func (q *Queries) GetInterfaceRelationInterfaceUp(ctx context.Context, irID int6
 const GetInterfaceRelations = `-- name: GetInterfaceRelations :many
 SELECT ir_id, if_id, if_id_up, if_id_down, updated_on, created_on
 FROM interface_relations
+ORDER BY ir_id
+LIMIT $1
+OFFSET $2
 `
 
-func (q *Queries) GetInterfaceRelations(ctx context.Context) ([]InterfaceRelation, error) {
-	rows, err := q.db.Query(ctx, GetInterfaceRelations)
+type GetInterfaceRelationsParams struct {
+	Limit  int32 `json:"limit"`
+	Offset int32 `json:"offset"`
+}
+
+func (q *Queries) GetInterfaceRelations(ctx context.Context, arg GetInterfaceRelationsParams) ([]InterfaceRelation, error) {
+	rows, err := q.db.Query(ctx, GetInterfaceRelations, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}

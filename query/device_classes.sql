@@ -1,7 +1,9 @@
 -- name: GetDeviceClasses :many
 SELECT *
 FROM device_classes
-ORDER BY descr;
+ORDER BY descr
+LIMIT $1
+OFFSET $2;
 
 -- name: GetDeviceClass :one
 SELECT *

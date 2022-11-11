@@ -131,10 +131,17 @@ const GetOspfNbrs = `-- name: GetOspfNbrs :many
 SELECT nbr_id, dev_id, nbr_ip, condition, updated_on, created_on
 FROM ospf_nbrs
 ORDER BY descr
+LIMIT $1
+OFFSET $2
 `
 
-func (q *Queries) GetOspfNbrs(ctx context.Context) ([]OspfNbr, error) {
-	rows, err := q.db.Query(ctx, GetOspfNbrs)
+type GetOspfNbrsParams struct {
+	Limit  int32 `json:"limit"`
+	Offset int32 `json:"offset"`
+}
+
+func (q *Queries) GetOspfNbrs(ctx context.Context, arg GetOspfNbrsParams) ([]OspfNbr, error) {
+	rows, err := q.db.Query(ctx, GetOspfNbrs, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
