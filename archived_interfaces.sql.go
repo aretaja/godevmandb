@@ -8,6 +8,7 @@ package godevmandb
 import (
 	"context"
 	"database/sql"
+	"time"
 
 	"github.com/jackc/pgtype"
 )
@@ -149,18 +150,86 @@ func (q *Queries) GetArchivedInterface(ctx context.Context, ifaID int64) (Archiv
 const GetArchivedInterfaces = `-- name: GetArchivedInterfaces :many
 SELECT ifa_id, ifindex, otn_if_id, cisco_opt_power_index, hostname, host_ip4, host_ip6, manufacturer, model, descr, alias, type_enum, mac, updated_on, created_on
 FROM archived_interfaces
-ORDER BY descr
-LIMIT $1
-OFFSET $2
+WHERE (
+    $1::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR updated_on >= $1
+  )
+  AND (
+    $2::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR updated_on <= $2
+  )
+  AND (
+    $3::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR created_on >= $3
+  )
+  AND (
+    $4::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR created_on <= $4
+  )
+  AND (
+    $5::text IS NULL
+    OR CAST(ifindex AS text) LIKE $5
+  )
+  AND (
+    $6::text = ''
+    OR hostname LIKE $6
+  )
+  AND (
+    $7::inet IS NULL
+    OR host_ip4 <<= $7
+  )
+  AND (
+    $8::inet IS NULL
+    OR host_ip6 <<= $8
+  )
+  AND (
+    $9::text = ''
+    OR descr LIKE $9
+  )
+  AND (
+    $10::text IS NULL
+    OR alias LIKE $10
+  )
+  AND (
+    $11::macaddr IS NULL
+    OR mac = $11
+  )
+ORDER BY created_on
+LIMIT NULLIF($13::int, 0) OFFSET NULLIF($12::int, 0)
 `
 
 type GetArchivedInterfacesParams struct {
-	Limit  int32 `json:"limit"`
-	Offset int32 `json:"offset"`
+	UpdatedGe time.Time      `json:"updated_ge"`
+	UpdatedLe time.Time      `json:"updated_le"`
+	CreatedGe time.Time      `json:"created_ge"`
+	CreatedLe time.Time      `json:"created_le"`
+	IfindexF  sql.NullString `json:"ifindex_f"`
+	HostnameF string         `json:"hostname_f"`
+	HostIp4F  pgtype.Inet    `json:"host_ip4_f"`
+	HostIp6F  pgtype.Inet    `json:"host_ip6_f"`
+	DescrF    string         `json:"descr_f"`
+	AliasF    sql.NullString `json:"alias_f"`
+	MacF      pgtype.Macaddr `json:"mac_f"`
+	OffsetQ   int32          `json:"offset_q"`
+	LimitQ    int32          `json:"limit_q"`
 }
 
 func (q *Queries) GetArchivedInterfaces(ctx context.Context, arg GetArchivedInterfacesParams) ([]ArchivedInterface, error) {
-	rows, err := q.db.Query(ctx, GetArchivedInterfaces, arg.Limit, arg.Offset)
+	rows, err := q.db.Query(ctx, GetArchivedInterfaces,
+		arg.UpdatedGe,
+		arg.UpdatedLe,
+		arg.CreatedGe,
+		arg.CreatedLe,
+		arg.IfindexF,
+		arg.HostnameF,
+		arg.HostIp4F,
+		arg.HostIp6F,
+		arg.DescrF,
+		arg.AliasF,
+		arg.MacF,
+		arg.OffsetQ,
+		arg.LimitQ,
+	)
 	if err != nil {
 		return nil, err
 	}
