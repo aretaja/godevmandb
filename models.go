@@ -549,9 +549,11 @@ type User struct {
 }
 
 type UserAuthz struct {
-	Username  string `json:"username"`
-	DomID     int64  `json:"dom_id"`
-	Userlevel int16  `json:"userlevel"`
+	Username  string    `json:"username"`
+	DomID     int64     `json:"dom_id"`
+	Userlevel int16     `json:"userlevel"`
+	UpdatedOn time.Time `json:"updated_on"`
+	CreatedOn time.Time `json:"created_on"`
 }
 
 type UserGraph struct {

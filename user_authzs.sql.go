@@ -24,7 +24,7 @@ func (q *Queries) CountUserAuthzs(ctx context.Context) (int64, error) {
 const CreateUserAuthz = `-- name: CreateUserAuthz :one
 INSERT INTO user_authzs (username, dom_id, userlevel)
 VALUES ($1, $2, $3)
-RETURNING username, dom_id, userlevel
+RETURNING username, dom_id, userlevel, updated_on, created_on
 `
 
 type CreateUserAuthzParams struct {
@@ -36,7 +36,13 @@ type CreateUserAuthzParams struct {
 func (q *Queries) CreateUserAuthz(ctx context.Context, arg CreateUserAuthzParams) (UserAuthz, error) {
 	row := q.db.QueryRow(ctx, CreateUserAuthz, arg.Username, arg.DomID, arg.Userlevel)
 	var i UserAuthz
-	err := row.Scan(&i.Username, &i.DomID, &i.Userlevel)
+	err := row.Scan(
+		&i.Username,
+		&i.DomID,
+		&i.Userlevel,
+		&i.UpdatedOn,
+		&i.CreatedOn,
+	)
 	return i, err
 }
 
@@ -57,7 +63,7 @@ func (q *Queries) DeleteUserAuthz(ctx context.Context, arg DeleteUserAuthzParams
 }
 
 const GetUserAuthz = `-- name: GetUserAuthz :one
-SELECT username, dom_id, userlevel
+SELECT username, dom_id, userlevel, updated_on, created_on
 FROM user_authzs
 WHERE username = $1
   AND dom_id = $2
@@ -71,7 +77,13 @@ type GetUserAuthzParams struct {
 func (q *Queries) GetUserAuthz(ctx context.Context, arg GetUserAuthzParams) (UserAuthz, error) {
 	row := q.db.QueryRow(ctx, GetUserAuthz, arg.Username, arg.DomID)
 	var i UserAuthz
-	err := row.Scan(&i.Username, &i.DomID, &i.Userlevel)
+	err := row.Scan(
+		&i.Username,
+		&i.DomID,
+		&i.Userlevel,
+		&i.UpdatedOn,
+		&i.CreatedOn,
+	)
 	return i, err
 }
 
@@ -129,7 +141,7 @@ func (q *Queries) GetUserAuthzUser(ctx context.Context, arg GetUserAuthzUserPara
 }
 
 const GetUserAuthzs = `-- name: GetUserAuthzs :many
-SELECT username, dom_id, userlevel
+SELECT username, dom_id, userlevel, updated_on, created_on
 FROM user_authzs
 ORDER BY username
 LIMIT $1
@@ -150,7 +162,13 @@ func (q *Queries) GetUserAuthzs(ctx context.Context, arg GetUserAuthzsParams) ([
 	var items []UserAuthz
 	for rows.Next() {
 		var i UserAuthz
-		if err := rows.Scan(&i.Username, &i.DomID, &i.Userlevel); err != nil {
+		if err := rows.Scan(
+			&i.Username,
+			&i.DomID,
+			&i.Userlevel,
+			&i.UpdatedOn,
+			&i.CreatedOn,
+		); err != nil {
 			return nil, err
 		}
 		items = append(items, i)
@@ -166,7 +184,7 @@ UPDATE user_authzs
 SET userlevel = $3
 WHERE username = $1
   AND dom_id = $2
-RETURNING username, dom_id, userlevel
+RETURNING username, dom_id, userlevel, updated_on, created_on
 `
 
 type UpdateUserAuthzParams struct {
@@ -178,6 +196,12 @@ type UpdateUserAuthzParams struct {
 func (q *Queries) UpdateUserAuthz(ctx context.Context, arg UpdateUserAuthzParams) (UserAuthz, error) {
 	row := q.db.QueryRow(ctx, UpdateUserAuthz, arg.Username, arg.DomID, arg.Userlevel)
 	var i UserAuthz
-	err := row.Scan(&i.Username, &i.DomID, &i.Userlevel)
+	err := row.Scan(
+		&i.Username,
+		&i.DomID,
+		&i.Userlevel,
+		&i.UpdatedOn,
+		&i.CreatedOn,
+	)
 	return i, err
 }

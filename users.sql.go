@@ -77,7 +77,7 @@ func (q *Queries) GetUser(ctx context.Context, username string) (User, error) {
 }
 
 const GetUserUserAuthzs = `-- name: GetUserUserAuthzs :many
-SELECT username, dom_id, userlevel
+SELECT username, dom_id, userlevel, updated_on, created_on
 FROM user_authzs
 WHERE username = $1
 ORDER BY username
@@ -93,7 +93,13 @@ func (q *Queries) GetUserUserAuthzs(ctx context.Context, username string) ([]Use
 	var items []UserAuthz
 	for rows.Next() {
 		var i UserAuthz
-		if err := rows.Scan(&i.Username, &i.DomID, &i.Userlevel); err != nil {
+		if err := rows.Scan(
+			&i.Username,
+			&i.DomID,
+			&i.Userlevel,
+			&i.UpdatedOn,
+			&i.CreatedOn,
+		); err != nil {
 			return nil, err
 		}
 		items = append(items, i)

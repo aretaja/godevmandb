@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 13.8 (Debian 13.8-0+deb11u1)
--- Dumped by pg_dump version 13.8 (Debian 13.8-0+deb11u1)
+-- Dumped from database version 13.9 (Debian 13.9-0+deb11u1)
+-- Dumped by pg_dump version 13.9 (Debian 13.9-0+deb11u1)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -17,7 +17,7 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
--- Name: snmp_auth_proto; Type: TYPE; Schema: public; Owner: -
+-- Name: snmp_auth_proto; Type: TYPE; Schema: public; Owner: godevman
 --
 
 CREATE TYPE public.snmp_auth_proto AS ENUM (
@@ -27,8 +27,10 @@ CREATE TYPE public.snmp_auth_proto AS ENUM (
 );
 
 
+ALTER TYPE public.snmp_auth_proto OWNER TO godevman;
+
 --
--- Name: snmp_priv_proto; Type: TYPE; Schema: public; Owner: -
+-- Name: snmp_priv_proto; Type: TYPE; Schema: public; Owner: godevman
 --
 
 CREATE TYPE public.snmp_priv_proto AS ENUM (
@@ -42,8 +44,10 @@ CREATE TYPE public.snmp_priv_proto AS ENUM (
 );
 
 
+ALTER TYPE public.snmp_priv_proto OWNER TO godevman;
+
 --
--- Name: snmp_sec_level; Type: TYPE; Schema: public; Owner: -
+-- Name: snmp_sec_level; Type: TYPE; Schema: public; Owner: godevman
 --
 
 CREATE TYPE public.snmp_sec_level AS ENUM (
@@ -53,8 +57,10 @@ CREATE TYPE public.snmp_sec_level AS ENUM (
 );
 
 
+ALTER TYPE public.snmp_sec_level OWNER TO godevman;
+
 --
--- Name: update_updated_on(); Type: FUNCTION; Schema: public; Owner: -
+-- Name: update_updated_on(); Type: FUNCTION; Schema: public; Owner: godevman
 --
 
 CREATE FUNCTION public.update_updated_on() RETURNS trigger
@@ -67,8 +73,10 @@ END;
 $$;
 
 
+ALTER FUNCTION public.update_updated_on() OWNER TO godevman;
+
 --
--- Name: archived_interfaces_ifa_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: archived_interfaces_ifa_id_seq; Type: SEQUENCE; Schema: public; Owner: godevman
 --
 
 CREATE SEQUENCE public.archived_interfaces_ifa_id_seq
@@ -79,10 +87,14 @@ CREATE SEQUENCE public.archived_interfaces_ifa_id_seq
     CACHE 1;
 
 
+ALTER TABLE public.archived_interfaces_ifa_id_seq OWNER TO godevman;
+
+SET default_tablespace = '';
+
 SET default_table_access_method = heap;
 
 --
--- Name: archived_interfaces; Type: TABLE; Schema: public; Owner: -
+-- Name: archived_interfaces; Type: TABLE; Schema: public; Owner: godevman
 --
 
 CREATE TABLE public.archived_interfaces (
@@ -98,14 +110,16 @@ CREATE TABLE public.archived_interfaces (
     descr character varying NOT NULL,
     alias character varying,
     type_enum smallint,
-    mac macaddr DEFAULT '00:00:00:00:00:00'::macaddr NOT NULL,
+    mac macaddr,
     updated_on timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     created_on timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 
+ALTER TABLE public.archived_interfaces OWNER TO godevman;
+
 --
--- Name: archived_subinterfaces_sifa_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: archived_subinterfaces_sifa_id_seq; Type: SEQUENCE; Schema: public; Owner: godevman
 --
 
 CREATE SEQUENCE public.archived_subinterfaces_sifa_id_seq
@@ -116,8 +130,10 @@ CREATE SEQUENCE public.archived_subinterfaces_sifa_id_seq
     CACHE 1;
 
 
+ALTER TABLE public.archived_subinterfaces_sifa_id_seq OWNER TO godevman;
+
 --
--- Name: archived_subinterfaces; Type: TABLE; Schema: public; Owner: -
+-- Name: archived_subinterfaces; Type: TABLE; Schema: public; Owner: godevman
 --
 
 CREATE TABLE public.archived_subinterfaces (
@@ -127,7 +143,7 @@ CREATE TABLE public.archived_subinterfaces (
     parent_descr character varying,
     alias character varying,
     type_enum character varying,
-    mac macaddr DEFAULT '00:00:00:00:00:00'::macaddr,
+    mac macaddr,
     hostname character varying NOT NULL,
     host_ip4 inet,
     host_ip6 inet,
@@ -137,8 +153,10 @@ CREATE TABLE public.archived_subinterfaces (
 );
 
 
+ALTER TABLE public.archived_subinterfaces OWNER TO godevman;
+
 --
--- Name: con_capacities; Type: TABLE; Schema: public; Owner: -
+-- Name: con_capacities; Type: TABLE; Schema: public; Owner: godevman
 --
 
 CREATE TABLE public.con_capacities (
@@ -150,8 +168,10 @@ CREATE TABLE public.con_capacities (
 );
 
 
+ALTER TABLE public.con_capacities OWNER TO godevman;
+
 --
--- Name: con_capacities_con_cap_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: con_capacities_con_cap_id_seq; Type: SEQUENCE; Schema: public; Owner: godevman
 --
 
 CREATE SEQUENCE public.con_capacities_con_cap_id_seq
@@ -162,15 +182,17 @@ CREATE SEQUENCE public.con_capacities_con_cap_id_seq
     CACHE 1;
 
 
+ALTER TABLE public.con_capacities_con_cap_id_seq OWNER TO godevman;
+
 --
--- Name: con_capacities_con_cap_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: con_capacities_con_cap_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: godevman
 --
 
 ALTER SEQUENCE public.con_capacities_con_cap_id_seq OWNED BY public.con_capacities.con_cap_id;
 
 
 --
--- Name: con_classes; Type: TABLE; Schema: public; Owner: -
+-- Name: con_classes; Type: TABLE; Schema: public; Owner: godevman
 --
 
 CREATE TABLE public.con_classes (
@@ -182,8 +204,10 @@ CREATE TABLE public.con_classes (
 );
 
 
+ALTER TABLE public.con_classes OWNER TO godevman;
+
 --
--- Name: con_classes_con_class_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: con_classes_con_class_id_seq; Type: SEQUENCE; Schema: public; Owner: godevman
 --
 
 CREATE SEQUENCE public.con_classes_con_class_id_seq
@@ -194,15 +218,17 @@ CREATE SEQUENCE public.con_classes_con_class_id_seq
     CACHE 1;
 
 
+ALTER TABLE public.con_classes_con_class_id_seq OWNER TO godevman;
+
 --
--- Name: con_classes_con_class_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: con_classes_con_class_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: godevman
 --
 
 ALTER SEQUENCE public.con_classes_con_class_id_seq OWNED BY public.con_classes.con_class_id;
 
 
 --
--- Name: con_providers; Type: TABLE; Schema: public; Owner: -
+-- Name: con_providers; Type: TABLE; Schema: public; Owner: godevman
 --
 
 CREATE TABLE public.con_providers (
@@ -214,8 +240,10 @@ CREATE TABLE public.con_providers (
 );
 
 
+ALTER TABLE public.con_providers OWNER TO godevman;
+
 --
--- Name: con_providers_con_prov_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: con_providers_con_prov_id_seq; Type: SEQUENCE; Schema: public; Owner: godevman
 --
 
 CREATE SEQUENCE public.con_providers_con_prov_id_seq
@@ -226,15 +254,17 @@ CREATE SEQUENCE public.con_providers_con_prov_id_seq
     CACHE 1;
 
 
+ALTER TABLE public.con_providers_con_prov_id_seq OWNER TO godevman;
+
 --
--- Name: con_providers_con_prov_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: con_providers_con_prov_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: godevman
 --
 
 ALTER SEQUENCE public.con_providers_con_prov_id_seq OWNED BY public.con_providers.con_prov_id;
 
 
 --
--- Name: con_types; Type: TABLE; Schema: public; Owner: -
+-- Name: con_types; Type: TABLE; Schema: public; Owner: godevman
 --
 
 CREATE TABLE public.con_types (
@@ -246,8 +276,10 @@ CREATE TABLE public.con_types (
 );
 
 
+ALTER TABLE public.con_types OWNER TO godevman;
+
 --
--- Name: con_types_con_type_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: con_types_con_type_id_seq; Type: SEQUENCE; Schema: public; Owner: godevman
 --
 
 CREATE SEQUENCE public.con_types_con_type_id_seq
@@ -258,15 +290,17 @@ CREATE SEQUENCE public.con_types_con_type_id_seq
     CACHE 1;
 
 
+ALTER TABLE public.con_types_con_type_id_seq OWNER TO godevman;
+
 --
--- Name: con_types_con_type_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: con_types_con_type_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: godevman
 --
 
 ALTER SEQUENCE public.con_types_con_type_id_seq OWNED BY public.con_types.con_type_id;
 
 
 --
--- Name: connections; Type: TABLE; Schema: public; Owner: -
+-- Name: connections; Type: TABLE; Schema: public; Owner: godevman
 --
 
 CREATE TABLE public.connections (
@@ -284,8 +318,10 @@ CREATE TABLE public.connections (
 );
 
 
+ALTER TABLE public.connections OWNER TO godevman;
+
 --
--- Name: connections_con_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: connections_con_id_seq; Type: SEQUENCE; Schema: public; Owner: godevman
 --
 
 CREATE SEQUENCE public.connections_con_id_seq
@@ -296,15 +332,17 @@ CREATE SEQUENCE public.connections_con_id_seq
     CACHE 1;
 
 
+ALTER TABLE public.connections_con_id_seq OWNER TO godevman;
+
 --
--- Name: connections_con_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: connections_con_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: godevman
 --
 
 ALTER SEQUENCE public.connections_con_id_seq OWNED BY public.connections.con_id;
 
 
 --
--- Name: countries; Type: TABLE; Schema: public; Owner: -
+-- Name: countries; Type: TABLE; Schema: public; Owner: godevman
 --
 
 CREATE TABLE public.countries (
@@ -316,15 +354,17 @@ CREATE TABLE public.countries (
 );
 
 
+ALTER TABLE public.countries OWNER TO godevman;
+
 --
--- Name: COLUMN countries.code; Type: COMMENT; Schema: public; Owner: -
+-- Name: COLUMN countries.code; Type: COMMENT; Schema: public; Owner: godevman
 --
 
 COMMENT ON COLUMN public.countries.code IS 'ISO 3166-1 Alpha-2 code';
 
 
 --
--- Name: countries_country_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: countries_country_id_seq; Type: SEQUENCE; Schema: public; Owner: godevman
 --
 
 CREATE SEQUENCE public.countries_country_id_seq
@@ -335,15 +375,17 @@ CREATE SEQUENCE public.countries_country_id_seq
     CACHE 1;
 
 
+ALTER TABLE public.countries_country_id_seq OWNER TO godevman;
+
 --
--- Name: countries_country_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: countries_country_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: godevman
 --
 
 ALTER SEQUENCE public.countries_country_id_seq OWNED BY public.countries.country_id;
 
 
 --
--- Name: credentials; Type: TABLE; Schema: public; Owner: -
+-- Name: credentials; Type: TABLE; Schema: public; Owner: godevman
 --
 
 CREATE TABLE public.credentials (
@@ -356,8 +398,10 @@ CREATE TABLE public.credentials (
 );
 
 
+ALTER TABLE public.credentials OWNER TO godevman;
+
 --
--- Name: credentials_cred_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: credentials_cred_id_seq; Type: SEQUENCE; Schema: public; Owner: godevman
 --
 
 CREATE SEQUENCE public.credentials_cred_id_seq
@@ -368,15 +412,17 @@ CREATE SEQUENCE public.credentials_cred_id_seq
     CACHE 1;
 
 
+ALTER TABLE public.credentials_cred_id_seq OWNER TO godevman;
+
 --
--- Name: credentials_cred_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: credentials_cred_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: godevman
 --
 
 ALTER SEQUENCE public.credentials_cred_id_seq OWNED BY public.credentials.cred_id;
 
 
 --
--- Name: custom_entities; Type: TABLE; Schema: public; Owner: -
+-- Name: custom_entities; Type: TABLE; Schema: public; Owner: godevman
 --
 
 CREATE TABLE public.custom_entities (
@@ -390,8 +436,10 @@ CREATE TABLE public.custom_entities (
 );
 
 
+ALTER TABLE public.custom_entities OWNER TO godevman;
+
 --
--- Name: custom_entities_cext_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: custom_entities_cext_id_seq; Type: SEQUENCE; Schema: public; Owner: godevman
 --
 
 CREATE SEQUENCE public.custom_entities_cext_id_seq
@@ -402,15 +450,17 @@ CREATE SEQUENCE public.custom_entities_cext_id_seq
     CACHE 1;
 
 
+ALTER TABLE public.custom_entities_cext_id_seq OWNER TO godevman;
+
 --
--- Name: custom_entities_cext_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: custom_entities_cext_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: godevman
 --
 
 ALTER SEQUENCE public.custom_entities_cext_id_seq OWNED BY public.custom_entities.cent_id;
 
 
 --
--- Name: device_classes; Type: TABLE; Schema: public; Owner: -
+-- Name: device_classes; Type: TABLE; Schema: public; Owner: godevman
 --
 
 CREATE TABLE public.device_classes (
@@ -421,8 +471,10 @@ CREATE TABLE public.device_classes (
 );
 
 
+ALTER TABLE public.device_classes OWNER TO godevman;
+
 --
--- Name: device_classes_class_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: device_classes_class_id_seq; Type: SEQUENCE; Schema: public; Owner: godevman
 --
 
 CREATE SEQUENCE public.device_classes_class_id_seq
@@ -434,15 +486,17 @@ CREATE SEQUENCE public.device_classes_class_id_seq
     CACHE 1;
 
 
+ALTER TABLE public.device_classes_class_id_seq OWNER TO godevman;
+
 --
--- Name: device_classes_class_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: device_classes_class_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: godevman
 --
 
 ALTER SEQUENCE public.device_classes_class_id_seq OWNED BY public.device_classes.class_id;
 
 
 --
--- Name: device_credentials_cred_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: device_credentials_cred_id_seq; Type: SEQUENCE; Schema: public; Owner: godevman
 --
 
 CREATE SEQUENCE public.device_credentials_cred_id_seq
@@ -453,8 +507,10 @@ CREATE SEQUENCE public.device_credentials_cred_id_seq
     CACHE 1;
 
 
+ALTER TABLE public.device_credentials_cred_id_seq OWNER TO godevman;
+
 --
--- Name: device_credentials; Type: TABLE; Schema: public; Owner: -
+-- Name: device_credentials; Type: TABLE; Schema: public; Owner: godevman
 --
 
 CREATE TABLE public.device_credentials (
@@ -467,8 +523,10 @@ CREATE TABLE public.device_credentials (
 );
 
 
+ALTER TABLE public.device_credentials OWNER TO godevman;
+
 --
--- Name: device_domains; Type: TABLE; Schema: public; Owner: -
+-- Name: device_domains; Type: TABLE; Schema: public; Owner: godevman
 --
 
 CREATE TABLE public.device_domains (
@@ -479,8 +537,10 @@ CREATE TABLE public.device_domains (
 );
 
 
+ALTER TABLE public.device_domains OWNER TO godevman;
+
 --
--- Name: device_domains_dom_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: device_domains_dom_id_seq; Type: SEQUENCE; Schema: public; Owner: godevman
 --
 
 CREATE SEQUENCE public.device_domains_dom_id_seq
@@ -491,15 +551,17 @@ CREATE SEQUENCE public.device_domains_dom_id_seq
     CACHE 1;
 
 
+ALTER TABLE public.device_domains_dom_id_seq OWNER TO godevman;
+
 --
--- Name: device_domains_dom_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: device_domains_dom_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: godevman
 --
 
 ALTER SEQUENCE public.device_domains_dom_id_seq OWNED BY public.device_domains.dom_id;
 
 
 --
--- Name: device_extensions; Type: TABLE; Schema: public; Owner: -
+-- Name: device_extensions; Type: TABLE; Schema: public; Owner: godevman
 --
 
 CREATE TABLE public.device_extensions (
@@ -512,8 +574,10 @@ CREATE TABLE public.device_extensions (
 );
 
 
+ALTER TABLE public.device_extensions OWNER TO godevman;
+
 --
--- Name: device_extensions_ext_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: device_extensions_ext_id_seq; Type: SEQUENCE; Schema: public; Owner: godevman
 --
 
 CREATE SEQUENCE public.device_extensions_ext_id_seq
@@ -524,15 +588,17 @@ CREATE SEQUENCE public.device_extensions_ext_id_seq
     CACHE 1;
 
 
+ALTER TABLE public.device_extensions_ext_id_seq OWNER TO godevman;
+
 --
--- Name: device_extensions_ext_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: device_extensions_ext_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: godevman
 --
 
 ALTER SEQUENCE public.device_extensions_ext_id_seq OWNED BY public.device_extensions.ext_id;
 
 
 --
--- Name: device_licenses; Type: TABLE; Schema: public; Owner: -
+-- Name: device_licenses; Type: TABLE; Schema: public; Owner: godevman
 --
 
 CREATE TABLE public.device_licenses (
@@ -550,8 +616,10 @@ CREATE TABLE public.device_licenses (
 );
 
 
+ALTER TABLE public.device_licenses OWNER TO godevman;
+
 --
--- Name: device_licenses_lic_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: device_licenses_lic_id_seq; Type: SEQUENCE; Schema: public; Owner: godevman
 --
 
 CREATE SEQUENCE public.device_licenses_lic_id_seq
@@ -562,15 +630,17 @@ CREATE SEQUENCE public.device_licenses_lic_id_seq
     CACHE 1;
 
 
+ALTER TABLE public.device_licenses_lic_id_seq OWNER TO godevman;
+
 --
--- Name: device_licenses_lic_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: device_licenses_lic_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: godevman
 --
 
 ALTER SEQUENCE public.device_licenses_lic_id_seq OWNED BY public.device_licenses.lic_id;
 
 
 --
--- Name: device_states; Type: TABLE; Schema: public; Owner: -
+-- Name: device_states; Type: TABLE; Schema: public; Owner: godevman
 --
 
 CREATE TABLE public.device_states (
@@ -583,8 +653,10 @@ CREATE TABLE public.device_states (
 );
 
 
+ALTER TABLE public.device_states OWNER TO godevman;
+
 --
--- Name: device_types; Type: TABLE; Schema: public; Owner: -
+-- Name: device_types; Type: TABLE; Schema: public; Owner: godevman
 --
 
 CREATE TABLE public.device_types (
@@ -599,22 +671,24 @@ CREATE TABLE public.device_types (
 );
 
 
+ALTER TABLE public.device_types OWNER TO godevman;
+
 --
--- Name: COLUMN device_types.sys_id; Type: COMMENT; Schema: public; Owner: -
+-- Name: COLUMN device_types.sys_id; Type: COMMENT; Schema: public; Owner: godevman
 --
 
 COMMENT ON COLUMN public.device_types.sys_id IS 'snmp sysObjectId or some unique identifier if snmp is not supported';
 
 
 --
--- Name: COLUMN device_types.snmp_ver; Type: COMMENT; Schema: public; Owner: -
+-- Name: COLUMN device_types.snmp_ver; Type: COMMENT; Schema: public; Owner: godevman
 --
 
 COMMENT ON COLUMN public.device_types.snmp_ver IS 'highest supported snmp version';
 
 
 --
--- Name: devices; Type: TABLE; Schema: public; Owner: -
+-- Name: devices; Type: TABLE; Schema: public; Owner: godevman
 --
 
 CREATE TABLE public.devices (
@@ -648,8 +722,10 @@ CREATE TABLE public.devices (
 );
 
 
+ALTER TABLE public.devices OWNER TO godevman;
+
 --
--- Name: devices_dev_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: devices_dev_id_seq; Type: SEQUENCE; Schema: public; Owner: godevman
 --
 
 CREATE SEQUENCE public.devices_dev_id_seq
@@ -660,15 +736,17 @@ CREATE SEQUENCE public.devices_dev_id_seq
     CACHE 1;
 
 
+ALTER TABLE public.devices_dev_id_seq OWNER TO godevman;
+
 --
--- Name: devices_dev_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: devices_dev_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: godevman
 --
 
 ALTER SEQUENCE public.devices_dev_id_seq OWNED BY public.devices.dev_id;
 
 
 --
--- Name: entities; Type: TABLE; Schema: public; Owner: -
+-- Name: entities; Type: TABLE; Schema: public; Owner: godevman
 --
 
 CREATE TABLE public.entities (
@@ -691,8 +769,10 @@ CREATE TABLE public.entities (
 );
 
 
+ALTER TABLE public.entities OWNER TO godevman;
+
 --
--- Name: entities_ent_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: entities_ent_id_seq; Type: SEQUENCE; Schema: public; Owner: godevman
 --
 
 CREATE SEQUENCE public.entities_ent_id_seq
@@ -703,15 +783,17 @@ CREATE SEQUENCE public.entities_ent_id_seq
     CACHE 1;
 
 
+ALTER TABLE public.entities_ent_id_seq OWNER TO godevman;
+
 --
--- Name: entities_ent_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: entities_ent_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: godevman
 --
 
 ALTER SEQUENCE public.entities_ent_id_seq OWNED BY public.entities.ent_id;
 
 
 --
--- Name: entity_phy_indexes; Type: TABLE; Schema: public; Owner: -
+-- Name: entity_phy_indexes; Type: TABLE; Schema: public; Owner: godevman
 --
 
 CREATE TABLE public.entity_phy_indexes (
@@ -724,8 +806,10 @@ CREATE TABLE public.entity_phy_indexes (
 );
 
 
+ALTER TABLE public.entity_phy_indexes OWNER TO godevman;
+
 --
--- Name: entity_indexes_ei_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: entity_indexes_ei_id_seq; Type: SEQUENCE; Schema: public; Owner: godevman
 --
 
 CREATE SEQUENCE public.entity_indexes_ei_id_seq
@@ -736,15 +820,17 @@ CREATE SEQUENCE public.entity_indexes_ei_id_seq
     CACHE 1;
 
 
+ALTER TABLE public.entity_indexes_ei_id_seq OWNER TO godevman;
+
 --
--- Name: entity_indexes_ei_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: entity_indexes_ei_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: godevman
 --
 
 ALTER SEQUENCE public.entity_indexes_ei_id_seq OWNED BY public.entity_phy_indexes.ei_id;
 
 
 --
--- Name: int_bw_stats; Type: TABLE; Schema: public; Owner: -
+-- Name: int_bw_stats; Type: TABLE; Schema: public; Owner: godevman
 --
 
 CREATE TABLE public.int_bw_stats (
@@ -764,8 +850,10 @@ CREATE TABLE public.int_bw_stats (
 );
 
 
+ALTER TABLE public.int_bw_stats OWNER TO godevman;
+
 --
--- Name: int_bw_stats_bw_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: int_bw_stats_bw_id_seq; Type: SEQUENCE; Schema: public; Owner: godevman
 --
 
 CREATE SEQUENCE public.int_bw_stats_bw_id_seq
@@ -776,15 +864,17 @@ CREATE SEQUENCE public.int_bw_stats_bw_id_seq
     CACHE 1;
 
 
+ALTER TABLE public.int_bw_stats_bw_id_seq OWNER TO godevman;
+
 --
--- Name: int_bw_stats_bw_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: int_bw_stats_bw_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: godevman
 --
 
 ALTER SEQUENCE public.int_bw_stats_bw_id_seq OWNED BY public.int_bw_stats.bw_id;
 
 
 --
--- Name: interface_relations; Type: TABLE; Schema: public; Owner: -
+-- Name: interface_relations; Type: TABLE; Schema: public; Owner: godevman
 --
 
 CREATE TABLE public.interface_relations (
@@ -797,8 +887,10 @@ CREATE TABLE public.interface_relations (
 );
 
 
+ALTER TABLE public.interface_relations OWNER TO godevman;
+
 --
--- Name: interface_relations_ir_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: interface_relations_ir_id_seq; Type: SEQUENCE; Schema: public; Owner: godevman
 --
 
 CREATE SEQUENCE public.interface_relations_ir_id_seq
@@ -809,15 +901,17 @@ CREATE SEQUENCE public.interface_relations_ir_id_seq
     CACHE 1;
 
 
+ALTER TABLE public.interface_relations_ir_id_seq OWNER TO godevman;
+
 --
--- Name: interface_relations_ir_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: interface_relations_ir_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: godevman
 --
 
 ALTER SEQUENCE public.interface_relations_ir_id_seq OWNED BY public.interface_relations.ir_id;
 
 
 --
--- Name: interfaces_if_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: interfaces_if_id_seq; Type: SEQUENCE; Schema: public; Owner: godevman
 --
 
 CREATE SEQUENCE public.interfaces_if_id_seq
@@ -828,8 +922,10 @@ CREATE SEQUENCE public.interfaces_if_id_seq
     CACHE 1;
 
 
+ALTER TABLE public.interfaces_if_id_seq OWNER TO godevman;
+
 --
--- Name: interfaces; Type: TABLE; Schema: public; Owner: -
+-- Name: interfaces; Type: TABLE; Schema: public; Owner: godevman
 --
 
 CREATE TABLE public.interfaces (
@@ -847,7 +943,7 @@ CREATE TABLE public.interfaces (
     speed bigint,
     minspeed bigint,
     type_enum smallint,
-    mac macaddr DEFAULT '00:00:00:00:00:00'::macaddr NOT NULL,
+    mac macaddr,
     monstatus smallint DEFAULT '1'::smallint NOT NULL,
     monerrors smallint DEFAULT '1'::smallint NOT NULL,
     monload smallint DEFAULT '1'::smallint NOT NULL,
@@ -857,8 +953,10 @@ CREATE TABLE public.interfaces (
 );
 
 
+ALTER TABLE public.interfaces OWNER TO godevman;
+
 --
--- Name: interfaces2vlans; Type: TABLE; Schema: public; Owner: -
+-- Name: interfaces2vlans; Type: TABLE; Schema: public; Owner: godevman
 --
 
 CREATE TABLE public.interfaces2vlans (
@@ -869,8 +967,10 @@ CREATE TABLE public.interfaces2vlans (
 );
 
 
+ALTER TABLE public.interfaces2vlans OWNER TO godevman;
+
 --
--- Name: ip_interfaces; Type: TABLE; Schema: public; Owner: -
+-- Name: ip_interfaces; Type: TABLE; Schema: public; Owner: godevman
 --
 
 CREATE TABLE public.ip_interfaces (
@@ -885,8 +985,10 @@ CREATE TABLE public.ip_interfaces (
 );
 
 
+ALTER TABLE public.ip_interfaces OWNER TO godevman;
+
 --
--- Name: ip_interfaces_ip_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: ip_interfaces_ip_id_seq; Type: SEQUENCE; Schema: public; Owner: godevman
 --
 
 CREATE SEQUENCE public.ip_interfaces_ip_id_seq
@@ -897,15 +999,17 @@ CREATE SEQUENCE public.ip_interfaces_ip_id_seq
     CACHE 1;
 
 
+ALTER TABLE public.ip_interfaces_ip_id_seq OWNER TO godevman;
+
 --
--- Name: ip_interfaces_ip_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: ip_interfaces_ip_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: godevman
 --
 
 ALTER SEQUENCE public.ip_interfaces_ip_id_seq OWNED BY public.ip_interfaces.ip_id;
 
 
 --
--- Name: ospf_nbrs; Type: TABLE; Schema: public; Owner: -
+-- Name: ospf_nbrs; Type: TABLE; Schema: public; Owner: godevman
 --
 
 CREATE TABLE public.ospf_nbrs (
@@ -918,8 +1022,10 @@ CREATE TABLE public.ospf_nbrs (
 );
 
 
+ALTER TABLE public.ospf_nbrs OWNER TO godevman;
+
 --
--- Name: ospf_nbrs_nbr_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: ospf_nbrs_nbr_id_seq; Type: SEQUENCE; Schema: public; Owner: godevman
 --
 
 CREATE SEQUENCE public.ospf_nbrs_nbr_id_seq
@@ -930,15 +1036,17 @@ CREATE SEQUENCE public.ospf_nbrs_nbr_id_seq
     CACHE 1;
 
 
+ALTER TABLE public.ospf_nbrs_nbr_id_seq OWNER TO godevman;
+
 --
--- Name: ospf_nbrs_nbr_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: ospf_nbrs_nbr_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: godevman
 --
 
 ALTER SEQUENCE public.ospf_nbrs_nbr_id_seq OWNED BY public.ospf_nbrs.nbr_id;
 
 
 --
--- Name: rl_nbrs; Type: TABLE; Schema: public; Owner: -
+-- Name: rl_nbrs; Type: TABLE; Schema: public; Owner: godevman
 --
 
 CREATE TABLE public.rl_nbrs (
@@ -951,8 +1059,10 @@ CREATE TABLE public.rl_nbrs (
 );
 
 
+ALTER TABLE public.rl_nbrs OWNER TO godevman;
+
 --
--- Name: rl_nbrs_nbr_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: rl_nbrs_nbr_id_seq; Type: SEQUENCE; Schema: public; Owner: godevman
 --
 
 CREATE SEQUENCE public.rl_nbrs_nbr_id_seq
@@ -963,15 +1073,17 @@ CREATE SEQUENCE public.rl_nbrs_nbr_id_seq
     CACHE 1;
 
 
+ALTER TABLE public.rl_nbrs_nbr_id_seq OWNER TO godevman;
+
 --
--- Name: rl_nbrs_nbr_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: rl_nbrs_nbr_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: godevman
 --
 
 ALTER SEQUENCE public.rl_nbrs_nbr_id_seq OWNED BY public.rl_nbrs.nbr_id;
 
 
 --
--- Name: sites_site_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: sites_site_id_seq; Type: SEQUENCE; Schema: public; Owner: godevman
 --
 
 CREATE SEQUENCE public.sites_site_id_seq
@@ -982,8 +1094,10 @@ CREATE SEQUENCE public.sites_site_id_seq
     CACHE 1;
 
 
+ALTER TABLE public.sites_site_id_seq OWNER TO godevman;
+
 --
--- Name: sites; Type: TABLE; Schema: public; Owner: -
+-- Name: sites; Type: TABLE; Schema: public; Owner: godevman
 --
 
 CREATE TABLE public.sites (
@@ -1003,8 +1117,10 @@ CREATE TABLE public.sites (
 );
 
 
+ALTER TABLE public.sites OWNER TO godevman;
+
 --
--- Name: snmp_credentials; Type: TABLE; Schema: public; Owner: -
+-- Name: snmp_credentials; Type: TABLE; Schema: public; Owner: godevman
 --
 
 CREATE TABLE public.snmp_credentials (
@@ -1022,15 +1138,17 @@ CREATE TABLE public.snmp_credentials (
 );
 
 
+ALTER TABLE public.snmp_credentials OWNER TO godevman;
+
 --
--- Name: COLUMN snmp_credentials.auth_name; Type: COMMENT; Schema: public; Owner: -
+-- Name: COLUMN snmp_credentials.auth_name; Type: COMMENT; Schema: public; Owner: godevman
 --
 
 COMMENT ON COLUMN public.snmp_credentials.auth_name IS 'Community or SecName';
 
 
 --
--- Name: snmp_credentials_snmp_cred_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: snmp_credentials_snmp_cred_id_seq; Type: SEQUENCE; Schema: public; Owner: godevman
 --
 
 CREATE SEQUENCE public.snmp_credentials_snmp_cred_id_seq
@@ -1041,15 +1159,17 @@ CREATE SEQUENCE public.snmp_credentials_snmp_cred_id_seq
     CACHE 1;
 
 
+ALTER TABLE public.snmp_credentials_snmp_cred_id_seq OWNER TO godevman;
+
 --
--- Name: snmp_credentials_snmp_cred_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: snmp_credentials_snmp_cred_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: godevman
 --
 
 ALTER SEQUENCE public.snmp_credentials_snmp_cred_id_seq OWNED BY public.snmp_credentials.snmp_cred_id;
 
 
 --
--- Name: subinterfaces_sif_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: subinterfaces_sif_id_seq; Type: SEQUENCE; Schema: public; Owner: godevman
 --
 
 CREATE SEQUENCE public.subinterfaces_sif_id_seq
@@ -1060,8 +1180,10 @@ CREATE SEQUENCE public.subinterfaces_sif_id_seq
     CACHE 1;
 
 
+ALTER TABLE public.subinterfaces_sif_id_seq OWNER TO godevman;
+
 --
--- Name: subinterfaces; Type: TABLE; Schema: public; Owner: -
+-- Name: subinterfaces; Type: TABLE; Schema: public; Owner: godevman
 --
 
 CREATE TABLE public.subinterfaces (
@@ -1074,26 +1196,32 @@ CREATE TABLE public.subinterfaces (
     adm smallint,
     speed bigint,
     type_enum character varying,
-    mac macaddr DEFAULT '00:00:00:00:00:00'::macaddr NOT NULL,
+    mac macaddr,
     notes character varying,
     updated_on timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     created_on timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 
+ALTER TABLE public.subinterfaces OWNER TO godevman;
+
 --
--- Name: user_authzs; Type: TABLE; Schema: public; Owner: -
+-- Name: user_authzs; Type: TABLE; Schema: public; Owner: godevman
 --
 
 CREATE TABLE public.user_authzs (
     username character varying NOT NULL,
     dom_id bigint NOT NULL,
-    userlevel smallint NOT NULL
+    userlevel smallint NOT NULL,
+    updated_on timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    created_on timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 
+ALTER TABLE public.user_authzs OWNER TO godevman;
+
 --
--- Name: user_graphs; Type: TABLE; Schema: public; Owner: -
+-- Name: user_graphs; Type: TABLE; Schema: public; Owner: godevman
 --
 
 CREATE TABLE public.user_graphs (
@@ -1107,8 +1235,10 @@ CREATE TABLE public.user_graphs (
 );
 
 
+ALTER TABLE public.user_graphs OWNER TO godevman;
+
 --
--- Name: user_graphs_graph_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: user_graphs_graph_id_seq; Type: SEQUENCE; Schema: public; Owner: godevman
 --
 
 CREATE SEQUENCE public.user_graphs_graph_id_seq
@@ -1119,15 +1249,17 @@ CREATE SEQUENCE public.user_graphs_graph_id_seq
     CACHE 1;
 
 
+ALTER TABLE public.user_graphs_graph_id_seq OWNER TO godevman;
+
 --
--- Name: user_graphs_graph_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: user_graphs_graph_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: godevman
 --
 
 ALTER SEQUENCE public.user_graphs_graph_id_seq OWNED BY public.user_graphs.graph_id;
 
 
 --
--- Name: users; Type: TABLE; Schema: public; Owner: -
+-- Name: users; Type: TABLE; Schema: public; Owner: godevman
 --
 
 CREATE TABLE public.users (
@@ -1139,8 +1271,10 @@ CREATE TABLE public.users (
 );
 
 
+ALTER TABLE public.users OWNER TO godevman;
+
 --
--- Name: vars; Type: TABLE; Schema: public; Owner: -
+-- Name: vars; Type: TABLE; Schema: public; Owner: godevman
 --
 
 CREATE TABLE public.vars (
@@ -1152,8 +1286,10 @@ CREATE TABLE public.vars (
 );
 
 
+ALTER TABLE public.vars OWNER TO godevman;
+
 --
--- Name: vlans; Type: TABLE; Schema: public; Owner: -
+-- Name: vlans; Type: TABLE; Schema: public; Owner: godevman
 --
 
 CREATE TABLE public.vlans (
@@ -1166,8 +1302,10 @@ CREATE TABLE public.vlans (
 );
 
 
+ALTER TABLE public.vlans OWNER TO godevman;
+
 --
--- Name: vlans_v_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: vlans_v_id_seq; Type: SEQUENCE; Schema: public; Owner: godevman
 --
 
 CREATE SEQUENCE public.vlans_v_id_seq
@@ -1178,15 +1316,17 @@ CREATE SEQUENCE public.vlans_v_id_seq
     CACHE 1;
 
 
+ALTER TABLE public.vlans_v_id_seq OWNER TO godevman;
+
 --
--- Name: vlans_v_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: vlans_v_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: godevman
 --
 
 ALTER SEQUENCE public.vlans_v_id_seq OWNED BY public.vlans.v_id;
 
 
 --
--- Name: xconnects; Type: TABLE; Schema: public; Owner: -
+-- Name: xconnects; Type: TABLE; Schema: public; Owner: godevman
 --
 
 CREATE TABLE public.xconnects (
@@ -1208,8 +1348,10 @@ CREATE TABLE public.xconnects (
 );
 
 
+ALTER TABLE public.xconnects OWNER TO godevman;
+
 --
--- Name: xconnects_xc_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: xconnects_xc_id_seq; Type: SEQUENCE; Schema: public; Owner: godevman
 --
 
 CREATE SEQUENCE public.xconnects_xc_id_seq
@@ -1220,183 +1362,185 @@ CREATE SEQUENCE public.xconnects_xc_id_seq
     CACHE 1;
 
 
+ALTER TABLE public.xconnects_xc_id_seq OWNER TO godevman;
+
 --
--- Name: xconnects_xc_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: xconnects_xc_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: godevman
 --
 
 ALTER SEQUENCE public.xconnects_xc_id_seq OWNED BY public.xconnects.xc_id;
 
 
 --
--- Name: con_capacities con_cap_id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: con_capacities con_cap_id; Type: DEFAULT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.con_capacities ALTER COLUMN con_cap_id SET DEFAULT nextval('public.con_capacities_con_cap_id_seq'::regclass);
 
 
 --
--- Name: con_classes con_class_id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: con_classes con_class_id; Type: DEFAULT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.con_classes ALTER COLUMN con_class_id SET DEFAULT nextval('public.con_classes_con_class_id_seq'::regclass);
 
 
 --
--- Name: con_providers con_prov_id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: con_providers con_prov_id; Type: DEFAULT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.con_providers ALTER COLUMN con_prov_id SET DEFAULT nextval('public.con_providers_con_prov_id_seq'::regclass);
 
 
 --
--- Name: con_types con_type_id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: con_types con_type_id; Type: DEFAULT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.con_types ALTER COLUMN con_type_id SET DEFAULT nextval('public.con_types_con_type_id_seq'::regclass);
 
 
 --
--- Name: connections con_id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: connections con_id; Type: DEFAULT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.connections ALTER COLUMN con_id SET DEFAULT nextval('public.connections_con_id_seq'::regclass);
 
 
 --
--- Name: countries country_id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: countries country_id; Type: DEFAULT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.countries ALTER COLUMN country_id SET DEFAULT nextval('public.countries_country_id_seq'::regclass);
 
 
 --
--- Name: credentials cred_id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: credentials cred_id; Type: DEFAULT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.credentials ALTER COLUMN cred_id SET DEFAULT nextval('public.credentials_cred_id_seq'::regclass);
 
 
 --
--- Name: custom_entities cent_id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: custom_entities cent_id; Type: DEFAULT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.custom_entities ALTER COLUMN cent_id SET DEFAULT nextval('public.custom_entities_cext_id_seq'::regclass);
 
 
 --
--- Name: device_classes class_id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: device_classes class_id; Type: DEFAULT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.device_classes ALTER COLUMN class_id SET DEFAULT nextval('public.device_classes_class_id_seq'::regclass);
 
 
 --
--- Name: device_domains dom_id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: device_domains dom_id; Type: DEFAULT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.device_domains ALTER COLUMN dom_id SET DEFAULT nextval('public.device_domains_dom_id_seq'::regclass);
 
 
 --
--- Name: device_extensions ext_id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: device_extensions ext_id; Type: DEFAULT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.device_extensions ALTER COLUMN ext_id SET DEFAULT nextval('public.device_extensions_ext_id_seq'::regclass);
 
 
 --
--- Name: device_licenses lic_id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: device_licenses lic_id; Type: DEFAULT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.device_licenses ALTER COLUMN lic_id SET DEFAULT nextval('public.device_licenses_lic_id_seq'::regclass);
 
 
 --
--- Name: devices dev_id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: devices dev_id; Type: DEFAULT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.devices ALTER COLUMN dev_id SET DEFAULT nextval('public.devices_dev_id_seq'::regclass);
 
 
 --
--- Name: entities ent_id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: entities ent_id; Type: DEFAULT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.entities ALTER COLUMN ent_id SET DEFAULT nextval('public.entities_ent_id_seq'::regclass);
 
 
 --
--- Name: entity_phy_indexes ei_id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: entity_phy_indexes ei_id; Type: DEFAULT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.entity_phy_indexes ALTER COLUMN ei_id SET DEFAULT nextval('public.entity_indexes_ei_id_seq'::regclass);
 
 
 --
--- Name: int_bw_stats bw_id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: int_bw_stats bw_id; Type: DEFAULT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.int_bw_stats ALTER COLUMN bw_id SET DEFAULT nextval('public.int_bw_stats_bw_id_seq'::regclass);
 
 
 --
--- Name: interface_relations ir_id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: interface_relations ir_id; Type: DEFAULT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.interface_relations ALTER COLUMN ir_id SET DEFAULT nextval('public.interface_relations_ir_id_seq'::regclass);
 
 
 --
--- Name: ip_interfaces ip_id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: ip_interfaces ip_id; Type: DEFAULT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.ip_interfaces ALTER COLUMN ip_id SET DEFAULT nextval('public.ip_interfaces_ip_id_seq'::regclass);
 
 
 --
--- Name: ospf_nbrs nbr_id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: ospf_nbrs nbr_id; Type: DEFAULT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.ospf_nbrs ALTER COLUMN nbr_id SET DEFAULT nextval('public.ospf_nbrs_nbr_id_seq'::regclass);
 
 
 --
--- Name: rl_nbrs nbr_id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: rl_nbrs nbr_id; Type: DEFAULT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.rl_nbrs ALTER COLUMN nbr_id SET DEFAULT nextval('public.rl_nbrs_nbr_id_seq'::regclass);
 
 
 --
--- Name: snmp_credentials snmp_cred_id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: snmp_credentials snmp_cred_id; Type: DEFAULT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.snmp_credentials ALTER COLUMN snmp_cred_id SET DEFAULT nextval('public.snmp_credentials_snmp_cred_id_seq'::regclass);
 
 
 --
--- Name: user_graphs graph_id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: user_graphs graph_id; Type: DEFAULT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.user_graphs ALTER COLUMN graph_id SET DEFAULT nextval('public.user_graphs_graph_id_seq'::regclass);
 
 
 --
--- Name: vlans v_id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: vlans v_id; Type: DEFAULT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.vlans ALTER COLUMN v_id SET DEFAULT nextval('public.vlans_v_id_seq'::regclass);
 
 
 --
--- Name: xconnects xc_id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: xconnects xc_id; Type: DEFAULT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.xconnects ALTER COLUMN xc_id SET DEFAULT nextval('public.xconnects_xc_id_seq'::regclass);
 
 
 --
--- Name: con_capacities con_capacities_name; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: con_capacities con_capacities_name; Type: CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.con_capacities
@@ -1404,7 +1548,7 @@ ALTER TABLE ONLY public.con_capacities
 
 
 --
--- Name: con_capacities con_capacities_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: con_capacities con_capacities_pkey; Type: CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.con_capacities
@@ -1412,7 +1556,7 @@ ALTER TABLE ONLY public.con_capacities
 
 
 --
--- Name: con_classes con_classes_name; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: con_classes con_classes_name; Type: CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.con_classes
@@ -1420,7 +1564,7 @@ ALTER TABLE ONLY public.con_classes
 
 
 --
--- Name: con_classes con_classes_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: con_classes con_classes_pkey; Type: CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.con_classes
@@ -1428,7 +1572,23 @@ ALTER TABLE ONLY public.con_classes
 
 
 --
--- Name: con_types con_types_name; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: con_providers con_providers_descr; Type: CONSTRAINT; Schema: public; Owner: godevman
+--
+
+ALTER TABLE ONLY public.con_providers
+    ADD CONSTRAINT con_providers_descr UNIQUE (descr);
+
+
+--
+-- Name: con_providers con_providers_pkey; Type: CONSTRAINT; Schema: public; Owner: godevman
+--
+
+ALTER TABLE ONLY public.con_providers
+    ADD CONSTRAINT con_providers_pkey PRIMARY KEY (con_prov_id);
+
+
+--
+-- Name: con_types con_types_name; Type: CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.con_types
@@ -1436,7 +1596,7 @@ ALTER TABLE ONLY public.con_types
 
 
 --
--- Name: con_types con_types_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: con_types con_types_pkey; Type: CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.con_types
@@ -1444,7 +1604,7 @@ ALTER TABLE ONLY public.con_types
 
 
 --
--- Name: connections connections_hint; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: connections connections_hint; Type: CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.connections
@@ -1452,7 +1612,7 @@ ALTER TABLE ONLY public.connections
 
 
 --
--- Name: connections connections_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: connections connections_pkey; Type: CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.connections
@@ -1460,7 +1620,7 @@ ALTER TABLE ONLY public.connections
 
 
 --
--- Name: countries countries_code; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: countries countries_code; Type: CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.countries
@@ -1468,7 +1628,7 @@ ALTER TABLE ONLY public.countries
 
 
 --
--- Name: countries countries_name; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: countries countries_name; Type: CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.countries
@@ -1476,7 +1636,7 @@ ALTER TABLE ONLY public.countries
 
 
 --
--- Name: countries countries_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: countries countries_pkey; Type: CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.countries
@@ -1484,7 +1644,7 @@ ALTER TABLE ONLY public.countries
 
 
 --
--- Name: credentials credentials_label; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: credentials credentials_label; Type: CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.credentials
@@ -1492,7 +1652,7 @@ ALTER TABLE ONLY public.credentials
 
 
 --
--- Name: credentials credentials_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: credentials credentials_pkey; Type: CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.credentials
@@ -1500,7 +1660,7 @@ ALTER TABLE ONLY public.credentials
 
 
 --
--- Name: device_classes device_classes_name; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: device_classes device_classes_name; Type: CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.device_classes
@@ -1508,7 +1668,7 @@ ALTER TABLE ONLY public.device_classes
 
 
 --
--- Name: device_classes device_classes_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: device_classes device_classes_pkey; Type: CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.device_classes
@@ -1516,7 +1676,7 @@ ALTER TABLE ONLY public.device_classes
 
 
 --
--- Name: device_credentials device_credentials_dev_id_user; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: device_credentials device_credentials_dev_id_user; Type: CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.device_credentials
@@ -1524,7 +1684,7 @@ ALTER TABLE ONLY public.device_credentials
 
 
 --
--- Name: device_credentials device_credentials_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: device_credentials device_credentials_pkey; Type: CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.device_credentials
@@ -1532,7 +1692,7 @@ ALTER TABLE ONLY public.device_credentials
 
 
 --
--- Name: device_domains device_domains_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: device_domains device_domains_pkey; Type: CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.device_domains
@@ -1540,7 +1700,7 @@ ALTER TABLE ONLY public.device_domains
 
 
 --
--- Name: device_extensions device_extensions_dev_id_field; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: device_extensions device_extensions_dev_id_field; Type: CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.device_extensions
@@ -1548,7 +1708,7 @@ ALTER TABLE ONLY public.device_extensions
 
 
 --
--- Name: device_extensions device_extensions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: device_extensions device_extensions_pkey; Type: CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.device_extensions
@@ -1556,7 +1716,7 @@ ALTER TABLE ONLY public.device_extensions
 
 
 --
--- Name: device_licenses device_licenses_dev_id_name; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: device_licenses device_licenses_dev_id_name; Type: CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.device_licenses
@@ -1564,7 +1724,7 @@ ALTER TABLE ONLY public.device_licenses
 
 
 --
--- Name: device_licenses device_licenses_dev_id_product; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: device_licenses device_licenses_dev_id_product; Type: CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.device_licenses
@@ -1572,7 +1732,7 @@ ALTER TABLE ONLY public.device_licenses
 
 
 --
--- Name: device_licenses device_licenses_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: device_licenses device_licenses_pkey; Type: CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.device_licenses
@@ -1580,7 +1740,7 @@ ALTER TABLE ONLY public.device_licenses
 
 
 --
--- Name: device_states device_states_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: device_states device_states_pkey; Type: CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.device_states
@@ -1588,7 +1748,7 @@ ALTER TABLE ONLY public.device_states
 
 
 --
--- Name: device_types device_types_manufacturer_model; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: device_types device_types_manufacturer_model; Type: CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.device_types
@@ -1596,7 +1756,7 @@ ALTER TABLE ONLY public.device_types
 
 
 --
--- Name: device_types device_types_sysobjectid; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: device_types device_types_sysobjectid; Type: CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.device_types
@@ -1604,7 +1764,7 @@ ALTER TABLE ONLY public.device_types
 
 
 --
--- Name: devices devices_hostname; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: devices devices_hostname; Type: CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.devices
@@ -1612,7 +1772,7 @@ ALTER TABLE ONLY public.devices
 
 
 --
--- Name: devices devices_ip4_addr; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: devices devices_ip4_addr; Type: CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.devices
@@ -1620,7 +1780,7 @@ ALTER TABLE ONLY public.devices
 
 
 --
--- Name: devices devices_ip6_addr; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: devices devices_ip6_addr; Type: CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.devices
@@ -1628,7 +1788,7 @@ ALTER TABLE ONLY public.devices
 
 
 --
--- Name: devices devices_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: devices devices_pkey; Type: CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.devices
@@ -1636,7 +1796,7 @@ ALTER TABLE ONLY public.devices
 
 
 --
--- Name: entities entities_dev_id_snmp_ent_id; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: entities entities_dev_id_snmp_ent_id; Type: CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.entities
@@ -1644,7 +1804,7 @@ ALTER TABLE ONLY public.entities
 
 
 --
--- Name: entities entities_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: entities entities_pkey; Type: CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.entities
@@ -1652,7 +1812,7 @@ ALTER TABLE ONLY public.entities
 
 
 --
--- Name: custom_entities entity_extensions_manufacturer_serial; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: custom_entities entity_extensions_manufacturer_serial; Type: CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.custom_entities
@@ -1660,7 +1820,7 @@ ALTER TABLE ONLY public.custom_entities
 
 
 --
--- Name: custom_entities entity_extensions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: custom_entities entity_extensions_pkey; Type: CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.custom_entities
@@ -1668,7 +1828,7 @@ ALTER TABLE ONLY public.custom_entities
 
 
 --
--- Name: entity_phy_indexes entity_indexes_ent_id_name; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: entity_phy_indexes entity_indexes_ent_id_name; Type: CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.entity_phy_indexes
@@ -1676,7 +1836,7 @@ ALTER TABLE ONLY public.entity_phy_indexes
 
 
 --
--- Name: entity_phy_indexes entity_indexes_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: entity_phy_indexes entity_indexes_pkey; Type: CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.entity_phy_indexes
@@ -1684,7 +1844,7 @@ ALTER TABLE ONLY public.entity_phy_indexes
 
 
 --
--- Name: int_bw_stats int_bw_stats_if_id_created_on; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: int_bw_stats int_bw_stats_if_id_created_on; Type: CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.int_bw_stats
@@ -1692,7 +1852,7 @@ ALTER TABLE ONLY public.int_bw_stats
 
 
 --
--- Name: int_bw_stats int_bw_stats_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: int_bw_stats int_bw_stats_pkey; Type: CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.int_bw_stats
@@ -1700,7 +1860,7 @@ ALTER TABLE ONLY public.int_bw_stats
 
 
 --
--- Name: interfaces2vlans interface2vlan_v_id_if_id; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: interfaces2vlans interface2vlan_v_id_if_id; Type: CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.interfaces2vlans
@@ -1708,7 +1868,7 @@ ALTER TABLE ONLY public.interfaces2vlans
 
 
 --
--- Name: interface_relations interface_relations_if_id_if_id_down; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: interface_relations interface_relations_if_id_if_id_down; Type: CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.interface_relations
@@ -1716,7 +1876,7 @@ ALTER TABLE ONLY public.interface_relations
 
 
 --
--- Name: interface_relations interface_relations_if_id_if_id_up; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: interface_relations interface_relations_if_id_if_id_up; Type: CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.interface_relations
@@ -1724,7 +1884,7 @@ ALTER TABLE ONLY public.interface_relations
 
 
 --
--- Name: interface_relations interface_relations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: interface_relations interface_relations_pkey; Type: CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.interface_relations
@@ -1732,7 +1892,7 @@ ALTER TABLE ONLY public.interface_relations
 
 
 --
--- Name: archived_interfaces interfaces_archive_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: archived_interfaces interfaces_archive_pkey; Type: CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.archived_interfaces
@@ -1740,7 +1900,7 @@ ALTER TABLE ONLY public.archived_interfaces
 
 
 --
--- Name: interfaces interfaces_dev_id_descr; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: interfaces interfaces_dev_id_descr; Type: CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.interfaces
@@ -1748,7 +1908,7 @@ ALTER TABLE ONLY public.interfaces
 
 
 --
--- Name: interfaces interfaces_dev_id_index; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: interfaces interfaces_dev_id_index; Type: CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.interfaces
@@ -1756,7 +1916,7 @@ ALTER TABLE ONLY public.interfaces
 
 
 --
--- Name: interfaces interfaces_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: interfaces interfaces_pkey; Type: CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.interfaces
@@ -1764,7 +1924,7 @@ ALTER TABLE ONLY public.interfaces
 
 
 --
--- Name: ip_interfaces ip_interfaces_ip_addr_dev_id; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: ip_interfaces ip_interfaces_ip_addr_dev_id; Type: CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.ip_interfaces
@@ -1772,7 +1932,7 @@ ALTER TABLE ONLY public.ip_interfaces
 
 
 --
--- Name: ip_interfaces ip_interfaces_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: ip_interfaces ip_interfaces_pkey; Type: CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.ip_interfaces
@@ -1780,7 +1940,7 @@ ALTER TABLE ONLY public.ip_interfaces
 
 
 --
--- Name: ospf_nbrs ospf_nbrs_dev_id_nbr_ip; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: ospf_nbrs ospf_nbrs_dev_id_nbr_ip; Type: CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.ospf_nbrs
@@ -1788,7 +1948,7 @@ ALTER TABLE ONLY public.ospf_nbrs
 
 
 --
--- Name: ospf_nbrs ospf_nbrs_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: ospf_nbrs ospf_nbrs_pkey; Type: CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.ospf_nbrs
@@ -1796,23 +1956,7 @@ ALTER TABLE ONLY public.ospf_nbrs
 
 
 --
--- Name: con_providers providers_name; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.con_providers
-    ADD CONSTRAINT providers_name UNIQUE (descr);
-
-
---
--- Name: con_providers providers_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.con_providers
-    ADD CONSTRAINT providers_pkey PRIMARY KEY (con_prov_id);
-
-
---
--- Name: rl_nbrs rl_nbrs_dev_id_nbr_sysname_nbr_ent_id; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: rl_nbrs rl_nbrs_dev_id_nbr_sysname_nbr_ent_id; Type: CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.rl_nbrs
@@ -1820,7 +1964,7 @@ ALTER TABLE ONLY public.rl_nbrs
 
 
 --
--- Name: rl_nbrs rl_nbrs_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: rl_nbrs rl_nbrs_pkey; Type: CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.rl_nbrs
@@ -1828,7 +1972,7 @@ ALTER TABLE ONLY public.rl_nbrs
 
 
 --
--- Name: sites sites_ext_id; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: sites sites_ext_id; Type: CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.sites
@@ -1836,7 +1980,7 @@ ALTER TABLE ONLY public.sites
 
 
 --
--- Name: sites sites_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: sites sites_pkey; Type: CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.sites
@@ -1844,7 +1988,7 @@ ALTER TABLE ONLY public.sites
 
 
 --
--- Name: sites sites_uid; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: sites sites_uid; Type: CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.sites
@@ -1852,7 +1996,7 @@ ALTER TABLE ONLY public.sites
 
 
 --
--- Name: snmp_credentials snmp_cred_name; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: snmp_credentials snmp_cred_name; Type: CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.snmp_credentials
@@ -1860,7 +2004,7 @@ ALTER TABLE ONLY public.snmp_credentials
 
 
 --
--- Name: snmp_credentials snmp_cred_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: snmp_credentials snmp_cred_pkey; Type: CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.snmp_credentials
@@ -1868,7 +2012,7 @@ ALTER TABLE ONLY public.snmp_credentials
 
 
 --
--- Name: archived_subinterfaces subinterfaces_archive_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: archived_subinterfaces subinterfaces_archive_pkey; Type: CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.archived_subinterfaces
@@ -1876,7 +2020,7 @@ ALTER TABLE ONLY public.archived_subinterfaces
 
 
 --
--- Name: subinterfaces subinterfaces_if_id_descr; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: subinterfaces subinterfaces_if_id_descr; Type: CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.subinterfaces
@@ -1884,7 +2028,7 @@ ALTER TABLE ONLY public.subinterfaces
 
 
 --
--- Name: subinterfaces subinterfaces_if_id_index; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: subinterfaces subinterfaces_if_id_index; Type: CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.subinterfaces
@@ -1892,7 +2036,7 @@ ALTER TABLE ONLY public.subinterfaces
 
 
 --
--- Name: subinterfaces subinterfaces_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: subinterfaces subinterfaces_pkey; Type: CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.subinterfaces
@@ -1900,7 +2044,7 @@ ALTER TABLE ONLY public.subinterfaces
 
 
 --
--- Name: user_authzs user_authz_username_dom_id; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: user_authzs user_authz_username_dom_id; Type: CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.user_authzs
@@ -1908,7 +2052,7 @@ ALTER TABLE ONLY public.user_authzs
 
 
 --
--- Name: user_graphs user_graphs_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: user_graphs user_graphs_pkey; Type: CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.user_graphs
@@ -1916,7 +2060,7 @@ ALTER TABLE ONLY public.user_graphs
 
 
 --
--- Name: users users_username_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: users users_username_pkey; Type: CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.users
@@ -1924,7 +2068,7 @@ ALTER TABLE ONLY public.users
 
 
 --
--- Name: vars variables_name_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: vars variables_name_pkey; Type: CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.vars
@@ -1932,7 +2076,7 @@ ALTER TABLE ONLY public.vars
 
 
 --
--- Name: vlans vlans_dev_id_vlan_descr; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: vlans vlans_dev_id_vlan_descr; Type: CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.vlans
@@ -1940,7 +2084,7 @@ ALTER TABLE ONLY public.vlans
 
 
 --
--- Name: vlans vlans_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: vlans vlans_pkey; Type: CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.vlans
@@ -1948,7 +2092,7 @@ ALTER TABLE ONLY public.vlans
 
 
 --
--- Name: xconnects xconnects_dev_id_vc_idx; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: xconnects xconnects_dev_id_vc_idx; Type: CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.xconnects
@@ -1956,7 +2100,7 @@ ALTER TABLE ONLY public.xconnects
 
 
 --
--- Name: xconnects xconnects_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: xconnects xconnects_pkey; Type: CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.xconnects
@@ -1964,693 +2108,1218 @@ ALTER TABLE ONLY public.xconnects
 
 
 --
--- Name: connections_con_cap_id; Type: INDEX; Schema: public; Owner: -
+-- Name: archived_interfaces_alias; Type: INDEX; Schema: public; Owner: godevman
+--
+
+CREATE INDEX archived_interfaces_alias ON public.archived_interfaces USING btree (alias);
+
+
+--
+-- Name: archived_interfaces_created_on; Type: INDEX; Schema: public; Owner: godevman
+--
+
+CREATE INDEX archived_interfaces_created_on ON public.archived_interfaces USING btree (created_on);
+
+
+--
+-- Name: archived_interfaces_descr; Type: INDEX; Schema: public; Owner: godevman
+--
+
+CREATE INDEX archived_interfaces_descr ON public.archived_interfaces USING btree (descr);
+
+
+--
+-- Name: archived_interfaces_ifindex; Type: INDEX; Schema: public; Owner: godevman
+--
+
+CREATE INDEX archived_interfaces_ifindex ON public.archived_interfaces USING btree (ifindex);
+
+
+--
+-- Name: archived_interfaces_mac; Type: INDEX; Schema: public; Owner: godevman
+--
+
+CREATE INDEX archived_interfaces_mac ON public.archived_interfaces USING btree (mac);
+
+
+--
+-- Name: archived_interfaces_updated_on; Type: INDEX; Schema: public; Owner: godevman
+--
+
+CREATE INDEX archived_interfaces_updated_on ON public.archived_interfaces USING btree (updated_on);
+
+
+--
+-- Name: archived_subinterfaces_created_on; Type: INDEX; Schema: public; Owner: godevman
+--
+
+CREATE INDEX archived_subinterfaces_created_on ON public.archived_subinterfaces USING btree (created_on);
+
+
+--
+-- Name: archived_subinterfaces_updated_on; Type: INDEX; Schema: public; Owner: godevman
+--
+
+CREATE INDEX archived_subinterfaces_updated_on ON public.archived_subinterfaces USING btree (updated_on);
+
+
+--
+-- Name: con_capacities_created_on; Type: INDEX; Schema: public; Owner: godevman
+--
+
+CREATE INDEX con_capacities_created_on ON public.con_capacities USING btree (created_on);
+
+
+--
+-- Name: con_capacities_updated_on; Type: INDEX; Schema: public; Owner: godevman
+--
+
+CREATE INDEX con_capacities_updated_on ON public.con_capacities USING btree (updated_on);
+
+
+--
+-- Name: con_classes_created_on; Type: INDEX; Schema: public; Owner: godevman
+--
+
+CREATE INDEX con_classes_created_on ON public.con_classes USING btree (created_on);
+
+
+--
+-- Name: con_classes_updated_on; Type: INDEX; Schema: public; Owner: godevman
+--
+
+CREATE INDEX con_classes_updated_on ON public.con_classes USING btree (updated_on);
+
+
+--
+-- Name: con_providers_created_on; Type: INDEX; Schema: public; Owner: godevman
+--
+
+CREATE INDEX con_providers_created_on ON public.con_providers USING btree (created_on);
+
+
+--
+-- Name: con_providers_updated_on; Type: INDEX; Schema: public; Owner: godevman
+--
+
+CREATE INDEX con_providers_updated_on ON public.con_providers USING btree (updated_on);
+
+
+--
+-- Name: con_types_created_on; Type: INDEX; Schema: public; Owner: godevman
+--
+
+CREATE INDEX con_types_created_on ON public.con_types USING btree (created_on);
+
+
+--
+-- Name: con_types_updated_on; Type: INDEX; Schema: public; Owner: godevman
+--
+
+CREATE INDEX con_types_updated_on ON public.con_types USING btree (updated_on);
+
+
+--
+-- Name: connections_con_cap_id; Type: INDEX; Schema: public; Owner: godevman
 --
 
 CREATE INDEX connections_con_cap_id ON public.connections USING btree (con_cap_id);
 
 
 --
--- Name: connections_con_class_id; Type: INDEX; Schema: public; Owner: -
+-- Name: connections_con_class_id; Type: INDEX; Schema: public; Owner: godevman
 --
 
 CREATE INDEX connections_con_class_id ON public.connections USING btree (con_class_id);
 
 
 --
--- Name: connections_con_prov_id; Type: INDEX; Schema: public; Owner: -
+-- Name: connections_con_prov_id; Type: INDEX; Schema: public; Owner: godevman
 --
 
 CREATE INDEX connections_con_prov_id ON public.connections USING btree (con_prov_id);
 
 
 --
--- Name: connections_con_type_id; Type: INDEX; Schema: public; Owner: -
+-- Name: connections_con_type_id; Type: INDEX; Schema: public; Owner: godevman
 --
 
 CREATE INDEX connections_con_type_id ON public.connections USING btree (con_type_id);
 
 
 --
--- Name: connections_site_id; Type: INDEX; Schema: public; Owner: -
+-- Name: connections_created_on; Type: INDEX; Schema: public; Owner: godevman
+--
+
+CREATE INDEX connections_created_on ON public.connections USING btree (created_on);
+
+
+--
+-- Name: connections_site_id; Type: INDEX; Schema: public; Owner: godevman
 --
 
 CREATE INDEX connections_site_id ON public.connections USING btree (site_id);
 
 
 --
--- Name: device_credentials_dev_id; Type: INDEX; Schema: public; Owner: -
+-- Name: connections_updated_on; Type: INDEX; Schema: public; Owner: godevman
+--
+
+CREATE INDEX connections_updated_on ON public.connections USING btree (updated_on);
+
+
+--
+-- Name: countries_created_on; Type: INDEX; Schema: public; Owner: godevman
+--
+
+CREATE INDEX countries_created_on ON public.countries USING btree (created_on);
+
+
+--
+-- Name: countries_updated_on; Type: INDEX; Schema: public; Owner: godevman
+--
+
+CREATE INDEX countries_updated_on ON public.countries USING btree (updated_on);
+
+
+--
+-- Name: credentials_created_on; Type: INDEX; Schema: public; Owner: godevman
+--
+
+CREATE INDEX credentials_created_on ON public.credentials USING btree (created_on);
+
+
+--
+-- Name: credentials_updated_on; Type: INDEX; Schema: public; Owner: godevman
+--
+
+CREATE INDEX credentials_updated_on ON public.credentials USING btree (updated_on);
+
+
+--
+-- Name: custom_entities_created_on; Type: INDEX; Schema: public; Owner: godevman
+--
+
+CREATE INDEX custom_entities_created_on ON public.custom_entities USING btree (created_on);
+
+
+--
+-- Name: custom_entities_updated_on; Type: INDEX; Schema: public; Owner: godevman
+--
+
+CREATE INDEX custom_entities_updated_on ON public.custom_entities USING btree (updated_on);
+
+
+--
+-- Name: device_classes_created_on; Type: INDEX; Schema: public; Owner: godevman
+--
+
+CREATE INDEX device_classes_created_on ON public.device_classes USING btree (created_on);
+
+
+--
+-- Name: device_classes_updated_on; Type: INDEX; Schema: public; Owner: godevman
+--
+
+CREATE INDEX device_classes_updated_on ON public.device_classes USING btree (updated_on);
+
+
+--
+-- Name: device_credentials_created_on; Type: INDEX; Schema: public; Owner: godevman
+--
+
+CREATE INDEX device_credentials_created_on ON public.device_credentials USING btree (created_on);
+
+
+--
+-- Name: device_credentials_dev_id; Type: INDEX; Schema: public; Owner: godevman
 --
 
 CREATE INDEX device_credentials_dev_id ON public.device_credentials USING btree (dev_id);
 
 
 --
--- Name: device_extensions_dev_id; Type: INDEX; Schema: public; Owner: -
+-- Name: device_credentials_updated_on; Type: INDEX; Schema: public; Owner: godevman
+--
+
+CREATE INDEX device_credentials_updated_on ON public.device_credentials USING btree (updated_on);
+
+
+--
+-- Name: device_domains_created_on; Type: INDEX; Schema: public; Owner: godevman
+--
+
+CREATE INDEX device_domains_created_on ON public.device_domains USING btree (created_on);
+
+
+--
+-- Name: device_domains_updated_on; Type: INDEX; Schema: public; Owner: godevman
+--
+
+CREATE INDEX device_domains_updated_on ON public.device_domains USING btree (updated_on);
+
+
+--
+-- Name: device_extensions_created_on; Type: INDEX; Schema: public; Owner: godevman
+--
+
+CREATE INDEX device_extensions_created_on ON public.device_extensions USING btree (created_on);
+
+
+--
+-- Name: device_extensions_dev_id; Type: INDEX; Schema: public; Owner: godevman
 --
 
 CREATE INDEX device_extensions_dev_id ON public.device_extensions USING btree (dev_id);
 
 
 --
--- Name: device_licenses_dev_id; Type: INDEX; Schema: public; Owner: -
+-- Name: device_extensions_updated_on; Type: INDEX; Schema: public; Owner: godevman
+--
+
+CREATE INDEX device_extensions_updated_on ON public.device_extensions USING btree (updated_on);
+
+
+--
+-- Name: device_licenses_created_on; Type: INDEX; Schema: public; Owner: godevman
+--
+
+CREATE INDEX device_licenses_created_on ON public.device_licenses USING btree (created_on);
+
+
+--
+-- Name: device_licenses_dev_id; Type: INDEX; Schema: public; Owner: godevman
 --
 
 CREATE INDEX device_licenses_dev_id ON public.device_licenses USING btree (dev_id);
 
 
 --
--- Name: device_licenses_name; Type: INDEX; Schema: public; Owner: -
+-- Name: device_licenses_name; Type: INDEX; Schema: public; Owner: godevman
 --
 
 CREATE INDEX device_licenses_name ON public.device_licenses USING btree (descr);
 
 
 --
--- Name: device_licenses_product; Type: INDEX; Schema: public; Owner: -
+-- Name: device_licenses_product; Type: INDEX; Schema: public; Owner: godevman
 --
 
 CREATE INDEX device_licenses_product ON public.device_licenses USING btree (product);
 
 
 --
--- Name: device_licenses_status; Type: INDEX; Schema: public; Owner: -
+-- Name: device_licenses_status; Type: INDEX; Schema: public; Owner: godevman
 --
 
 CREATE INDEX device_licenses_status ON public.device_licenses USING btree (condition);
 
 
 --
--- Name: device_types_class_id; Type: INDEX; Schema: public; Owner: -
+-- Name: device_licenses_updated_on; Type: INDEX; Schema: public; Owner: godevman
+--
+
+CREATE INDEX device_licenses_updated_on ON public.device_licenses USING btree (updated_on);
+
+
+--
+-- Name: device_states_created_on; Type: INDEX; Schema: public; Owner: godevman
+--
+
+CREATE INDEX device_states_created_on ON public.device_states USING btree (created_on);
+
+
+--
+-- Name: device_states_updated_on; Type: INDEX; Schema: public; Owner: godevman
+--
+
+CREATE INDEX device_states_updated_on ON public.device_states USING btree (updated_on);
+
+
+--
+-- Name: device_types_class_id; Type: INDEX; Schema: public; Owner: godevman
 --
 
 CREATE INDEX device_types_class_id ON public.device_types USING btree (class_id);
 
 
 --
--- Name: devices_dom_id; Type: INDEX; Schema: public; Owner: -
+-- Name: device_types_created_on; Type: INDEX; Schema: public; Owner: godevman
+--
+
+CREATE INDEX device_types_created_on ON public.device_types USING btree (created_on);
+
+
+--
+-- Name: device_types_updated_on; Type: INDEX; Schema: public; Owner: godevman
+--
+
+CREATE INDEX device_types_updated_on ON public.device_types USING btree (updated_on);
+
+
+--
+-- Name: devices_created_on; Type: INDEX; Schema: public; Owner: godevman
+--
+
+CREATE INDEX devices_created_on ON public.devices USING btree (created_on);
+
+
+--
+-- Name: devices_dom_id; Type: INDEX; Schema: public; Owner: godevman
 --
 
 CREATE INDEX devices_dom_id ON public.devices USING btree (dom_id);
 
 
 --
--- Name: devices_parent; Type: INDEX; Schema: public; Owner: -
+-- Name: devices_parent; Type: INDEX; Schema: public; Owner: godevman
 --
 
 CREATE INDEX devices_parent ON public.devices USING btree (parent);
 
 
 --
--- Name: devices_site_id; Type: INDEX; Schema: public; Owner: -
+-- Name: devices_site_id; Type: INDEX; Schema: public; Owner: godevman
 --
 
 CREATE INDEX devices_site_id ON public.devices USING btree (site_id);
 
 
 --
--- Name: devices_snmp_main_id; Type: INDEX; Schema: public; Owner: -
+-- Name: devices_snmp_main_id; Type: INDEX; Schema: public; Owner: godevman
 --
 
 CREATE INDEX devices_snmp_main_id ON public.devices USING btree (snmp_main_id);
 
 
 --
--- Name: devices_snmp_ro_id; Type: INDEX; Schema: public; Owner: -
+-- Name: devices_snmp_ro_id; Type: INDEX; Schema: public; Owner: godevman
 --
 
 CREATE INDEX devices_snmp_ro_id ON public.devices USING btree (snmp_ro_id);
 
 
 --
--- Name: devices_sys_id; Type: INDEX; Schema: public; Owner: -
+-- Name: devices_sys_id; Type: INDEX; Schema: public; Owner: godevman
 --
 
 CREATE INDEX devices_sys_id ON public.devices USING btree (sys_id);
 
 
 --
--- Name: entities_dev_id; Type: INDEX; Schema: public; Owner: -
+-- Name: devices_updated_on; Type: INDEX; Schema: public; Owner: godevman
+--
+
+CREATE INDEX devices_updated_on ON public.devices USING btree (updated_on);
+
+
+--
+-- Name: entities_created_on; Type: INDEX; Schema: public; Owner: godevman
+--
+
+CREATE INDEX entities_created_on ON public.entities USING btree (created_on);
+
+
+--
+-- Name: entities_dev_id; Type: INDEX; Schema: public; Owner: godevman
 --
 
 CREATE INDEX entities_dev_id ON public.entities USING btree (dev_id);
 
 
 --
--- Name: entities_parent_ent_id; Type: INDEX; Schema: public; Owner: -
+-- Name: entities_parent_ent_id; Type: INDEX; Schema: public; Owner: godevman
 --
 
 CREATE INDEX entities_parent_ent_id ON public.entities USING btree (parent_ent_id);
 
 
 --
--- Name: entity_indexes_ent_id; Type: INDEX; Schema: public; Owner: -
+-- Name: entities_updated_on; Type: INDEX; Schema: public; Owner: godevman
+--
+
+CREATE INDEX entities_updated_on ON public.entities USING btree (updated_on);
+
+
+--
+-- Name: entity_indexes_ent_id; Type: INDEX; Schema: public; Owner: godevman
 --
 
 CREATE INDEX entity_indexes_ent_id ON public.entity_phy_indexes USING btree (ent_id);
 
 
 --
--- Name: int_bw_stats_created_on; Type: INDEX; Schema: public; Owner: -
+-- Name: entity_phy_indexes_created_on; Type: INDEX; Schema: public; Owner: godevman
+--
+
+CREATE INDEX entity_phy_indexes_created_on ON public.entity_phy_indexes USING btree (created_on);
+
+
+--
+-- Name: entity_phy_indexes_updated_on; Type: INDEX; Schema: public; Owner: godevman
+--
+
+CREATE INDEX entity_phy_indexes_updated_on ON public.entity_phy_indexes USING btree (updated_on);
+
+
+--
+-- Name: int_bw_stats_created_on; Type: INDEX; Schema: public; Owner: godevman
 --
 
 CREATE INDEX int_bw_stats_created_on ON public.int_bw_stats USING btree (created_on);
 
 
 --
--- Name: int_bw_stats_if_group; Type: INDEX; Schema: public; Owner: -
+-- Name: int_bw_stats_if_group; Type: INDEX; Schema: public; Owner: godevman
 --
 
 CREATE INDEX int_bw_stats_if_group ON public.int_bw_stats USING btree (if_group);
 
 
 --
--- Name: int_bw_stats_if_id; Type: INDEX; Schema: public; Owner: -
+-- Name: int_bw_stats_if_id; Type: INDEX; Schema: public; Owner: godevman
 --
 
 CREATE INDEX int_bw_stats_if_id ON public.int_bw_stats USING btree (if_id);
 
 
 --
--- Name: int_bw_stats_to100in; Type: INDEX; Schema: public; Owner: -
+-- Name: int_bw_stats_to100in; Type: INDEX; Schema: public; Owner: godevman
 --
 
 CREATE INDEX int_bw_stats_to100in ON public.int_bw_stats USING btree (to100in);
 
 
 --
--- Name: int_bw_stats_to100out; Type: INDEX; Schema: public; Owner: -
+-- Name: int_bw_stats_to100out; Type: INDEX; Schema: public; Owner: godevman
 --
 
 CREATE INDEX int_bw_stats_to100out ON public.int_bw_stats USING btree (to100out);
 
 
 --
--- Name: int_bw_stats_to50in; Type: INDEX; Schema: public; Owner: -
+-- Name: int_bw_stats_to50in; Type: INDEX; Schema: public; Owner: godevman
 --
 
 CREATE INDEX int_bw_stats_to50in ON public.int_bw_stats USING btree (to50in);
 
 
 --
--- Name: int_bw_stats_to50out; Type: INDEX; Schema: public; Owner: -
+-- Name: int_bw_stats_to50out; Type: INDEX; Schema: public; Owner: godevman
 --
 
 CREATE INDEX int_bw_stats_to50out ON public.int_bw_stats USING btree (to50out);
 
 
 --
--- Name: int_bw_stats_to75in; Type: INDEX; Schema: public; Owner: -
+-- Name: int_bw_stats_to75in; Type: INDEX; Schema: public; Owner: godevman
 --
 
 CREATE INDEX int_bw_stats_to75in ON public.int_bw_stats USING btree (to75in);
 
 
 --
--- Name: int_bw_stats_to75out; Type: INDEX; Schema: public; Owner: -
+-- Name: int_bw_stats_to75out; Type: INDEX; Schema: public; Owner: godevman
 --
 
 CREATE INDEX int_bw_stats_to75out ON public.int_bw_stats USING btree (to75out);
 
 
 --
--- Name: int_bw_stats_to90in; Type: INDEX; Schema: public; Owner: -
+-- Name: int_bw_stats_to90in; Type: INDEX; Schema: public; Owner: godevman
 --
 
 CREATE INDEX int_bw_stats_to90in ON public.int_bw_stats USING btree (to90in);
 
 
 --
--- Name: int_bw_stats_to90out; Type: INDEX; Schema: public; Owner: -
+-- Name: int_bw_stats_to90out; Type: INDEX; Schema: public; Owner: godevman
 --
 
 CREATE INDEX int_bw_stats_to90out ON public.int_bw_stats USING btree (to90out);
 
 
 --
--- Name: interface_relations_if_id; Type: INDEX; Schema: public; Owner: -
+-- Name: int_bw_stats_updated_on; Type: INDEX; Schema: public; Owner: godevman
+--
+
+CREATE INDEX int_bw_stats_updated_on ON public.int_bw_stats USING btree (updated_on);
+
+
+--
+-- Name: interface_relations_created_on; Type: INDEX; Schema: public; Owner: godevman
+--
+
+CREATE INDEX interface_relations_created_on ON public.interface_relations USING btree (created_on);
+
+
+--
+-- Name: interface_relations_if_id; Type: INDEX; Schema: public; Owner: godevman
 --
 
 CREATE INDEX interface_relations_if_id ON public.interface_relations USING btree (if_id);
 
 
 --
--- Name: interface_relations_if_id_down; Type: INDEX; Schema: public; Owner: -
+-- Name: interface_relations_if_id_down; Type: INDEX; Schema: public; Owner: godevman
 --
 
 CREATE INDEX interface_relations_if_id_down ON public.interface_relations USING btree (if_id_down);
 
 
 --
--- Name: interface_relations_if_id_up; Type: INDEX; Schema: public; Owner: -
+-- Name: interface_relations_if_id_up; Type: INDEX; Schema: public; Owner: godevman
 --
 
 CREATE INDEX interface_relations_if_id_up ON public.interface_relations USING btree (if_id_up);
 
 
 --
--- Name: interfaces_archive_host_ip4; Type: INDEX; Schema: public; Owner: -
+-- Name: interface_relations_updated_on; Type: INDEX; Schema: public; Owner: godevman
+--
+
+CREATE INDEX interface_relations_updated_on ON public.interface_relations USING btree (updated_on);
+
+
+--
+-- Name: interfaces2vlans_created_on; Type: INDEX; Schema: public; Owner: godevman
+--
+
+CREATE INDEX interfaces2vlans_created_on ON public.interfaces2vlans USING btree (created_on);
+
+
+--
+-- Name: interfaces2vlans_updated_on; Type: INDEX; Schema: public; Owner: godevman
+--
+
+CREATE INDEX interfaces2vlans_updated_on ON public.interfaces2vlans USING btree (updated_on);
+
+
+--
+-- Name: interfaces_archive_host_ip4; Type: INDEX; Schema: public; Owner: godevman
 --
 
 CREATE INDEX interfaces_archive_host_ip4 ON public.archived_interfaces USING btree (host_ip4);
 
 
 --
--- Name: interfaces_archive_host_ip6; Type: INDEX; Schema: public; Owner: -
+-- Name: interfaces_archive_host_ip6; Type: INDEX; Schema: public; Owner: godevman
 --
 
 CREATE INDEX interfaces_archive_host_ip6 ON public.archived_interfaces USING btree (host_ip6);
 
 
 --
--- Name: interfaces_archive_hostname; Type: INDEX; Schema: public; Owner: -
+-- Name: interfaces_archive_hostname; Type: INDEX; Schema: public; Owner: godevman
 --
 
 CREATE INDEX interfaces_archive_hostname ON public.archived_interfaces USING btree (hostname);
 
 
 --
--- Name: interfaces_con_id; Type: INDEX; Schema: public; Owner: -
+-- Name: interfaces_con_id; Type: INDEX; Schema: public; Owner: godevman
 --
 
 CREATE INDEX interfaces_con_id ON public.interfaces USING btree (con_id);
 
 
 --
--- Name: interfaces_descr; Type: INDEX; Schema: public; Owner: -
+-- Name: interfaces_created_on; Type: INDEX; Schema: public; Owner: godevman
+--
+
+CREATE INDEX interfaces_created_on ON public.interfaces USING btree (created_on);
+
+
+--
+-- Name: interfaces_descr; Type: INDEX; Schema: public; Owner: godevman
 --
 
 CREATE INDEX interfaces_descr ON public.interfaces USING btree (descr);
 
 
 --
--- Name: interfaces_dev_id; Type: INDEX; Schema: public; Owner: -
+-- Name: interfaces_dev_id; Type: INDEX; Schema: public; Owner: godevman
 --
 
 CREATE INDEX interfaces_dev_id ON public.interfaces USING btree (dev_id);
 
 
 --
--- Name: interfaces_index; Type: INDEX; Schema: public; Owner: -
+-- Name: interfaces_index; Type: INDEX; Schema: public; Owner: godevman
 --
 
 CREATE INDEX interfaces_index ON public.interfaces USING btree (ifindex);
 
 
 --
--- Name: interfaces_mac; Type: INDEX; Schema: public; Owner: -
+-- Name: interfaces_mac; Type: INDEX; Schema: public; Owner: godevman
 --
 
 CREATE INDEX interfaces_mac ON public.interfaces USING btree (mac);
 
 
 --
--- Name: interfaces_otn_if_id; Type: INDEX; Schema: public; Owner: -
+-- Name: interfaces_otn_if_id; Type: INDEX; Schema: public; Owner: godevman
 --
 
 CREATE INDEX interfaces_otn_if_id ON public.interfaces USING btree (otn_if_id);
 
 
 --
--- Name: interfaces_parent; Type: INDEX; Schema: public; Owner: -
+-- Name: interfaces_parent; Type: INDEX; Schema: public; Owner: godevman
 --
 
 CREATE INDEX interfaces_parent ON public.interfaces USING btree (parent);
 
 
 --
--- Name: ip_interfaces_dev_id; Type: INDEX; Schema: public; Owner: -
+-- Name: interfaces_updated_on; Type: INDEX; Schema: public; Owner: godevman
+--
+
+CREATE INDEX interfaces_updated_on ON public.interfaces USING btree (updated_on);
+
+
+--
+-- Name: ip_interfaces_created_on; Type: INDEX; Schema: public; Owner: godevman
+--
+
+CREATE INDEX ip_interfaces_created_on ON public.ip_interfaces USING btree (created_on);
+
+
+--
+-- Name: ip_interfaces_dev_id; Type: INDEX; Schema: public; Owner: godevman
 --
 
 CREATE INDEX ip_interfaces_dev_id ON public.ip_interfaces USING btree (dev_id);
 
 
 --
--- Name: ospf_nbrs_dev_id; Type: INDEX; Schema: public; Owner: -
+-- Name: ip_interfaces_updated_on; Type: INDEX; Schema: public; Owner: godevman
+--
+
+CREATE INDEX ip_interfaces_updated_on ON public.ip_interfaces USING btree (updated_on);
+
+
+--
+-- Name: ospf_nbrs_created_on; Type: INDEX; Schema: public; Owner: godevman
+--
+
+CREATE INDEX ospf_nbrs_created_on ON public.ospf_nbrs USING btree (created_on);
+
+
+--
+-- Name: ospf_nbrs_dev_id; Type: INDEX; Schema: public; Owner: godevman
 --
 
 CREATE INDEX ospf_nbrs_dev_id ON public.ospf_nbrs USING btree (dev_id);
 
 
 --
--- Name: rl_nbrs_dev_id; Type: INDEX; Schema: public; Owner: -
+-- Name: ospf_nbrs_updated_on; Type: INDEX; Schema: public; Owner: godevman
+--
+
+CREATE INDEX ospf_nbrs_updated_on ON public.ospf_nbrs USING btree (updated_on);
+
+
+--
+-- Name: rl_nbrs_created_on; Type: INDEX; Schema: public; Owner: godevman
+--
+
+CREATE INDEX rl_nbrs_created_on ON public.rl_nbrs USING btree (created_on);
+
+
+--
+-- Name: rl_nbrs_dev_id; Type: INDEX; Schema: public; Owner: godevman
 --
 
 CREATE INDEX rl_nbrs_dev_id ON public.rl_nbrs USING btree (dev_id);
 
 
 --
--- Name: rl_nbrs_nbr_ent_id; Type: INDEX; Schema: public; Owner: -
+-- Name: rl_nbrs_nbr_ent_id; Type: INDEX; Schema: public; Owner: godevman
 --
 
 CREATE INDEX rl_nbrs_nbr_ent_id ON public.rl_nbrs USING btree (nbr_ent_id);
 
 
 --
--- Name: sites_country_id; Type: INDEX; Schema: public; Owner: -
+-- Name: rl_nbrs_updated_on; Type: INDEX; Schema: public; Owner: godevman
+--
+
+CREATE INDEX rl_nbrs_updated_on ON public.rl_nbrs USING btree (updated_on);
+
+
+--
+-- Name: sites_country_id; Type: INDEX; Schema: public; Owner: godevman
 --
 
 CREATE INDEX sites_country_id ON public.sites USING btree (country_id);
 
 
 --
--- Name: subinterfaces_archive_descr; Type: INDEX; Schema: public; Owner: -
+-- Name: sites_created_on; Type: INDEX; Schema: public; Owner: godevman
+--
+
+CREATE INDEX sites_created_on ON public.sites USING btree (created_on);
+
+
+--
+-- Name: sites_updated_on; Type: INDEX; Schema: public; Owner: godevman
+--
+
+CREATE INDEX sites_updated_on ON public.sites USING btree (updated_on);
+
+
+--
+-- Name: snmp_credentials_created_on; Type: INDEX; Schema: public; Owner: godevman
+--
+
+CREATE INDEX snmp_credentials_created_on ON public.snmp_credentials USING btree (created_on);
+
+
+--
+-- Name: snmp_credentials_updated_on; Type: INDEX; Schema: public; Owner: godevman
+--
+
+CREATE INDEX snmp_credentials_updated_on ON public.snmp_credentials USING btree (updated_on);
+
+
+--
+-- Name: subinterfaces_archive_descr; Type: INDEX; Schema: public; Owner: godevman
 --
 
 CREATE INDEX subinterfaces_archive_descr ON public.archived_subinterfaces USING btree (descr);
 
 
 --
--- Name: subinterfaces_archive_host_ip4; Type: INDEX; Schema: public; Owner: -
+-- Name: subinterfaces_archive_host_ip4; Type: INDEX; Schema: public; Owner: godevman
 --
 
 CREATE INDEX subinterfaces_archive_host_ip4 ON public.archived_subinterfaces USING btree (host_ip4);
 
 
 --
--- Name: subinterfaces_archive_host_ip6; Type: INDEX; Schema: public; Owner: -
+-- Name: subinterfaces_archive_host_ip6; Type: INDEX; Schema: public; Owner: godevman
 --
 
 CREATE INDEX subinterfaces_archive_host_ip6 ON public.archived_subinterfaces USING btree (host_ip6);
 
 
 --
--- Name: subinterfaces_archive_hostname; Type: INDEX; Schema: public; Owner: -
+-- Name: subinterfaces_archive_hostname; Type: INDEX; Schema: public; Owner: godevman
 --
 
 CREATE INDEX subinterfaces_archive_hostname ON public.archived_subinterfaces USING btree (hostname);
 
 
 --
--- Name: subinterfaces_archive_index; Type: INDEX; Schema: public; Owner: -
+-- Name: subinterfaces_archive_index; Type: INDEX; Schema: public; Owner: godevman
 --
 
 CREATE INDEX subinterfaces_archive_index ON public.archived_subinterfaces USING btree (ifindex);
 
 
 --
--- Name: subinterfaces_archive_mac; Type: INDEX; Schema: public; Owner: -
+-- Name: subinterfaces_archive_mac; Type: INDEX; Schema: public; Owner: godevman
 --
 
 CREATE INDEX subinterfaces_archive_mac ON public.archived_subinterfaces USING btree (mac);
 
 
 --
--- Name: subinterfaces_if_id; Type: INDEX; Schema: public; Owner: -
+-- Name: subinterfaces_created_on; Type: INDEX; Schema: public; Owner: godevman
+--
+
+CREATE INDEX subinterfaces_created_on ON public.subinterfaces USING btree (created_on);
+
+
+--
+-- Name: subinterfaces_if_id; Type: INDEX; Schema: public; Owner: godevman
 --
 
 CREATE INDEX subinterfaces_if_id ON public.subinterfaces USING btree (if_id);
 
 
 --
--- Name: subinterfaces_mac; Type: INDEX; Schema: public; Owner: -
+-- Name: subinterfaces_mac; Type: INDEX; Schema: public; Owner: godevman
 --
 
 CREATE INDEX subinterfaces_mac ON public.subinterfaces USING btree (mac);
 
 
 --
--- Name: subinterfaces_type; Type: INDEX; Schema: public; Owner: -
+-- Name: subinterfaces_type; Type: INDEX; Schema: public; Owner: godevman
 --
 
 CREATE INDEX subinterfaces_type ON public.subinterfaces USING btree (type_enum);
 
 
 --
--- Name: vlans_dev_id; Type: INDEX; Schema: public; Owner: -
+-- Name: subinterfaces_updated_on; Type: INDEX; Schema: public; Owner: godevman
+--
+
+CREATE INDEX subinterfaces_updated_on ON public.subinterfaces USING btree (updated_on);
+
+
+--
+-- Name: user_authzs_created_on; Type: INDEX; Schema: public; Owner: godevman
+--
+
+CREATE INDEX user_authzs_created_on ON public.user_authzs USING btree (created_on);
+
+
+--
+-- Name: user_authzs_updated_on; Type: INDEX; Schema: public; Owner: godevman
+--
+
+CREATE INDEX user_authzs_updated_on ON public.user_authzs USING btree (updated_on);
+
+
+--
+-- Name: user_graphs_created_on; Type: INDEX; Schema: public; Owner: godevman
+--
+
+CREATE INDEX user_graphs_created_on ON public.user_graphs USING btree (created_on);
+
+
+--
+-- Name: user_graphs_updated_on; Type: INDEX; Schema: public; Owner: godevman
+--
+
+CREATE INDEX user_graphs_updated_on ON public.user_graphs USING btree (updated_on);
+
+
+--
+-- Name: users_created_on; Type: INDEX; Schema: public; Owner: godevman
+--
+
+CREATE INDEX users_created_on ON public.users USING btree (created_on);
+
+
+--
+-- Name: users_updated_on; Type: INDEX; Schema: public; Owner: godevman
+--
+
+CREATE INDEX users_updated_on ON public.users USING btree (updated_on);
+
+
+--
+-- Name: vars_created_on; Type: INDEX; Schema: public; Owner: godevman
+--
+
+CREATE INDEX vars_created_on ON public.vars USING btree (created_on);
+
+
+--
+-- Name: vars_updated_on; Type: INDEX; Schema: public; Owner: godevman
+--
+
+CREATE INDEX vars_updated_on ON public.vars USING btree (updated_on);
+
+
+--
+-- Name: vlans_created_on; Type: INDEX; Schema: public; Owner: godevman
+--
+
+CREATE INDEX vlans_created_on ON public.vlans USING btree (created_on);
+
+
+--
+-- Name: vlans_dev_id; Type: INDEX; Schema: public; Owner: godevman
 --
 
 CREATE INDEX vlans_dev_id ON public.vlans USING btree (dev_id);
 
 
 --
--- Name: xconnects_dev_id; Type: INDEX; Schema: public; Owner: -
+-- Name: vlans_updated_on; Type: INDEX; Schema: public; Owner: godevman
+--
+
+CREATE INDEX vlans_updated_on ON public.vlans USING btree (updated_on);
+
+
+--
+-- Name: xconnects_created_on; Type: INDEX; Schema: public; Owner: godevman
+--
+
+CREATE INDEX xconnects_created_on ON public.xconnects USING btree (created_on);
+
+
+--
+-- Name: xconnects_dev_id; Type: INDEX; Schema: public; Owner: godevman
 --
 
 CREATE INDEX xconnects_dev_id ON public.xconnects USING btree (dev_id);
 
 
 --
--- Name: xconnects_if_id; Type: INDEX; Schema: public; Owner: -
+-- Name: xconnects_if_id; Type: INDEX; Schema: public; Owner: godevman
 --
 
 CREATE INDEX xconnects_if_id ON public.xconnects USING btree (if_id);
 
 
 --
--- Name: xconnects_peer_dev_id; Type: INDEX; Schema: public; Owner: -
+-- Name: xconnects_peer_dev_id; Type: INDEX; Schema: public; Owner: godevman
 --
 
 CREATE INDEX xconnects_peer_dev_id ON public.xconnects USING btree (peer_dev_id);
 
 
 --
--- Name: archived_interfaces update_archived_interfaces_updated_on; Type: TRIGGER; Schema: public; Owner: -
+-- Name: xconnects_updated_on; Type: INDEX; Schema: public; Owner: godevman
+--
+
+CREATE INDEX xconnects_updated_on ON public.xconnects USING btree (updated_on);
+
+
+--
+-- Name: archived_interfaces update_archived_interfaces_updated_on; Type: TRIGGER; Schema: public; Owner: godevman
 --
 
 CREATE TRIGGER update_archived_interfaces_updated_on BEFORE UPDATE ON public.archived_interfaces FOR EACH ROW EXECUTE FUNCTION public.update_updated_on();
 
 
 --
--- Name: archived_subinterfaces update_archived_subinterfaces_updated_on; Type: TRIGGER; Schema: public; Owner: -
+-- Name: archived_subinterfaces update_archived_subinterfaces_updated_on; Type: TRIGGER; Schema: public; Owner: godevman
 --
 
 CREATE TRIGGER update_archived_subinterfaces_updated_on BEFORE UPDATE ON public.archived_subinterfaces FOR EACH ROW EXECUTE FUNCTION public.update_updated_on();
 
 
 --
--- Name: con_capacities update_con_capacities_updated_on; Type: TRIGGER; Schema: public; Owner: -
+-- Name: con_capacities update_con_capacities_updated_on; Type: TRIGGER; Schema: public; Owner: godevman
 --
 
 CREATE TRIGGER update_con_capacities_updated_on BEFORE UPDATE ON public.con_capacities FOR EACH ROW EXECUTE FUNCTION public.update_updated_on();
 
 
 --
--- Name: con_classes update_con_classes_updated_on; Type: TRIGGER; Schema: public; Owner: -
+-- Name: con_classes update_con_classes_updated_on; Type: TRIGGER; Schema: public; Owner: godevman
 --
 
 CREATE TRIGGER update_con_classes_updated_on BEFORE UPDATE ON public.con_classes FOR EACH ROW EXECUTE FUNCTION public.update_updated_on();
 
 
 --
--- Name: con_providers update_con_providers_updated_on; Type: TRIGGER; Schema: public; Owner: -
+-- Name: con_providers update_con_providers_updated_on; Type: TRIGGER; Schema: public; Owner: godevman
 --
 
 CREATE TRIGGER update_con_providers_updated_on BEFORE UPDATE ON public.con_providers FOR EACH ROW EXECUTE FUNCTION public.update_updated_on();
 
 
 --
--- Name: con_types update_con_types_updated_on; Type: TRIGGER; Schema: public; Owner: -
+-- Name: con_types update_con_types_updated_on; Type: TRIGGER; Schema: public; Owner: godevman
 --
 
 CREATE TRIGGER update_con_types_updated_on BEFORE UPDATE ON public.con_types FOR EACH ROW EXECUTE FUNCTION public.update_updated_on();
 
 
 --
--- Name: connections update_connections_updated_on; Type: TRIGGER; Schema: public; Owner: -
+-- Name: connections update_connections_updated_on; Type: TRIGGER; Schema: public; Owner: godevman
 --
 
 CREATE TRIGGER update_connections_updated_on BEFORE UPDATE ON public.connections FOR EACH ROW EXECUTE FUNCTION public.update_updated_on();
 
 
 --
--- Name: countries update_countries_updated_on; Type: TRIGGER; Schema: public; Owner: -
+-- Name: countries update_countries_updated_on; Type: TRIGGER; Schema: public; Owner: godevman
 --
 
 CREATE TRIGGER update_countries_updated_on BEFORE UPDATE ON public.countries FOR EACH ROW EXECUTE FUNCTION public.update_updated_on();
 
 
 --
--- Name: credentials update_credentials_updated_on; Type: TRIGGER; Schema: public; Owner: -
+-- Name: credentials update_credentials_updated_on; Type: TRIGGER; Schema: public; Owner: godevman
 --
 
 CREATE TRIGGER update_credentials_updated_on BEFORE UPDATE ON public.credentials FOR EACH ROW EXECUTE FUNCTION public.update_updated_on();
 
 
 --
--- Name: custom_entities update_custom_entities_updated_on; Type: TRIGGER; Schema: public; Owner: -
+-- Name: custom_entities update_custom_entities_updated_on; Type: TRIGGER; Schema: public; Owner: godevman
 --
 
 CREATE TRIGGER update_custom_entities_updated_on BEFORE UPDATE ON public.custom_entities FOR EACH ROW EXECUTE FUNCTION public.update_updated_on();
 
 
 --
--- Name: device_classes update_device_classes_updated_on; Type: TRIGGER; Schema: public; Owner: -
+-- Name: device_classes update_device_classes_updated_on; Type: TRIGGER; Schema: public; Owner: godevman
 --
 
 CREATE TRIGGER update_device_classes_updated_on BEFORE UPDATE ON public.device_classes FOR EACH ROW EXECUTE FUNCTION public.update_updated_on();
 
 
 --
--- Name: device_credentials update_device_credentials_updated_on; Type: TRIGGER; Schema: public; Owner: -
+-- Name: device_credentials update_device_credentials_updated_on; Type: TRIGGER; Schema: public; Owner: godevman
 --
 
 CREATE TRIGGER update_device_credentials_updated_on BEFORE UPDATE ON public.device_credentials FOR EACH ROW EXECUTE FUNCTION public.update_updated_on();
 
 
 --
--- Name: device_domains update_device_domains_updated_on; Type: TRIGGER; Schema: public; Owner: -
+-- Name: device_domains update_device_domains_updated_on; Type: TRIGGER; Schema: public; Owner: godevman
 --
 
 CREATE TRIGGER update_device_domains_updated_on BEFORE UPDATE ON public.device_domains FOR EACH ROW EXECUTE FUNCTION public.update_updated_on();
 
 
 --
--- Name: device_extensions update_device_extensions_updated_on; Type: TRIGGER; Schema: public; Owner: -
+-- Name: device_extensions update_device_extensions_updated_on; Type: TRIGGER; Schema: public; Owner: godevman
 --
 
 CREATE TRIGGER update_device_extensions_updated_on BEFORE UPDATE ON public.device_extensions FOR EACH ROW EXECUTE FUNCTION public.update_updated_on();
 
 
 --
--- Name: device_licenses update_device_licenses_updated_on; Type: TRIGGER; Schema: public; Owner: -
+-- Name: device_licenses update_device_licenses_updated_on; Type: TRIGGER; Schema: public; Owner: godevman
 --
 
 CREATE TRIGGER update_device_licenses_updated_on BEFORE UPDATE ON public.device_licenses FOR EACH ROW EXECUTE FUNCTION public.update_updated_on();
 
 
 --
--- Name: device_states update_device_states_updated_on; Type: TRIGGER; Schema: public; Owner: -
+-- Name: device_states update_device_states_updated_on; Type: TRIGGER; Schema: public; Owner: godevman
 --
 
 CREATE TRIGGER update_device_states_updated_on BEFORE UPDATE ON public.device_states FOR EACH ROW EXECUTE FUNCTION public.update_updated_on();
 
 
 --
--- Name: device_types update_device_types_updated_on; Type: TRIGGER; Schema: public; Owner: -
+-- Name: device_types update_device_types_updated_on; Type: TRIGGER; Schema: public; Owner: godevman
 --
 
 CREATE TRIGGER update_device_types_updated_on BEFORE UPDATE ON public.device_types FOR EACH ROW EXECUTE FUNCTION public.update_updated_on();
 
 
 --
--- Name: devices update_devices_updated_on; Type: TRIGGER; Schema: public; Owner: -
+-- Name: devices update_devices_updated_on; Type: TRIGGER; Schema: public; Owner: godevman
 --
 
 CREATE TRIGGER update_devices_updated_on BEFORE UPDATE ON public.devices FOR EACH ROW EXECUTE FUNCTION public.update_updated_on();
 
 
 --
--- Name: entities update_entities_updated_on; Type: TRIGGER; Schema: public; Owner: -
+-- Name: entities update_entities_updated_on; Type: TRIGGER; Schema: public; Owner: godevman
 --
 
 CREATE TRIGGER update_entities_updated_on BEFORE UPDATE ON public.entities FOR EACH ROW EXECUTE FUNCTION public.update_updated_on();
 
 
 --
--- Name: entity_phy_indexes update_entity_indexes_updated_on; Type: TRIGGER; Schema: public; Owner: -
+-- Name: entity_phy_indexes update_entity_indexes_updated_on; Type: TRIGGER; Schema: public; Owner: godevman
 --
 
 CREATE TRIGGER update_entity_indexes_updated_on BEFORE UPDATE ON public.entity_phy_indexes FOR EACH ROW EXECUTE FUNCTION public.update_updated_on();
 
 
 --
--- Name: int_bw_stats update_int_bw_stats_updated_on; Type: TRIGGER; Schema: public; Owner: -
+-- Name: int_bw_stats update_int_bw_stats_updated_on; Type: TRIGGER; Schema: public; Owner: godevman
 --
 
 CREATE TRIGGER update_int_bw_stats_updated_on BEFORE UPDATE ON public.int_bw_stats FOR EACH ROW EXECUTE FUNCTION public.update_updated_on();
 
 
 --
--- Name: interface_relations update_interface_relations_updated_on; Type: TRIGGER; Schema: public; Owner: -
+-- Name: interface_relations update_interface_relations_updated_on; Type: TRIGGER; Schema: public; Owner: godevman
 --
 
 CREATE TRIGGER update_interface_relations_updated_on BEFORE UPDATE ON public.interface_relations FOR EACH ROW EXECUTE FUNCTION public.update_updated_on();
 
 
 --
--- Name: interfaces2vlans update_interfaces2vlans_updated_on; Type: TRIGGER; Schema: public; Owner: -
+-- Name: interfaces2vlans update_interfaces2vlans_updated_on; Type: TRIGGER; Schema: public; Owner: godevman
 --
 
 CREATE TRIGGER update_interfaces2vlans_updated_on BEFORE UPDATE ON public.interfaces2vlans FOR EACH ROW EXECUTE FUNCTION public.update_updated_on();
 
 
 --
--- Name: interfaces update_interfaces_updated_on; Type: TRIGGER; Schema: public; Owner: -
+-- Name: interfaces update_interfaces_updated_on; Type: TRIGGER; Schema: public; Owner: godevman
 --
 
 CREATE TRIGGER update_interfaces_updated_on BEFORE UPDATE ON public.interfaces FOR EACH ROW EXECUTE FUNCTION public.update_updated_on();
 
 
 --
--- Name: ip_interfaces update_ip_interfaces_updated_on; Type: TRIGGER; Schema: public; Owner: -
+-- Name: ip_interfaces update_ip_interfaces_updated_on; Type: TRIGGER; Schema: public; Owner: godevman
 --
 
 CREATE TRIGGER update_ip_interfaces_updated_on BEFORE UPDATE ON public.ip_interfaces FOR EACH ROW EXECUTE FUNCTION public.update_updated_on();
 
 
 --
--- Name: ospf_nbrs update_ospf_nbrs_updated_on; Type: TRIGGER; Schema: public; Owner: -
+-- Name: ospf_nbrs update_ospf_nbrs_updated_on; Type: TRIGGER; Schema: public; Owner: godevman
 --
 
 CREATE TRIGGER update_ospf_nbrs_updated_on BEFORE UPDATE ON public.ospf_nbrs FOR EACH ROW EXECUTE FUNCTION public.update_updated_on();
 
 
 --
--- Name: rl_nbrs update_rl_nbrs_updated_on; Type: TRIGGER; Schema: public; Owner: -
+-- Name: rl_nbrs update_rl_nbrs_updated_on; Type: TRIGGER; Schema: public; Owner: godevman
 --
 
 CREATE TRIGGER update_rl_nbrs_updated_on BEFORE UPDATE ON public.rl_nbrs FOR EACH ROW EXECUTE FUNCTION public.update_updated_on();
 
 
 --
--- Name: sites update_sites_updated_on; Type: TRIGGER; Schema: public; Owner: -
+-- Name: sites update_sites_updated_on; Type: TRIGGER; Schema: public; Owner: godevman
 --
 
 CREATE TRIGGER update_sites_updated_on BEFORE UPDATE ON public.sites FOR EACH ROW EXECUTE FUNCTION public.update_updated_on();
 
 
 --
--- Name: snmp_credentials update_snmp_credentials_updated_on; Type: TRIGGER; Schema: public; Owner: -
+-- Name: snmp_credentials update_snmp_credentials_updated_on; Type: TRIGGER; Schema: public; Owner: godevman
 --
 
 CREATE TRIGGER update_snmp_credentials_updated_on BEFORE UPDATE ON public.snmp_credentials FOR EACH ROW EXECUTE FUNCTION public.update_updated_on();
 
 
 --
--- Name: subinterfaces update_subinterfaces_updated_on; Type: TRIGGER; Schema: public; Owner: -
+-- Name: subinterfaces update_subinterfaces_updated_on; Type: TRIGGER; Schema: public; Owner: godevman
 --
 
 CREATE TRIGGER update_subinterfaces_updated_on BEFORE UPDATE ON public.subinterfaces FOR EACH ROW EXECUTE FUNCTION public.update_updated_on();
 
 
 --
--- Name: user_graphs update_user_graphs_updated_on; Type: TRIGGER; Schema: public; Owner: -
+-- Name: user_graphs update_user_graphs_updated_on; Type: TRIGGER; Schema: public; Owner: godevman
 --
 
 CREATE TRIGGER update_user_graphs_updated_on BEFORE UPDATE ON public.user_graphs FOR EACH ROW EXECUTE FUNCTION public.update_updated_on();
 
 
 --
--- Name: users update_users_updated_on; Type: TRIGGER; Schema: public; Owner: -
+-- Name: users update_users_updated_on; Type: TRIGGER; Schema: public; Owner: godevman
 --
 
 CREATE TRIGGER update_users_updated_on BEFORE UPDATE ON public.users FOR EACH ROW EXECUTE FUNCTION public.update_updated_on();
 
 
 --
--- Name: vars update_variables_updated_on; Type: TRIGGER; Schema: public; Owner: -
+-- Name: vars update_variables_updated_on; Type: TRIGGER; Schema: public; Owner: godevman
 --
 
 CREATE TRIGGER update_variables_updated_on BEFORE UPDATE ON public.vars FOR EACH ROW EXECUTE FUNCTION public.update_updated_on();
 
 
 --
--- Name: vlans update_vlans_updated_on; Type: TRIGGER; Schema: public; Owner: -
+-- Name: vlans update_vlans_updated_on; Type: TRIGGER; Schema: public; Owner: godevman
 --
 
 CREATE TRIGGER update_vlans_updated_on BEFORE UPDATE ON public.vlans FOR EACH ROW EXECUTE FUNCTION public.update_updated_on();
 
 
 --
--- Name: xconnects update_xconnects_updated_on; Type: TRIGGER; Schema: public; Owner: -
+-- Name: xconnects update_xconnects_updated_on; Type: TRIGGER; Schema: public; Owner: godevman
 --
 
 CREATE TRIGGER update_xconnects_updated_on BEFORE UPDATE ON public.xconnects FOR EACH ROW EXECUTE FUNCTION public.update_updated_on();
 
 
 --
--- Name: connections connections_con_cap_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: connections connections_con_cap_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.connections
@@ -2658,7 +3327,7 @@ ALTER TABLE ONLY public.connections
 
 
 --
--- Name: connections connections_con_class_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: connections connections_con_class_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.connections
@@ -2666,7 +3335,7 @@ ALTER TABLE ONLY public.connections
 
 
 --
--- Name: connections connections_con_prov_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: connections connections_con_prov_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.connections
@@ -2674,7 +3343,7 @@ ALTER TABLE ONLY public.connections
 
 
 --
--- Name: connections connections_con_type_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: connections connections_con_type_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.connections
@@ -2682,7 +3351,7 @@ ALTER TABLE ONLY public.connections
 
 
 --
--- Name: connections connections_site_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: connections connections_site_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.connections
@@ -2690,7 +3359,7 @@ ALTER TABLE ONLY public.connections
 
 
 --
--- Name: device_credentials device_credentials_dev_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: device_credentials device_credentials_dev_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.device_credentials
@@ -2698,7 +3367,7 @@ ALTER TABLE ONLY public.device_credentials
 
 
 --
--- Name: device_extensions device_extensions_dev_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: device_extensions device_extensions_dev_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.device_extensions
@@ -2706,7 +3375,7 @@ ALTER TABLE ONLY public.device_extensions
 
 
 --
--- Name: device_licenses device_licenses_dev_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: device_licenses device_licenses_dev_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.device_licenses
@@ -2714,7 +3383,7 @@ ALTER TABLE ONLY public.device_licenses
 
 
 --
--- Name: device_states device_states_dev_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: device_states device_states_dev_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.device_states
@@ -2722,7 +3391,7 @@ ALTER TABLE ONLY public.device_states
 
 
 --
--- Name: device_types device_types_class_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: device_types device_types_class_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.device_types
@@ -2730,7 +3399,7 @@ ALTER TABLE ONLY public.device_types
 
 
 --
--- Name: devices devices_dom_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: devices devices_dom_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.devices
@@ -2738,7 +3407,7 @@ ALTER TABLE ONLY public.devices
 
 
 --
--- Name: devices devices_parent_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: devices devices_parent_fkey; Type: FK CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.devices
@@ -2746,7 +3415,7 @@ ALTER TABLE ONLY public.devices
 
 
 --
--- Name: devices devices_site_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: devices devices_site_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.devices
@@ -2754,7 +3423,7 @@ ALTER TABLE ONLY public.devices
 
 
 --
--- Name: devices devices_snmp_main_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: devices devices_snmp_main_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.devices
@@ -2762,7 +3431,7 @@ ALTER TABLE ONLY public.devices
 
 
 --
--- Name: devices devices_snmp_ro_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: devices devices_snmp_ro_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.devices
@@ -2770,7 +3439,7 @@ ALTER TABLE ONLY public.devices
 
 
 --
--- Name: devices devices_sys_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: devices devices_sys_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.devices
@@ -2778,7 +3447,7 @@ ALTER TABLE ONLY public.devices
 
 
 --
--- Name: entities entities_dev_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: entities entities_dev_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.entities
@@ -2786,7 +3455,7 @@ ALTER TABLE ONLY public.entities
 
 
 --
--- Name: entities entities_parent_ent_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: entities entities_parent_ent_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.entities
@@ -2794,7 +3463,7 @@ ALTER TABLE ONLY public.entities
 
 
 --
--- Name: entity_phy_indexes entity_indexes_ent_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: entity_phy_indexes entity_indexes_ent_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.entity_phy_indexes
@@ -2802,7 +3471,7 @@ ALTER TABLE ONLY public.entity_phy_indexes
 
 
 --
--- Name: int_bw_stats int_bw_stats_if_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: int_bw_stats int_bw_stats_if_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.int_bw_stats
@@ -2810,7 +3479,7 @@ ALTER TABLE ONLY public.int_bw_stats
 
 
 --
--- Name: interfaces2vlans interface2vlan_if_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: interfaces2vlans interface2vlan_if_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.interfaces2vlans
@@ -2818,7 +3487,7 @@ ALTER TABLE ONLY public.interfaces2vlans
 
 
 --
--- Name: interfaces2vlans interface2vlan_v_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: interfaces2vlans interface2vlan_v_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.interfaces2vlans
@@ -2826,7 +3495,7 @@ ALTER TABLE ONLY public.interfaces2vlans
 
 
 --
--- Name: interface_relations interface_relations_if_id_down_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: interface_relations interface_relations_if_id_down_fkey; Type: FK CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.interface_relations
@@ -2834,7 +3503,7 @@ ALTER TABLE ONLY public.interface_relations
 
 
 --
--- Name: interface_relations interface_relations_if_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: interface_relations interface_relations_if_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.interface_relations
@@ -2842,7 +3511,7 @@ ALTER TABLE ONLY public.interface_relations
 
 
 --
--- Name: interface_relations interface_relations_if_id_up_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: interface_relations interface_relations_if_id_up_fkey; Type: FK CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.interface_relations
@@ -2850,7 +3519,7 @@ ALTER TABLE ONLY public.interface_relations
 
 
 --
--- Name: interfaces interfaces_con_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: interfaces interfaces_con_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.interfaces
@@ -2858,7 +3527,7 @@ ALTER TABLE ONLY public.interfaces
 
 
 --
--- Name: interfaces interfaces_dev_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: interfaces interfaces_dev_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.interfaces
@@ -2866,7 +3535,7 @@ ALTER TABLE ONLY public.interfaces
 
 
 --
--- Name: interfaces interfaces_ent_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: interfaces interfaces_ent_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.interfaces
@@ -2874,7 +3543,7 @@ ALTER TABLE ONLY public.interfaces
 
 
 --
--- Name: interfaces interfaces_otn_if_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: interfaces interfaces_otn_if_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.interfaces
@@ -2882,7 +3551,7 @@ ALTER TABLE ONLY public.interfaces
 
 
 --
--- Name: interfaces interfaces_parent_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: interfaces interfaces_parent_fkey; Type: FK CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.interfaces
@@ -2890,7 +3559,7 @@ ALTER TABLE ONLY public.interfaces
 
 
 --
--- Name: ip_interfaces ip_interfaces_dev_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: ip_interfaces ip_interfaces_dev_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.ip_interfaces
@@ -2898,7 +3567,7 @@ ALTER TABLE ONLY public.ip_interfaces
 
 
 --
--- Name: ospf_nbrs ospf_nbrs_dev_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: ospf_nbrs ospf_nbrs_dev_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.ospf_nbrs
@@ -2906,7 +3575,7 @@ ALTER TABLE ONLY public.ospf_nbrs
 
 
 --
--- Name: rl_nbrs rl_nbrs_dev_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: rl_nbrs rl_nbrs_dev_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.rl_nbrs
@@ -2914,7 +3583,7 @@ ALTER TABLE ONLY public.rl_nbrs
 
 
 --
--- Name: rl_nbrs rl_nbrs_nbr_ent_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: rl_nbrs rl_nbrs_nbr_ent_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.rl_nbrs
@@ -2922,7 +3591,7 @@ ALTER TABLE ONLY public.rl_nbrs
 
 
 --
--- Name: sites sites_country_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: sites sites_country_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.sites
@@ -2930,7 +3599,7 @@ ALTER TABLE ONLY public.sites
 
 
 --
--- Name: subinterfaces subinterfaces_if_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: subinterfaces subinterfaces_if_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.subinterfaces
@@ -2938,7 +3607,7 @@ ALTER TABLE ONLY public.subinterfaces
 
 
 --
--- Name: user_authzs user_authz_dom_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: user_authzs user_authz_dom_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.user_authzs
@@ -2946,7 +3615,7 @@ ALTER TABLE ONLY public.user_authzs
 
 
 --
--- Name: user_authzs user_authz_username_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: user_authzs user_authz_username_fkey; Type: FK CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.user_authzs
@@ -2954,7 +3623,7 @@ ALTER TABLE ONLY public.user_authzs
 
 
 --
--- Name: user_graphs user_graphs_username_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: user_graphs user_graphs_username_fkey; Type: FK CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.user_graphs
@@ -2962,7 +3631,7 @@ ALTER TABLE ONLY public.user_graphs
 
 
 --
--- Name: vlans vlans_dev_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: vlans vlans_dev_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.vlans
@@ -2970,7 +3639,7 @@ ALTER TABLE ONLY public.vlans
 
 
 --
--- Name: xconnects xconnects_dev_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: xconnects xconnects_dev_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.xconnects
@@ -2978,7 +3647,7 @@ ALTER TABLE ONLY public.xconnects
 
 
 --
--- Name: xconnects xconnects_if_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: xconnects xconnects_if_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.xconnects
@@ -2986,7 +3655,7 @@ ALTER TABLE ONLY public.xconnects
 
 
 --
--- Name: xconnects xconnects_peer_dev_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: xconnects xconnects_peer_dev_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.xconnects

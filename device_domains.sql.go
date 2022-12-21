@@ -124,7 +124,7 @@ func (q *Queries) GetDeviceDomainDevices(ctx context.Context, domID int64) ([]De
 }
 
 const GetDeviceDomainUserAuthzs = `-- name: GetDeviceDomainUserAuthzs :many
-SELECT username, dom_id, userlevel
+SELECT username, dom_id, userlevel, updated_on, created_on
 FROM user_authzs
 WHERE dom_id = $1
 ORDER BY username
@@ -139,7 +139,13 @@ func (q *Queries) GetDeviceDomainUserAuthzs(ctx context.Context, domID int64) ([
 	var items []UserAuthz
 	for rows.Next() {
 		var i UserAuthz
-		if err := rows.Scan(&i.Username, &i.DomID, &i.Userlevel); err != nil {
+		if err := rows.Scan(
+			&i.Username,
+			&i.DomID,
+			&i.Userlevel,
+			&i.UpdatedOn,
+			&i.CreatedOn,
+		); err != nil {
 			return nil, err
 		}
 		items = append(items, i)
