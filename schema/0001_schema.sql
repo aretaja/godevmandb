@@ -2150,6 +2150,13 @@ CREATE INDEX archived_interfaces_updated_on ON public.archived_interfaces USING 
 
 
 --
+-- Name: archived_subinterfaces_alias; Type: INDEX; Schema: public; Owner: godevman
+--
+
+CREATE INDEX archived_subinterfaces_alias ON public.archived_subinterfaces USING btree (alias);
+
+
+--
 -- Name: archived_subinterfaces_created_on; Type: INDEX; Schema: public; Owner: godevman
 --
 
