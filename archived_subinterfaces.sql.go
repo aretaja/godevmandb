@@ -31,7 +31,7 @@ INSERT INTO archived_subinterfaces (
     descr,
     parent_descr,
     alias,
-    type_enum,
+    type,
     mac,
     hostname,
     host_ip4,
@@ -50,7 +50,7 @@ VALUES (
     $9,
     $10
   )
-RETURNING sifa_id, ifindex, descr, parent_descr, alias, type_enum, mac, hostname, host_ip4, host_ip6, notes, updated_on, created_on
+RETURNING sifa_id, ifindex, descr, parent_descr, alias, type, mac, hostname, host_ip4, host_ip6, notes, updated_on, created_on
 `
 
 type CreateArchivedSubInterfaceParams struct {
@@ -58,7 +58,7 @@ type CreateArchivedSubInterfaceParams struct {
 	Descr       string         `json:"descr"`
 	ParentDescr sql.NullString `json:"parent_descr"`
 	Alias       sql.NullString `json:"alias"`
-	TypeEnum    sql.NullString `json:"type_enum"`
+	Type        sql.NullString `json:"type"`
 	Mac         pgtype.Macaddr `json:"mac"`
 	Hostname    string         `json:"hostname"`
 	HostIp4     pgtype.Inet    `json:"host_ip4"`
@@ -72,7 +72,7 @@ func (q *Queries) CreateArchivedSubInterface(ctx context.Context, arg CreateArch
 		arg.Descr,
 		arg.ParentDescr,
 		arg.Alias,
-		arg.TypeEnum,
+		arg.Type,
 		arg.Mac,
 		arg.Hostname,
 		arg.HostIp4,
@@ -86,7 +86,7 @@ func (q *Queries) CreateArchivedSubInterface(ctx context.Context, arg CreateArch
 		&i.Descr,
 		&i.ParentDescr,
 		&i.Alias,
-		&i.TypeEnum,
+		&i.Type,
 		&i.Mac,
 		&i.Hostname,
 		&i.HostIp4,
@@ -109,7 +109,7 @@ func (q *Queries) DeleteArchivedSubInterface(ctx context.Context, sifaID int64) 
 }
 
 const GetArchivedSubInterface = `-- name: GetArchivedSubInterface :one
-SELECT sifa_id, ifindex, descr, parent_descr, alias, type_enum, mac, hostname, host_ip4, host_ip6, notes, updated_on, created_on
+SELECT sifa_id, ifindex, descr, parent_descr, alias, type, mac, hostname, host_ip4, host_ip6, notes, updated_on, created_on
 FROM archived_subinterfaces
 WHERE sifa_id = $1
 `
@@ -123,7 +123,7 @@ func (q *Queries) GetArchivedSubInterface(ctx context.Context, sifaID int64) (Ar
 		&i.Descr,
 		&i.ParentDescr,
 		&i.Alias,
-		&i.TypeEnum,
+		&i.Type,
 		&i.Mac,
 		&i.Hostname,
 		&i.HostIp4,
@@ -136,7 +136,7 @@ func (q *Queries) GetArchivedSubInterface(ctx context.Context, sifaID int64) (Ar
 }
 
 const GetArchivedSubInterfaces = `-- name: GetArchivedSubInterfaces :many
-SELECT sifa_id, ifindex, descr, parent_descr, alias, type_enum, mac, hostname, host_ip4, host_ip6, notes, updated_on, created_on
+SELECT sifa_id, ifindex, descr, parent_descr, alias, type, mac, hostname, host_ip4, host_ip6, notes, updated_on, created_on
 FROM archived_subinterfaces
 WHERE (
     $1::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
@@ -231,7 +231,7 @@ func (q *Queries) GetArchivedSubInterfaces(ctx context.Context, arg GetArchivedS
 			&i.Descr,
 			&i.ParentDescr,
 			&i.Alias,
-			&i.TypeEnum,
+			&i.Type,
 			&i.Mac,
 			&i.Hostname,
 			&i.HostIp4,
@@ -256,14 +256,14 @@ SET ifindex = $2,
   descr = $3,
   parent_descr = $4,
   alias = $5,
-  type_enum = $6,
+  type = $6,
   mac = $7,
   hostname = $8,
   host_ip4 = $9,
   host_ip6 = $10,
   notes = $11
 WHERE sifa_id = $1
-RETURNING sifa_id, ifindex, descr, parent_descr, alias, type_enum, mac, hostname, host_ip4, host_ip6, notes, updated_on, created_on
+RETURNING sifa_id, ifindex, descr, parent_descr, alias, type, mac, hostname, host_ip4, host_ip6, notes, updated_on, created_on
 `
 
 type UpdateArchivedSubInterfaceParams struct {
@@ -272,7 +272,7 @@ type UpdateArchivedSubInterfaceParams struct {
 	Descr       string         `json:"descr"`
 	ParentDescr sql.NullString `json:"parent_descr"`
 	Alias       sql.NullString `json:"alias"`
-	TypeEnum    sql.NullString `json:"type_enum"`
+	Type        sql.NullString `json:"type"`
 	Mac         pgtype.Macaddr `json:"mac"`
 	Hostname    string         `json:"hostname"`
 	HostIp4     pgtype.Inet    `json:"host_ip4"`
@@ -287,7 +287,7 @@ func (q *Queries) UpdateArchivedSubInterface(ctx context.Context, arg UpdateArch
 		arg.Descr,
 		arg.ParentDescr,
 		arg.Alias,
-		arg.TypeEnum,
+		arg.Type,
 		arg.Mac,
 		arg.Hostname,
 		arg.HostIp4,
@@ -301,7 +301,7 @@ func (q *Queries) UpdateArchivedSubInterface(ctx context.Context, arg UpdateArch
 		&i.Descr,
 		&i.ParentDescr,
 		&i.Alias,
-		&i.TypeEnum,
+		&i.Type,
 		&i.Mac,
 		&i.Hostname,
 		&i.HostIp4,

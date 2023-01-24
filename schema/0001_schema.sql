@@ -142,7 +142,7 @@ CREATE TABLE public.archived_subinterfaces (
     descr character varying NOT NULL,
     parent_descr character varying,
     alias character varying,
-    type_enum character varying,
+    type character varying,
     mac macaddr,
     hostname character varying NOT NULL,
     host_ip4 inet,

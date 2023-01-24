@@ -198,7 +198,7 @@ type ArchivedSubinterface struct {
 	Descr       string         `json:"descr"`
 	ParentDescr sql.NullString `json:"parent_descr"`
 	Alias       sql.NullString `json:"alias"`
-	TypeEnum    sql.NullString `json:"type_enum"`
+	Type        sql.NullString `json:"type"`
 	Mac         pgtype.Macaddr `json:"mac"`
 	Hostname    string         `json:"hostname"`
 	HostIp4     pgtype.Inet    `json:"host_ip4"`
