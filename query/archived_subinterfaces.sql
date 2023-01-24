@@ -1,4 +1,4 @@
--- name: GetArchivedSubInterfaces :many
+-- name: GetArchivedSubinterfaces :many
 SELECT *
 FROM archived_subinterfaces
 WHERE (
@@ -48,16 +48,16 @@ WHERE (
 ORDER BY created_on
 LIMIT NULLIF(@limit_q::int, 0) OFFSET NULLIF(@offset_q::int, 0);
 
--- name: GetArchivedSubInterface :one
+-- name: GetArchivedSubinterface :one
 SELECT *
 FROM archived_subinterfaces
 WHERE sifa_id = $1;
 
--- name: CountArchivedSubInterfaces :one
+-- name: CountArchivedSubinterfaces :one
 SELECT COUNT(*)
 FROM archived_subinterfaces;
 
--- name: CreateArchivedSubInterface :one
+-- name: CreateArchivedSubinterface :one
 INSERT INTO archived_subinterfaces (
     ifindex,
     descr,
@@ -84,7 +84,7 @@ VALUES (
   )
 RETURNING *;
 
--- name: UpdateArchivedSubInterface :one
+-- name: UpdateArchivedSubinterface :one
 UPDATE archived_subinterfaces
 SET ifindex = $2,
   descr = $3,
@@ -99,6 +99,6 @@ SET ifindex = $2,
 WHERE sifa_id = $1
 RETURNING *;
 
--- name: DeleteArchivedSubInterface :exec
+-- name: DeleteArchivedSubinterface :exec
 DELETE FROM archived_subinterfaces
 WHERE sifa_id = $1;

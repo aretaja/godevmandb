@@ -13,19 +13,19 @@ import (
 	"github.com/jackc/pgtype"
 )
 
-const CountArchivedSubInterfaces = `-- name: CountArchivedSubInterfaces :one
+const CountArchivedSubinterfaces = `-- name: CountArchivedSubinterfaces :one
 SELECT COUNT(*)
 FROM archived_subinterfaces
 `
 
-func (q *Queries) CountArchivedSubInterfaces(ctx context.Context) (int64, error) {
-	row := q.db.QueryRow(ctx, CountArchivedSubInterfaces)
+func (q *Queries) CountArchivedSubinterfaces(ctx context.Context) (int64, error) {
+	row := q.db.QueryRow(ctx, CountArchivedSubinterfaces)
 	var count int64
 	err := row.Scan(&count)
 	return count, err
 }
 
-const CreateArchivedSubInterface = `-- name: CreateArchivedSubInterface :one
+const CreateArchivedSubinterface = `-- name: CreateArchivedSubinterface :one
 INSERT INTO archived_subinterfaces (
     ifindex,
     descr,
@@ -53,7 +53,7 @@ VALUES (
 RETURNING sifa_id, ifindex, descr, parent_descr, alias, type, mac, hostname, host_ip4, host_ip6, notes, updated_on, created_on
 `
 
-type CreateArchivedSubInterfaceParams struct {
+type CreateArchivedSubinterfaceParams struct {
 	Ifindex     sql.NullInt64  `json:"ifindex"`
 	Descr       string         `json:"descr"`
 	ParentDescr sql.NullString `json:"parent_descr"`
@@ -66,8 +66,8 @@ type CreateArchivedSubInterfaceParams struct {
 	Notes       sql.NullString `json:"notes"`
 }
 
-func (q *Queries) CreateArchivedSubInterface(ctx context.Context, arg CreateArchivedSubInterfaceParams) (ArchivedSubinterface, error) {
-	row := q.db.QueryRow(ctx, CreateArchivedSubInterface,
+func (q *Queries) CreateArchivedSubinterface(ctx context.Context, arg CreateArchivedSubinterfaceParams) (ArchivedSubinterface, error) {
+	row := q.db.QueryRow(ctx, CreateArchivedSubinterface,
 		arg.Ifindex,
 		arg.Descr,
 		arg.ParentDescr,
@@ -98,24 +98,24 @@ func (q *Queries) CreateArchivedSubInterface(ctx context.Context, arg CreateArch
 	return i, err
 }
 
-const DeleteArchivedSubInterface = `-- name: DeleteArchivedSubInterface :exec
+const DeleteArchivedSubinterface = `-- name: DeleteArchivedSubinterface :exec
 DELETE FROM archived_subinterfaces
 WHERE sifa_id = $1
 `
 
-func (q *Queries) DeleteArchivedSubInterface(ctx context.Context, sifaID int64) error {
-	_, err := q.db.Exec(ctx, DeleteArchivedSubInterface, sifaID)
+func (q *Queries) DeleteArchivedSubinterface(ctx context.Context, sifaID int64) error {
+	_, err := q.db.Exec(ctx, DeleteArchivedSubinterface, sifaID)
 	return err
 }
 
-const GetArchivedSubInterface = `-- name: GetArchivedSubInterface :one
+const GetArchivedSubinterface = `-- name: GetArchivedSubinterface :one
 SELECT sifa_id, ifindex, descr, parent_descr, alias, type, mac, hostname, host_ip4, host_ip6, notes, updated_on, created_on
 FROM archived_subinterfaces
 WHERE sifa_id = $1
 `
 
-func (q *Queries) GetArchivedSubInterface(ctx context.Context, sifaID int64) (ArchivedSubinterface, error) {
-	row := q.db.QueryRow(ctx, GetArchivedSubInterface, sifaID)
+func (q *Queries) GetArchivedSubinterface(ctx context.Context, sifaID int64) (ArchivedSubinterface, error) {
+	row := q.db.QueryRow(ctx, GetArchivedSubinterface, sifaID)
 	var i ArchivedSubinterface
 	err := row.Scan(
 		&i.SifaID,
@@ -135,7 +135,7 @@ func (q *Queries) GetArchivedSubInterface(ctx context.Context, sifaID int64) (Ar
 	return i, err
 }
 
-const GetArchivedSubInterfaces = `-- name: GetArchivedSubInterfaces :many
+const GetArchivedSubinterfaces = `-- name: GetArchivedSubinterfaces :many
 SELECT sifa_id, ifindex, descr, parent_descr, alias, type, mac, hostname, host_ip4, host_ip6, notes, updated_on, created_on
 FROM archived_subinterfaces
 WHERE (
@@ -186,7 +186,7 @@ ORDER BY created_on
 LIMIT NULLIF($13::int, 0) OFFSET NULLIF($12::int, 0)
 `
 
-type GetArchivedSubInterfacesParams struct {
+type GetArchivedSubinterfacesParams struct {
 	UpdatedGe time.Time      `json:"updated_ge"`
 	UpdatedLe time.Time      `json:"updated_le"`
 	CreatedGe time.Time      `json:"created_ge"`
@@ -202,8 +202,8 @@ type GetArchivedSubInterfacesParams struct {
 	LimitQ    int32          `json:"limit_q"`
 }
 
-func (q *Queries) GetArchivedSubInterfaces(ctx context.Context, arg GetArchivedSubInterfacesParams) ([]ArchivedSubinterface, error) {
-	rows, err := q.db.Query(ctx, GetArchivedSubInterfaces,
+func (q *Queries) GetArchivedSubinterfaces(ctx context.Context, arg GetArchivedSubinterfacesParams) ([]ArchivedSubinterface, error) {
+	rows, err := q.db.Query(ctx, GetArchivedSubinterfaces,
 		arg.UpdatedGe,
 		arg.UpdatedLe,
 		arg.CreatedGe,
@@ -250,7 +250,7 @@ func (q *Queries) GetArchivedSubInterfaces(ctx context.Context, arg GetArchivedS
 	return items, nil
 }
 
-const UpdateArchivedSubInterface = `-- name: UpdateArchivedSubInterface :one
+const UpdateArchivedSubinterface = `-- name: UpdateArchivedSubinterface :one
 UPDATE archived_subinterfaces
 SET ifindex = $2,
   descr = $3,
@@ -266,7 +266,7 @@ WHERE sifa_id = $1
 RETURNING sifa_id, ifindex, descr, parent_descr, alias, type, mac, hostname, host_ip4, host_ip6, notes, updated_on, created_on
 `
 
-type UpdateArchivedSubInterfaceParams struct {
+type UpdateArchivedSubinterfaceParams struct {
 	SifaID      int64          `json:"sifa_id"`
 	Ifindex     sql.NullInt64  `json:"ifindex"`
 	Descr       string         `json:"descr"`
@@ -280,8 +280,8 @@ type UpdateArchivedSubInterfaceParams struct {
 	Notes       sql.NullString `json:"notes"`
 }
 
-func (q *Queries) UpdateArchivedSubInterface(ctx context.Context, arg UpdateArchivedSubInterfaceParams) (ArchivedSubinterface, error) {
-	row := q.db.QueryRow(ctx, UpdateArchivedSubInterface,
+func (q *Queries) UpdateArchivedSubinterface(ctx context.Context, arg UpdateArchivedSubinterfaceParams) (ArchivedSubinterface, error) {
+	row := q.db.QueryRow(ctx, UpdateArchivedSubinterface,
 		arg.SifaID,
 		arg.Ifindex,
 		arg.Descr,
