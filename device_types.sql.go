@@ -36,7 +36,7 @@ RETURNING sys_id, class_id, manufacturer, model, hc, snmp_ver, updated_on, creat
 
 type CreateDeviceTypeParams struct {
 	SysID        string `json:"sys_id"`
-	ClassID      int32  `json:"class_id"`
+	ClassID      int64  `json:"class_id"`
 	Manufacturer string `json:"manufacturer"`
 	Model        string `json:"model"`
 	Hc           bool   `json:"hc"`
@@ -229,7 +229,7 @@ RETURNING sys_id, class_id, manufacturer, model, hc, snmp_ver, updated_on, creat
 
 type UpdateDeviceTypeParams struct {
 	SysID        string `json:"sys_id"`
-	ClassID      int32  `json:"class_id"`
+	ClassID      int64  `json:"class_id"`
 	Manufacturer string `json:"manufacturer"`
 	Model        string `json:"model"`
 	Hc           bool   `json:"hc"`

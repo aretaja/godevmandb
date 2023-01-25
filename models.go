@@ -370,7 +370,7 @@ type DeviceState struct {
 type DeviceType struct {
 	// snmp sysObjectId or some unique identifier if snmp is not supported
 	SysID        string `json:"sys_id"`
-	ClassID      int32  `json:"class_id"`
+	ClassID      int64  `json:"class_id"`
 	Manufacturer string `json:"manufacturer"`
 	Model        string `json:"model"`
 	Hc           bool   `json:"hc"`
@@ -495,7 +495,7 @@ type RlNbr struct {
 
 type Site struct {
 	SiteID    int64           `json:"site_id"`
-	CountryID sql.NullInt64   `json:"country_id"`
+	CountryID int64           `json:"country_id"`
 	Uident    sql.NullString  `json:"uident"`
 	Descr     string          `json:"descr"`
 	Latitude  sql.NullFloat64 `json:"latitude"`

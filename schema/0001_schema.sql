@@ -661,7 +661,7 @@ ALTER TABLE public.device_states OWNER TO godevman;
 
 CREATE TABLE public.device_types (
     sys_id character varying NOT NULL,
-    class_id integer NOT NULL,
+    class_id bigint NOT NULL,
     manufacturer character varying NOT NULL,
     model character varying NOT NULL,
     hc boolean DEFAULT false NOT NULL,
@@ -1102,7 +1102,7 @@ ALTER TABLE public.sites_site_id_seq OWNER TO godevman;
 
 CREATE TABLE public.sites (
     site_id bigint DEFAULT nextval('public.sites_site_id_seq'::regclass) NOT NULL,
-    country_id bigint,
+    country_id bigint NOT NULL,
     uident character varying,
     descr character varying NOT NULL,
     latitude real,

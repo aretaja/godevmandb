@@ -76,7 +76,7 @@ ORDER BY manufacturer,
 `
 
 // Relations
-func (q *Queries) GetDeviceClassDeviceTypes(ctx context.Context, classID int32) ([]DeviceType, error) {
+func (q *Queries) GetDeviceClassDeviceTypes(ctx context.Context, classID int64) ([]DeviceType, error) {
 	rows, err := q.db.Query(ctx, GetDeviceClassDeviceTypes, classID)
 	if err != nil {
 		return nil, err

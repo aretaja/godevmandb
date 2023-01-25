@@ -51,7 +51,7 @@ RETURNING site_id, country_id, uident, descr, latitude, longitude, area, addr, n
 `
 
 type CreateSiteParams struct {
-	CountryID sql.NullInt64   `json:"country_id"`
+	CountryID int64           `json:"country_id"`
 	Uident    sql.NullString  `json:"uident"`
 	Descr     string          `json:"descr"`
 	Latitude  sql.NullFloat64 `json:"latitude"`
@@ -313,7 +313,7 @@ RETURNING site_id, country_id, uident, descr, latitude, longitude, area, addr, n
 
 type UpdateSiteParams struct {
 	SiteID    int64           `json:"site_id"`
-	CountryID sql.NullInt64   `json:"country_id"`
+	CountryID int64           `json:"country_id"`
 	Uident    sql.NullString  `json:"uident"`
 	Descr     string          `json:"descr"`
 	Latitude  sql.NullFloat64 `json:"latitude"`

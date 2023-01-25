@@ -1,9 +1,32 @@
 -- name: GetCountries :many
 SELECT *
 FROM countries
-ORDER BY descr
-LIMIT $1
-OFFSET $2;
+WHERE (
+    @updated_ge::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR updated_on >= @updated_ge
+  )
+  AND (
+    @updated_le::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR updated_on <= @updated_le
+  )
+  AND (
+    @created_ge::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR created_on >= @created_ge
+  )
+  AND (
+    @created_le::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR created_on <= @created_le
+  )
+  AND (
+    @descr_f::text = ''
+    OR descr LIKE @descr_f
+  )
+  AND (
+    @code_f::text = ''
+    OR code LIKE @code_f
+  )
+ORDER BY created_on
+LIMIT NULLIF(@limit_q::int, 0) OFFSET NULLIF(@offset_q::int, 0);
 
 -- name: GetCountry :one
 SELECT *
