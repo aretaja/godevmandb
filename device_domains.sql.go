@@ -7,6 +7,7 @@ package godevmandb
 
 import (
 	"context"
+	"time"
 )
 
 const CountDeviceDomains = `-- name: CountDeviceDomains :one
@@ -159,18 +160,50 @@ func (q *Queries) GetDeviceDomainUserAuthzs(ctx context.Context, domID int64) ([
 const GetDeviceDomains = `-- name: GetDeviceDomains :many
 SELECT dom_id, descr, updated_on, created_on
 FROM device_domains
-ORDER BY descr
-LIMIT $1
-OFFSET $2
+WHERE (
+    $1::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR updated_on >= $1
+  )
+  AND (
+    $2::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR updated_on <= $2
+  )
+  AND (
+    $3::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR created_on >= $3
+  )
+  AND (
+    $4::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR created_on <= $4
+  )
+  AND (
+    $5::text = ''
+    OR descr LIKE $5
+  )
+ORDER BY created_on
+LIMIT NULLIF($7::int, 0) OFFSET NULLIF($6::int, 0)
 `
 
 type GetDeviceDomainsParams struct {
-	Limit  int32 `json:"limit"`
-	Offset int32 `json:"offset"`
+	UpdatedGe time.Time `json:"updated_ge"`
+	UpdatedLe time.Time `json:"updated_le"`
+	CreatedGe time.Time `json:"created_ge"`
+	CreatedLe time.Time `json:"created_le"`
+	DescrF    string    `json:"descr_f"`
+	OffsetQ   int32     `json:"offset_q"`
+	LimitQ    int32     `json:"limit_q"`
 }
 
 func (q *Queries) GetDeviceDomains(ctx context.Context, arg GetDeviceDomainsParams) ([]DeviceDomain, error) {
-	rows, err := q.db.Query(ctx, GetDeviceDomains, arg.Limit, arg.Offset)
+	rows, err := q.db.Query(ctx, GetDeviceDomains,
+		arg.UpdatedGe,
+		arg.UpdatedLe,
+		arg.CreatedGe,
+		arg.CreatedLe,
+		arg.DescrF,
+		arg.OffsetQ,
+		arg.LimitQ,
+	)
 	if err != nil {
 		return nil, err
 	}
