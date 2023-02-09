@@ -1,9 +1,36 @@
 -- name: GetDeviceTypes :many
 SELECT *
 FROM device_types
-ORDER BY manufacturer, model
-LIMIT $1
-OFFSET $2;
+WHERE (
+    @updated_ge::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR updated_on >= @updated_ge
+  )
+  AND (
+    @updated_le::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR updated_on <= @updated_le
+  )
+  AND (
+    @created_ge::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR created_on >= @created_ge
+  )
+  AND (
+    @created_le::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR created_on <= @created_le
+  )
+  AND (
+    @sys_id_f::text = ''
+    OR sys_id ILIKE @sys_id_f
+  )
+  AND (
+    @manufacturer_f::text = ''
+    OR manufacturer ILIKE @manufacturer_f
+  )
+  AND (
+    @model_f::text = ''
+    OR model ILIKE @model_f
+  )
+ORDER BY created_on
+LIMIT NULLIF(@limit_q::int, 0) OFFSET NULLIF(@offset_q::int, 0);
 
 -- name: GetDeviceType :one
 SELECT *

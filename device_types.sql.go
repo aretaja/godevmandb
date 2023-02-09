@@ -7,6 +7,7 @@ package godevmandb
 
 import (
 	"context"
+	"time"
 )
 
 const CountDeviceTypes = `-- name: CountDeviceTypes :one
@@ -177,18 +178,62 @@ func (q *Queries) GetDeviceTypeDevices(ctx context.Context, sysID string) ([]Dev
 const GetDeviceTypes = `-- name: GetDeviceTypes :many
 SELECT sys_id, class_id, manufacturer, model, hc, snmp_ver, updated_on, created_on
 FROM device_types
-ORDER BY manufacturer, model
-LIMIT $1
-OFFSET $2
+WHERE (
+    $1::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR updated_on >= $1
+  )
+  AND (
+    $2::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR updated_on <= $2
+  )
+  AND (
+    $3::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR created_on >= $3
+  )
+  AND (
+    $4::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR created_on <= $4
+  )
+  AND (
+    $5::text = ''
+    OR sys_id ILIKE $5
+  )
+  AND (
+    $6::text = ''
+    OR manufacturer ILIKE $6
+  )
+  AND (
+    $7::text = ''
+    OR model ILIKE $7
+  )
+ORDER BY created_on
+LIMIT NULLIF($9::int, 0) OFFSET NULLIF($8::int, 0)
 `
 
 type GetDeviceTypesParams struct {
-	Limit  int32 `json:"limit"`
-	Offset int32 `json:"offset"`
+	UpdatedGe     time.Time `json:"updated_ge"`
+	UpdatedLe     time.Time `json:"updated_le"`
+	CreatedGe     time.Time `json:"created_ge"`
+	CreatedLe     time.Time `json:"created_le"`
+	SysIDF        string    `json:"sys_id_f"`
+	ManufacturerF string    `json:"manufacturer_f"`
+	ModelF        string    `json:"model_f"`
+	OffsetQ       int32     `json:"offset_q"`
+	LimitQ        int32     `json:"limit_q"`
 }
 
 func (q *Queries) GetDeviceTypes(ctx context.Context, arg GetDeviceTypesParams) ([]DeviceType, error) {
-	rows, err := q.db.Query(ctx, GetDeviceTypes, arg.Limit, arg.Offset)
+	rows, err := q.db.Query(ctx, GetDeviceTypes,
+		arg.UpdatedGe,
+		arg.UpdatedLe,
+		arg.CreatedGe,
+		arg.CreatedLe,
+		arg.SysIDF,
+		arg.ManufacturerF,
+		arg.ModelF,
+		arg.OffsetQ,
+		arg.LimitQ,
+	)
 	if err != nil {
 		return nil, err
 	}
