@@ -7,6 +7,7 @@ package godevmandb
 
 import (
 	"context"
+	"time"
 )
 
 const CountDeviceCredentials = `-- name: CountDeviceCredentials :one
@@ -123,18 +124,50 @@ func (q *Queries) GetDeviceCredentialDevice(ctx context.Context, credID int64) (
 const GetDeviceCredentials = `-- name: GetDeviceCredentials :many
 SELECT cred_id, dev_id, username, enc_secret, updated_on, created_on
 FROM device_credentials
-ORDER BY username
-LIMIT $1
-OFFSET $2
+WHERE (
+    $1::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR updated_on >= $1
+  )
+  AND (
+    $2::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR updated_on <= $2
+  )
+  AND (
+    $3::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR created_on >= $3
+  )
+  AND (
+    $4::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR created_on <= $4
+  )
+  AND (
+    $5::text = ''
+    OR username ILIKE $5
+  )
+ORDER BY created_on
+LIMIT NULLIF($7::int, 0) OFFSET NULLIF($6::int, 0)
 `
 
 type GetDeviceCredentialsParams struct {
-	Limit  int32 `json:"limit"`
-	Offset int32 `json:"offset"`
+	UpdatedGe time.Time `json:"updated_ge"`
+	UpdatedLe time.Time `json:"updated_le"`
+	CreatedGe time.Time `json:"created_ge"`
+	CreatedLe time.Time `json:"created_le"`
+	UsernameF string    `json:"username_f"`
+	OffsetQ   int32     `json:"offset_q"`
+	LimitQ    int32     `json:"limit_q"`
 }
 
 func (q *Queries) GetDeviceCredentials(ctx context.Context, arg GetDeviceCredentialsParams) ([]DeviceCredential, error) {
-	rows, err := q.db.Query(ctx, GetDeviceCredentials, arg.Limit, arg.Offset)
+	rows, err := q.db.Query(ctx, GetDeviceCredentials,
+		arg.UpdatedGe,
+		arg.UpdatedLe,
+		arg.CreatedGe,
+		arg.CreatedLe,
+		arg.UsernameF,
+		arg.OffsetQ,
+		arg.LimitQ,
+	)
 	if err != nil {
 		return nil, err
 	}
