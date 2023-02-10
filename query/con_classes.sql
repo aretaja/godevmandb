@@ -19,7 +19,7 @@ WHERE (
   )
   AND (
     @descr_f::text = ''
-    OR descr LIKE @descr_f
+    OR descr ILIKE @descr_f
   )
 ORDER BY created_on
 LIMIT NULLIF(@limit_q::int, 0) OFFSET NULLIF(@offset_q::int, 0);

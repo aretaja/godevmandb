@@ -19,7 +19,7 @@ WHERE (
   )
   AND (
     @serial_nr_f::text = ''
-    OR serial_nr LIKE @serial_nr_f
+    OR serial_nr ILIKE @serial_nr_f
   )
 ORDER BY created_on
 LIMIT NULLIF(@limit_q::int, 0) OFFSET NULLIF(@offset_q::int, 0);

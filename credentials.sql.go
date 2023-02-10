@@ -100,7 +100,7 @@ WHERE (
   )
   AND (
     $5::text = ''
-    OR label LIKE $5
+    OR label ILIKE $5
   )
 ORDER BY created_on
 LIMIT NULLIF($7::int, 0) OFFSET NULLIF($6::int, 0)

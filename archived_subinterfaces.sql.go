@@ -160,7 +160,7 @@ WHERE (
   )
   AND (
     $6::text = ''
-    OR hostname LIKE $6
+    OR hostname ILIKE $6
   )
   AND (
     $7::inet IS NULL
@@ -172,11 +172,11 @@ WHERE (
   )
   AND (
     $9::text = ''
-    OR descr LIKE $9
+    OR descr ILIKE $9
   )
   AND (
     $10::text IS NULL
-    OR alias LIKE $10
+    OR alias ILIKE $10
   )
   AND (
     $11::macaddr IS NULL

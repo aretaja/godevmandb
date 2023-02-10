@@ -19,7 +19,7 @@ WHERE (
   )
   AND (
     @label_f::text = ''
-    OR label LIKE @label_f
+    OR label ILIKE @label_f
   )
 ORDER BY created_on
 LIMIT NULLIF(@limit_q::int, 0) OFFSET NULLIF(@offset_q::int, 0);

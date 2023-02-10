@@ -87,7 +87,7 @@ WHERE (
   )
   AND (
     $5::text = ''
-    OR serial_nr LIKE $5
+    OR serial_nr ILIKE $5
   )
 ORDER BY created_on
 LIMIT NULLIF($7::int, 0) OFFSET NULLIF($6::int, 0)

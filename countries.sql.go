@@ -77,11 +77,11 @@ WHERE (
   )
   AND (
     $5::text = ''
-    OR descr LIKE $5
+    OR descr ILIKE $5
   )
   AND (
     $6::text = ''
-    OR code LIKE $6
+    OR code ILIKE $6
   )
 ORDER BY created_on
 LIMIT NULLIF($8::int, 0) OFFSET NULLIF($7::int, 0)

@@ -19,7 +19,7 @@ WHERE (
   )
   AND (
     @hint_f::text = ''
-    OR hint LIKE @hint_f
+    OR hint ILIKE @hint_f
   )
 ORDER BY created_on
 LIMIT NULLIF(@limit_q::int, 0) OFFSET NULLIF(@offset_q::int, 0);

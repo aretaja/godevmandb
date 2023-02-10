@@ -19,11 +19,11 @@ WHERE (
   )
   AND (
     @descr_f::text = ''
-    OR descr LIKE @descr_f
+    OR descr ILIKE @descr_f
   )
   AND (
     @code_f::text = ''
-    OR code LIKE @code_f
+    OR code ILIKE @code_f
   )
 ORDER BY created_on
 LIMIT NULLIF(@limit_q::int, 0) OFFSET NULLIF(@offset_q::int, 0);

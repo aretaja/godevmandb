@@ -23,7 +23,7 @@ WHERE (
   )
   AND (
     @hostname_f::text = ''
-    OR hostname LIKE @hostname_f
+    OR hostname ILIKE @hostname_f
   )
   AND (
     @host_ip4_f::inet IS NULL
@@ -35,11 +35,11 @@ WHERE (
   )
   AND (
     @descr_f::text = ''
-    OR descr LIKE @descr_f
+    OR descr ILIKE @descr_f
   )
   AND (
     sqlc.narg('alias_f')::text IS NULL
-    OR alias LIKE sqlc.narg('alias_f')
+    OR alias ILIKE sqlc.narg('alias_f')
   )
   AND (
     @mac_f::macaddr IS NULL
