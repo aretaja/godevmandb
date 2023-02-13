@@ -1,9 +1,53 @@
 -- name: GetDevices :many
 SELECT *
 FROM devices
-ORDER BY host_name
-LIMIT $1
-OFFSET $2;
+WHERE (
+    @updated_ge::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR updated_on >= @updated_ge
+  )
+  AND (
+    @updated_le::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR updated_on <= @updated_le
+  )
+  AND (
+    @created_ge::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR created_on >= @created_ge
+  )
+  AND (
+    @created_le::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR created_on <= @created_le
+  )
+  AND (
+    @sys_id_f::text = ''
+    OR sys_id ILIKE @sys_id_f
+  )
+  AND (
+    @host_name_f::text = ''
+    OR host_name ILIKE @host_name_f
+  )
+  AND (
+    sqlc.narg('sw_version_f')::text IS NULL
+    OR sw_version ILIKE sqlc.narg('sw_version_f')
+  )
+  AND (
+    sqlc.narg('notes_f')::text IS NULL
+    OR notes ILIKE sqlc.narg('notes_f')
+  )
+  AND (
+    sqlc.narg('name_f')::text IS NULL
+    OR host_name ILIKE @name_f
+    OR sys_name ILIKE sqlc.narg('name_f')
+  )
+  AND (
+    @ip4_addr_f::inet IS NULL
+    OR ip4_addr <<= @ip4_addr_f
+  )
+  AND (
+    @ip6_addr_f::inet IS NULL
+    OR ip6_addr <<= @ip6_addr_f
+  )
+ORDER BY created_on
+LIMIT NULLIF(@limit_q::int, 0) OFFSET NULLIF(@offset_q::int, 0);
 
 -- name: GetDevice :one
 SELECT *

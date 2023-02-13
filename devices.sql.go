@@ -8,6 +8,7 @@ package godevmandb
 import (
 	"context"
 	"database/sql"
+	"time"
 
 	"github.com/jackc/pgtype"
 )
@@ -905,18 +906,87 @@ func (q *Queries) GetDeviceXconnects(ctx context.Context, devID int64) ([]Xconne
 const GetDevices = `-- name: GetDevices :many
 SELECT dev_id, site_id, dom_id, snmp_main_id, snmp_ro_id, parent, sys_id, ip4_addr, ip6_addr, host_name, sys_name, sys_location, sys_contact, sw_version, ext_model, installed, monitor, graph, backup, source, type_changed, backup_failed, validation_failed, unresponsive, notes, updated_on, created_on
 FROM devices
-ORDER BY host_name
-LIMIT $1
-OFFSET $2
+WHERE (
+    $1::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR updated_on >= $1
+  )
+  AND (
+    $2::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR updated_on <= $2
+  )
+  AND (
+    $3::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR created_on >= $3
+  )
+  AND (
+    $4::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR created_on <= $4
+  )
+  AND (
+    $5::text = ''
+    OR sys_id ILIKE $5
+  )
+  AND (
+    $6::text = ''
+    OR host_name ILIKE $6
+  )
+  AND (
+    $7::text IS NULL
+    OR sw_version ILIKE $7
+  )
+  AND (
+    $8::text IS NULL
+    OR notes ILIKE $8
+  )
+  AND (
+    $9::text IS NULL
+    OR host_name ILIKE $9
+    OR sys_name ILIKE $9
+  )
+  AND (
+    $10::inet IS NULL
+    OR ip4_addr <<= $10
+  )
+  AND (
+    $11::inet IS NULL
+    OR ip6_addr <<= $11
+  )
+ORDER BY created_on
+LIMIT NULLIF($13::int, 0) OFFSET NULLIF($12::int, 0)
 `
 
 type GetDevicesParams struct {
-	Limit  int32 `json:"limit"`
-	Offset int32 `json:"offset"`
+	UpdatedGe  time.Time      `json:"updated_ge"`
+	UpdatedLe  time.Time      `json:"updated_le"`
+	CreatedGe  time.Time      `json:"created_ge"`
+	CreatedLe  time.Time      `json:"created_le"`
+	SysIDF     string         `json:"sys_id_f"`
+	HostNameF  string         `json:"host_name_f"`
+	SwVersionF sql.NullString `json:"sw_version_f"`
+	NotesF     sql.NullString `json:"notes_f"`
+	NameF      sql.NullString `json:"name_f"`
+	Ip4AddrF   pgtype.Inet    `json:"ip4_addr_f"`
+	Ip6AddrF   pgtype.Inet    `json:"ip6_addr_f"`
+	OffsetQ    int32          `json:"offset_q"`
+	LimitQ     int32          `json:"limit_q"`
 }
 
 func (q *Queries) GetDevices(ctx context.Context, arg GetDevicesParams) ([]Device, error) {
-	rows, err := q.db.Query(ctx, GetDevices, arg.Limit, arg.Offset)
+	rows, err := q.db.Query(ctx, GetDevices,
+		arg.UpdatedGe,
+		arg.UpdatedLe,
+		arg.CreatedGe,
+		arg.CreatedLe,
+		arg.SysIDF,
+		arg.HostNameF,
+		arg.SwVersionF,
+		arg.NotesF,
+		arg.NameF,
+		arg.Ip4AddrF,
+		arg.Ip6AddrF,
+		arg.OffsetQ,
+		arg.LimitQ,
+	)
 	if err != nil {
 		return nil, err
 	}
