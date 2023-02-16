@@ -7,7 +7,6 @@ package godevmandb
 
 import (
 	"context"
-	"database/sql"
 	"time"
 )
 
@@ -30,8 +29,8 @@ RETURNING con_prov_id, descr, notes, updated_on, created_on
 `
 
 type CreateConProviderParams struct {
-	Descr string         `json:"descr"`
-	Notes sql.NullString `json:"notes"`
+	Descr string  `json:"descr"`
+	Notes *string `json:"notes"`
 }
 
 func (q *Queries) CreateConProvider(ctx context.Context, arg CreateConProviderParams) (ConProvider, error) {
@@ -195,9 +194,9 @@ RETURNING con_prov_id, descr, notes, updated_on, created_on
 `
 
 type UpdateConProviderParams struct {
-	ConProvID int64          `json:"con_prov_id"`
-	Descr     string         `json:"descr"`
-	Notes     sql.NullString `json:"notes"`
+	ConProvID int64   `json:"con_prov_id"`
+	Descr     string  `json:"descr"`
+	Notes     *string `json:"notes"`
 }
 
 func (q *Queries) UpdateConProvider(ctx context.Context, arg UpdateConProviderParams) (ConProvider, error) {

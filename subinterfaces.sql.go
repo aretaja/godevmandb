@@ -7,7 +7,6 @@ package godevmandb
 
 import (
 	"context"
-	"database/sql"
 
 	"github.com/jackc/pgtype"
 )
@@ -53,16 +52,16 @@ RETURNING sif_id, if_id, ifindex, descr, alias, oper, adm, speed, type_enum, mac
 `
 
 type CreateSubinterfaceParams struct {
-	IfID     sql.NullInt64  `json:"if_id"`
-	Ifindex  sql.NullInt64  `json:"ifindex"`
+	IfID     *int64         `json:"if_id"`
+	Ifindex  *int64         `json:"ifindex"`
 	Descr    string         `json:"descr"`
-	Alias    sql.NullString `json:"alias"`
-	Oper     sql.NullInt16  `json:"oper"`
-	Adm      sql.NullInt16  `json:"adm"`
-	Speed    sql.NullInt64  `json:"speed"`
-	TypeEnum sql.NullString `json:"type_enum"`
+	Alias    *string        `json:"alias"`
+	Oper     *int16         `json:"oper"`
+	Adm      *int16         `json:"adm"`
+	Speed    *int64         `json:"speed"`
+	TypeEnum *string        `json:"type_enum"`
 	Mac      pgtype.Macaddr `json:"mac"`
-	Notes    sql.NullString `json:"notes"`
+	Notes    *string        `json:"notes"`
 }
 
 func (q *Queries) CreateSubinterface(ctx context.Context, arg CreateSubinterfaceParams) (Subinterface, error) {
@@ -236,16 +235,16 @@ RETURNING sif_id, if_id, ifindex, descr, alias, oper, adm, speed, type_enum, mac
 
 type UpdateSubinterfaceParams struct {
 	SifID    int64          `json:"sif_id"`
-	IfID     sql.NullInt64  `json:"if_id"`
-	Ifindex  sql.NullInt64  `json:"ifindex"`
+	IfID     *int64         `json:"if_id"`
+	Ifindex  *int64         `json:"ifindex"`
 	Descr    string         `json:"descr"`
-	Alias    sql.NullString `json:"alias"`
-	Oper     sql.NullInt16  `json:"oper"`
-	Adm      sql.NullInt16  `json:"adm"`
-	Speed    sql.NullInt64  `json:"speed"`
-	TypeEnum sql.NullString `json:"type_enum"`
+	Alias    *string        `json:"alias"`
+	Oper     *int16         `json:"oper"`
+	Adm      *int16         `json:"adm"`
+	Speed    *int64         `json:"speed"`
+	TypeEnum *string        `json:"type_enum"`
 	Mac      pgtype.Macaddr `json:"mac"`
-	Notes    sql.NullString `json:"notes"`
+	Notes    *string        `json:"notes"`
 }
 
 func (q *Queries) UpdateSubinterface(ctx context.Context, arg UpdateSubinterfaceParams) (Subinterface, error) {

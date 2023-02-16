@@ -7,7 +7,6 @@ package godevmandb
 
 import (
 	"context"
-	"database/sql"
 
 	"github.com/jackc/pgtype"
 )
@@ -69,19 +68,19 @@ RETURNING if_id, con_id, parent, otn_if_id, dev_id, ent_id, ifindex, descr, alia
 `
 
 type CreateInterfaceParams struct {
-	ConID      sql.NullInt64  `json:"con_id"`
-	Parent     sql.NullInt64  `json:"parent"`
-	OtnIfID    sql.NullInt64  `json:"otn_if_id"`
+	ConID      *int64         `json:"con_id"`
+	Parent     *int64         `json:"parent"`
+	OtnIfID    *int64         `json:"otn_if_id"`
 	DevID      int64          `json:"dev_id"`
-	EntID      sql.NullInt64  `json:"ent_id"`
-	Ifindex    sql.NullInt64  `json:"ifindex"`
+	EntID      *int64         `json:"ent_id"`
+	Ifindex    *int64         `json:"ifindex"`
 	Descr      string         `json:"descr"`
-	Alias      sql.NullString `json:"alias"`
-	Oper       sql.NullInt16  `json:"oper"`
-	Adm        sql.NullInt16  `json:"adm"`
-	Speed      sql.NullInt64  `json:"speed"`
-	Minspeed   sql.NullInt64  `json:"minspeed"`
-	TypeEnum   sql.NullInt16  `json:"type_enum"`
+	Alias      *string        `json:"alias"`
+	Oper       *int16         `json:"oper"`
+	Adm        *int16         `json:"adm"`
+	Speed      *int64         `json:"speed"`
+	Minspeed   *int64         `json:"minspeed"`
+	TypeEnum   *int16         `json:"type_enum"`
 	Mac        pgtype.Macaddr `json:"mac"`
 	Monstatus  int16          `json:"monstatus"`
 	Monerrors  int16          `json:"monerrors"`
@@ -488,7 +487,7 @@ ORDER BY descr
 `
 
 // Relations
-func (q *Queries) GetInterfaceInterfaceSubinterfaces(ctx context.Context, ifID sql.NullInt64) ([]Subinterface, error) {
+func (q *Queries) GetInterfaceInterfaceSubinterfaces(ctx context.Context, ifID *int64) ([]Subinterface, error) {
 	rows, err := q.db.Query(ctx, GetInterfaceInterfaceSubinterfaces, ifID)
 	if err != nil {
 		return nil, err
@@ -696,7 +695,7 @@ ORDER BY vc_id
 `
 
 // Relations
-func (q *Queries) GetterfaceInterfaceXconnects(ctx context.Context, ifID sql.NullInt64) ([]Xconnect, error) {
+func (q *Queries) GetterfaceInterfaceXconnects(ctx context.Context, ifID *int64) ([]Xconnect, error) {
 	rows, err := q.db.Query(ctx, GetterfaceInterfaceXconnects, ifID)
 	if err != nil {
 		return nil, err
@@ -758,19 +757,19 @@ RETURNING if_id, con_id, parent, otn_if_id, dev_id, ent_id, ifindex, descr, alia
 
 type UpdateInterfaceParams struct {
 	IfID       int64          `json:"if_id"`
-	ConID      sql.NullInt64  `json:"con_id"`
-	Parent     sql.NullInt64  `json:"parent"`
-	OtnIfID    sql.NullInt64  `json:"otn_if_id"`
+	ConID      *int64         `json:"con_id"`
+	Parent     *int64         `json:"parent"`
+	OtnIfID    *int64         `json:"otn_if_id"`
 	DevID      int64          `json:"dev_id"`
-	EntID      sql.NullInt64  `json:"ent_id"`
-	Ifindex    sql.NullInt64  `json:"ifindex"`
+	EntID      *int64         `json:"ent_id"`
+	Ifindex    *int64         `json:"ifindex"`
 	Descr      string         `json:"descr"`
-	Alias      sql.NullString `json:"alias"`
-	Oper       sql.NullInt16  `json:"oper"`
-	Adm        sql.NullInt16  `json:"adm"`
-	Speed      sql.NullInt64  `json:"speed"`
-	Minspeed   sql.NullInt64  `json:"minspeed"`
-	TypeEnum   sql.NullInt16  `json:"type_enum"`
+	Alias      *string        `json:"alias"`
+	Oper       *int16         `json:"oper"`
+	Adm        *int16         `json:"adm"`
+	Speed      *int64         `json:"speed"`
+	Minspeed   *int64         `json:"minspeed"`
+	TypeEnum   *int16         `json:"type_enum"`
 	Mac        pgtype.Macaddr `json:"mac"`
 	Monstatus  int16          `json:"monstatus"`
 	Monerrors  int16          `json:"monerrors"`

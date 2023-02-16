@@ -7,7 +7,6 @@ package godevmandb
 
 import (
 	"context"
-	"database/sql"
 )
 
 const CountVlans = `-- name: CountVlans :one
@@ -29,9 +28,9 @@ RETURNING v_id, dev_id, vlan, descr, updated_on, created_on
 `
 
 type CreateVlanParams struct {
-	DevID int64          `json:"dev_id"`
-	Vlan  int64          `json:"vlan"`
-	Descr sql.NullString `json:"descr"`
+	DevID int64   `json:"dev_id"`
+	Vlan  int64   `json:"vlan"`
+	Descr *string `json:"descr"`
 }
 
 func (q *Queries) CreateVlan(ctx context.Context, arg CreateVlanParams) (Vlan, error) {
@@ -223,10 +222,10 @@ RETURNING v_id, dev_id, vlan, descr, updated_on, created_on
 `
 
 type UpdateVlanParams struct {
-	VID   int64          `json:"v_id"`
-	DevID int64          `json:"dev_id"`
-	Vlan  int64          `json:"vlan"`
-	Descr sql.NullString `json:"descr"`
+	VID   int64   `json:"v_id"`
+	DevID int64   `json:"dev_id"`
+	Vlan  int64   `json:"vlan"`
+	Descr *string `json:"descr"`
 }
 
 func (q *Queries) UpdateVlan(ctx context.Context, arg UpdateVlanParams) (Vlan, error) {

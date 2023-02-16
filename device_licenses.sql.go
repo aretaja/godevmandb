@@ -7,7 +7,6 @@ package godevmandb
 
 import (
 	"context"
-	"database/sql"
 )
 
 const CountDeviceLicenses = `-- name: CountDeviceLicenses :one
@@ -38,14 +37,14 @@ RETURNING lic_id, dev_id, product, descr, installed, unlocked, tot_inst, used, c
 `
 
 type CreateDeviceLicenseParams struct {
-	DevID     int64          `json:"dev_id"`
-	Product   sql.NullString `json:"product"`
-	Descr     sql.NullString `json:"descr"`
-	Installed sql.NullInt32  `json:"installed"`
-	Unlocked  sql.NullInt32  `json:"unlocked"`
-	TotInst   sql.NullInt32  `json:"tot_inst"`
-	Used      sql.NullInt32  `json:"used"`
-	Condition sql.NullString `json:"condition"`
+	DevID     int64   `json:"dev_id"`
+	Product   *string `json:"product"`
+	Descr     *string `json:"descr"`
+	Installed *int32  `json:"installed"`
+	Unlocked  *int32  `json:"unlocked"`
+	TotInst   *int32  `json:"tot_inst"`
+	Used      *int32  `json:"used"`
+	Condition *string `json:"condition"`
 }
 
 func (q *Queries) CreateDeviceLicense(ctx context.Context, arg CreateDeviceLicenseParams) (DeviceLicense, error) {
@@ -214,15 +213,15 @@ RETURNING lic_id, dev_id, product, descr, installed, unlocked, tot_inst, used, c
 `
 
 type UpdateDeviceLicenseParams struct {
-	LicID     int64          `json:"lic_id"`
-	DevID     int64          `json:"dev_id"`
-	Product   sql.NullString `json:"product"`
-	Descr     sql.NullString `json:"descr"`
-	Installed sql.NullInt32  `json:"installed"`
-	Unlocked  sql.NullInt32  `json:"unlocked"`
-	TotInst   sql.NullInt32  `json:"tot_inst"`
-	Used      sql.NullInt32  `json:"used"`
-	Condition sql.NullString `json:"condition"`
+	LicID     int64   `json:"lic_id"`
+	DevID     int64   `json:"dev_id"`
+	Product   *string `json:"product"`
+	Descr     *string `json:"descr"`
+	Installed *int32  `json:"installed"`
+	Unlocked  *int32  `json:"unlocked"`
+	TotInst   *int32  `json:"tot_inst"`
+	Used      *int32  `json:"used"`
+	Condition *string `json:"condition"`
 }
 
 func (q *Queries) UpdateDeviceLicense(ctx context.Context, arg UpdateDeviceLicenseParams) (DeviceLicense, error) {

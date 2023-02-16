@@ -7,7 +7,6 @@ package godevmandb
 
 import (
 	"context"
-	"database/sql"
 )
 
 const CountEntities = `-- name: CountEntities :one
@@ -57,19 +56,19 @@ RETURNING ent_id, parent_ent_id, snmp_ent_id, dev_id, slot, descr, model, hw_pro
 `
 
 type CreateEntityParams struct {
-	ParentEntID  sql.NullInt64  `json:"parent_ent_id"`
-	SnmpEntID    sql.NullInt64  `json:"snmp_ent_id"`
-	DevID        int64          `json:"dev_id"`
-	Slot         sql.NullString `json:"slot"`
-	Descr        sql.NullString `json:"descr"`
-	Model        sql.NullString `json:"model"`
-	HwProduct    sql.NullString `json:"hw_product"`
-	HwRevision   sql.NullString `json:"hw_revision"`
-	SerialNr     sql.NullString `json:"serial_nr"`
-	SwProduct    sql.NullString `json:"sw_product"`
-	SwRevision   sql.NullString `json:"sw_revision"`
-	Manufacturer sql.NullString `json:"manufacturer"`
-	Physical     bool           `json:"physical"`
+	ParentEntID  *int64  `json:"parent_ent_id"`
+	SnmpEntID    *int64  `json:"snmp_ent_id"`
+	DevID        int64   `json:"dev_id"`
+	Slot         *string `json:"slot"`
+	Descr        *string `json:"descr"`
+	Model        *string `json:"model"`
+	HwProduct    *string `json:"hw_product"`
+	HwRevision   *string `json:"hw_revision"`
+	SerialNr     *string `json:"serial_nr"`
+	SwProduct    *string `json:"sw_product"`
+	SwRevision   *string `json:"sw_revision"`
+	Manufacturer *string `json:"manufacturer"`
+	Physical     bool    `json:"physical"`
 }
 
 func (q *Queries) CreateEntity(ctx context.Context, arg CreateEntityParams) (Entity, error) {
@@ -286,7 +285,7 @@ ORDER BY ifindex
 `
 
 // Relations
-func (q *Queries) GetEntityInterfaces(ctx context.Context, entID sql.NullInt64) ([]Interface, error) {
+func (q *Queries) GetEntityInterfaces(ctx context.Context, entID *int64) ([]Interface, error) {
 	rows, err := q.db.Query(ctx, GetEntityInterfaces, entID)
 	if err != nil {
 		return nil, err
@@ -416,20 +415,20 @@ RETURNING ent_id, parent_ent_id, snmp_ent_id, dev_id, slot, descr, model, hw_pro
 `
 
 type UpdateEntityParams struct {
-	EntID        int64          `json:"ent_id"`
-	ParentEntID  sql.NullInt64  `json:"parent_ent_id"`
-	SnmpEntID    sql.NullInt64  `json:"snmp_ent_id"`
-	DevID        int64          `json:"dev_id"`
-	Slot         sql.NullString `json:"slot"`
-	Descr        sql.NullString `json:"descr"`
-	Model        sql.NullString `json:"model"`
-	HwProduct    sql.NullString `json:"hw_product"`
-	HwRevision   sql.NullString `json:"hw_revision"`
-	SerialNr     sql.NullString `json:"serial_nr"`
-	SwProduct    sql.NullString `json:"sw_product"`
-	SwRevision   sql.NullString `json:"sw_revision"`
-	Manufacturer sql.NullString `json:"manufacturer"`
-	Physical     bool           `json:"physical"`
+	EntID        int64   `json:"ent_id"`
+	ParentEntID  *int64  `json:"parent_ent_id"`
+	SnmpEntID    *int64  `json:"snmp_ent_id"`
+	DevID        int64   `json:"dev_id"`
+	Slot         *string `json:"slot"`
+	Descr        *string `json:"descr"`
+	Model        *string `json:"model"`
+	HwProduct    *string `json:"hw_product"`
+	HwRevision   *string `json:"hw_revision"`
+	SerialNr     *string `json:"serial_nr"`
+	SwProduct    *string `json:"sw_product"`
+	SwRevision   *string `json:"sw_revision"`
+	Manufacturer *string `json:"manufacturer"`
+	Physical     bool    `json:"physical"`
 }
 
 func (q *Queries) UpdateEntity(ctx context.Context, arg UpdateEntityParams) (Entity, error) {

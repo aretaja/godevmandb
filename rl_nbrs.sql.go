@@ -7,7 +7,6 @@ package godevmandb
 
 import (
 	"context"
-	"database/sql"
 )
 
 const CountRlfNbrs = `-- name: CountRlfNbrs :one
@@ -33,9 +32,9 @@ RETURNING nbr_id, dev_id, nbr_ent_id, nbr_sysname, updated_on, created_on
 `
 
 type CreateRlfNbrParams struct {
-	DevID      int64         `json:"dev_id"`
-	NbrEntID   sql.NullInt64 `json:"nbr_ent_id"`
-	NbrSysname string        `json:"nbr_sysname"`
+	DevID      int64  `json:"dev_id"`
+	NbrEntID   *int64 `json:"nbr_ent_id"`
+	NbrSysname string `json:"nbr_sysname"`
 }
 
 func (q *Queries) CreateRlfNbr(ctx context.Context, arg CreateRlfNbrParams) (RlNbr, error) {
@@ -207,10 +206,10 @@ RETURNING nbr_id, dev_id, nbr_ent_id, nbr_sysname, updated_on, created_on
 `
 
 type UpdateRlfNbrParams struct {
-	NbrID      int64         `json:"nbr_id"`
-	DevID      int64         `json:"dev_id"`
-	NbrEntID   sql.NullInt64 `json:"nbr_ent_id"`
-	NbrSysname string        `json:"nbr_sysname"`
+	NbrID      int64  `json:"nbr_id"`
+	DevID      int64  `json:"dev_id"`
+	NbrEntID   *int64 `json:"nbr_ent_id"`
+	NbrSysname string `json:"nbr_sysname"`
 }
 
 func (q *Queries) UpdateRlfNbr(ctx context.Context, arg UpdateRlfNbrParams) (RlNbr, error) {

@@ -7,7 +7,6 @@ package godevmandb
 
 import (
 	"context"
-	"database/sql"
 
 	"github.com/jackc/pgtype"
 )
@@ -37,11 +36,11 @@ RETURNING ip_id, dev_id, ifindex, ip_addr, descr, alias, updated_on, created_on
 `
 
 type CreateIpInterfaceParams struct {
-	DevID   int64          `json:"dev_id"`
-	Ifindex sql.NullInt64  `json:"ifindex"`
-	IpAddr  pgtype.Inet    `json:"ip_addr"`
-	Descr   sql.NullString `json:"descr"`
-	Alias   sql.NullString `json:"alias"`
+	DevID   int64       `json:"dev_id"`
+	Ifindex *int64      `json:"ifindex"`
+	IpAddr  pgtype.Inet `json:"ip_addr"`
+	Descr   *string     `json:"descr"`
+	Alias   *string     `json:"alias"`
 }
 
 func (q *Queries) CreateIpInterface(ctx context.Context, arg CreateIpInterfaceParams) (IpInterface, error) {
@@ -195,12 +194,12 @@ RETURNING ip_id, dev_id, ifindex, ip_addr, descr, alias, updated_on, created_on
 `
 
 type UpdateIpInterfaceParams struct {
-	IpID    int64          `json:"ip_id"`
-	DevID   int64          `json:"dev_id"`
-	Ifindex sql.NullInt64  `json:"ifindex"`
-	IpAddr  pgtype.Inet    `json:"ip_addr"`
-	Descr   sql.NullString `json:"descr"`
-	Alias   sql.NullString `json:"alias"`
+	IpID    int64       `json:"ip_id"`
+	DevID   int64       `json:"dev_id"`
+	Ifindex *int64      `json:"ifindex"`
+	IpAddr  pgtype.Inet `json:"ip_addr"`
+	Descr   *string     `json:"descr"`
+	Alias   *string     `json:"alias"`
 }
 
 func (q *Queries) UpdateIpInterface(ctx context.Context, arg UpdateIpInterfaceParams) (IpInterface, error) {

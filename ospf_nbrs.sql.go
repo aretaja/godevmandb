@@ -7,7 +7,6 @@ package godevmandb
 
 import (
 	"context"
-	"database/sql"
 
 	"github.com/jackc/pgtype"
 )
@@ -35,9 +34,9 @@ RETURNING nbr_id, dev_id, nbr_ip, condition, updated_on, created_on
 `
 
 type CreateOspfNbrParams struct {
-	DevID     int64          `json:"dev_id"`
-	NbrIp     pgtype.Inet    `json:"nbr_ip"`
-	Condition sql.NullString `json:"condition"`
+	DevID     int64       `json:"dev_id"`
+	NbrIp     pgtype.Inet `json:"nbr_ip"`
+	Condition *string     `json:"condition"`
 }
 
 func (q *Queries) CreateOspfNbr(ctx context.Context, arg CreateOspfNbrParams) (OspfNbr, error) {
@@ -177,10 +176,10 @@ RETURNING nbr_id, dev_id, nbr_ip, condition, updated_on, created_on
 `
 
 type UpdateOspfNbrParams struct {
-	NbrID     int64          `json:"nbr_id"`
-	DevID     int64          `json:"dev_id"`
-	NbrIp     pgtype.Inet    `json:"nbr_ip"`
-	Condition sql.NullString `json:"condition"`
+	NbrID     int64       `json:"nbr_id"`
+	DevID     int64       `json:"dev_id"`
+	NbrIp     pgtype.Inet `json:"nbr_ip"`
+	Condition *string     `json:"condition"`
 }
 
 func (q *Queries) UpdateOspfNbr(ctx context.Context, arg UpdateOspfNbrParams) (OspfNbr, error) {

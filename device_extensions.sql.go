@@ -7,7 +7,6 @@ package godevmandb
 
 import (
 	"context"
-	"database/sql"
 )
 
 const CountDeviceExtensions = `-- name: CountDeviceExtensions :one
@@ -29,9 +28,9 @@ RETURNING ext_id, dev_id, field, content, updated_on, created_on
 `
 
 type CreateDeviceExtensionParams struct {
-	DevID   int64          `json:"dev_id"`
-	Field   string         `json:"field"`
-	Content sql.NullString `json:"content"`
+	DevID   int64   `json:"dev_id"`
+	Field   string  `json:"field"`
+	Content *string `json:"content"`
 }
 
 func (q *Queries) CreateDeviceExtension(ctx context.Context, arg CreateDeviceExtensionParams) (DeviceExtension, error) {
@@ -171,10 +170,10 @@ RETURNING ext_id, dev_id, field, content, updated_on, created_on
 `
 
 type UpdateDeviceExtensionParams struct {
-	ExtID   int64          `json:"ext_id"`
-	DevID   int64          `json:"dev_id"`
-	Field   string         `json:"field"`
-	Content sql.NullString `json:"content"`
+	ExtID   int64   `json:"ext_id"`
+	DevID   int64   `json:"dev_id"`
+	Field   string  `json:"field"`
+	Content *string `json:"content"`
 }
 
 func (q *Queries) UpdateDeviceExtension(ctx context.Context, arg UpdateDeviceExtensionParams) (DeviceExtension, error) {

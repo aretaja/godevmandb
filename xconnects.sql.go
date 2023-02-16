@@ -7,7 +7,6 @@ package godevmandb
 
 import (
 	"context"
-	"database/sql"
 
 	"github.com/jackc/pgtype"
 )
@@ -57,18 +56,18 @@ RETURNING xc_id, dev_id, peer_dev_id, if_id, vc_idx, vc_id, peer_ip, peer_ifalia
 `
 
 type CreateXconnectParams struct {
-	DevID       int64          `json:"dev_id"`
-	PeerDevID   sql.NullInt64  `json:"peer_dev_id"`
-	IfID        sql.NullInt64  `json:"if_id"`
-	VcIdx       int64          `json:"vc_idx"`
-	VcID        int64          `json:"vc_id"`
-	PeerIp      pgtype.Inet    `json:"peer_ip"`
-	PeerIfalias sql.NullString `json:"peer_ifalias"`
-	Xname       sql.NullString `json:"xname"`
-	Descr       sql.NullString `json:"descr"`
-	OpStat      sql.NullString `json:"op_stat"`
-	OpStatIn    sql.NullString `json:"op_stat_in"`
-	OpStatOut   sql.NullString `json:"op_stat_out"`
+	DevID       int64       `json:"dev_id"`
+	PeerDevID   *int64      `json:"peer_dev_id"`
+	IfID        *int64      `json:"if_id"`
+	VcIdx       int64       `json:"vc_idx"`
+	VcID        int64       `json:"vc_id"`
+	PeerIp      pgtype.Inet `json:"peer_ip"`
+	PeerIfalias *string     `json:"peer_ifalias"`
+	Xname       *string     `json:"xname"`
+	Descr       *string     `json:"descr"`
+	OpStat      *string     `json:"op_stat"`
+	OpStatIn    *string     `json:"op_stat_in"`
+	OpStatOut   *string     `json:"op_stat_out"`
 }
 
 func (q *Queries) CreateXconnect(ctx context.Context, arg CreateXconnectParams) (Xconnect, error) {
@@ -337,19 +336,19 @@ RETURNING xc_id, dev_id, peer_dev_id, if_id, vc_idx, vc_id, peer_ip, peer_ifalia
 `
 
 type UpdateXconnectParams struct {
-	XcID        int64          `json:"xc_id"`
-	DevID       int64          `json:"dev_id"`
-	PeerDevID   sql.NullInt64  `json:"peer_dev_id"`
-	IfID        sql.NullInt64  `json:"if_id"`
-	VcIdx       int64          `json:"vc_idx"`
-	VcID        int64          `json:"vc_id"`
-	PeerIp      pgtype.Inet    `json:"peer_ip"`
-	PeerIfalias sql.NullString `json:"peer_ifalias"`
-	Xname       sql.NullString `json:"xname"`
-	Descr       sql.NullString `json:"descr"`
-	OpStat      sql.NullString `json:"op_stat"`
-	OpStatIn    sql.NullString `json:"op_stat_in"`
-	OpStatOut   sql.NullString `json:"op_stat_out"`
+	XcID        int64       `json:"xc_id"`
+	DevID       int64       `json:"dev_id"`
+	PeerDevID   *int64      `json:"peer_dev_id"`
+	IfID        *int64      `json:"if_id"`
+	VcIdx       int64       `json:"vc_idx"`
+	VcID        int64       `json:"vc_id"`
+	PeerIp      pgtype.Inet `json:"peer_ip"`
+	PeerIfalias *string     `json:"peer_ifalias"`
+	Xname       *string     `json:"xname"`
+	Descr       *string     `json:"descr"`
+	OpStat      *string     `json:"op_stat"`
+	OpStatIn    *string     `json:"op_stat_in"`
+	OpStatOut   *string     `json:"op_stat_out"`
 }
 
 func (q *Queries) UpdateXconnect(ctx context.Context, arg UpdateXconnectParams) (Xconnect, error) {

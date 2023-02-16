@@ -7,7 +7,6 @@ package godevmandb
 
 import (
 	"context"
-	"database/sql"
 	"time"
 )
 
@@ -30,8 +29,8 @@ RETURNING con_cap_id, descr, notes, updated_on, created_on
 `
 
 type CreateConCapacityParams struct {
-	Descr string         `json:"descr"`
-	Notes sql.NullString `json:"notes"`
+	Descr string  `json:"descr"`
+	Notes *string `json:"notes"`
 }
 
 func (q *Queries) CreateConCapacity(ctx context.Context, arg CreateConCapacityParams) (ConCapacity, error) {
@@ -195,9 +194,9 @@ RETURNING con_cap_id, descr, notes, updated_on, created_on
 `
 
 type UpdateConCapacityParams struct {
-	ConCapID int64          `json:"con_cap_id"`
-	Descr    string         `json:"descr"`
-	Notes    sql.NullString `json:"notes"`
+	ConCapID int64   `json:"con_cap_id"`
+	Descr    string  `json:"descr"`
+	Notes    *string `json:"notes"`
 }
 
 func (q *Queries) UpdateConCapacity(ctx context.Context, arg UpdateConCapacityParams) (ConCapacity, error) {

@@ -7,7 +7,6 @@ package godevmandb
 
 import (
 	"context"
-	"database/sql"
 )
 
 const CountVars = `-- name: CountVars :one
@@ -29,9 +28,9 @@ RETURNING descr, content, notes, updated_on, created_on
 `
 
 type CreateVarParams struct {
-	Descr   string         `json:"descr"`
-	Content sql.NullString `json:"content"`
-	Notes   sql.NullString `json:"notes"`
+	Descr   string  `json:"descr"`
+	Content *string `json:"content"`
+	Notes   *string `json:"notes"`
 }
 
 func (q *Queries) CreateVar(ctx context.Context, arg CreateVarParams) (Var, error) {
@@ -124,9 +123,9 @@ RETURNING descr, content, notes, updated_on, created_on
 `
 
 type UpdateVarParams struct {
-	Descr   string         `json:"descr"`
-	Content sql.NullString `json:"content"`
-	Notes   sql.NullString `json:"notes"`
+	Descr   string  `json:"descr"`
+	Content *string `json:"content"`
+	Notes   *string `json:"notes"`
 }
 
 func (q *Queries) UpdateVar(ctx context.Context, arg UpdateVarParams) (Var, error) {

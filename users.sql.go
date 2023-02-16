@@ -7,7 +7,6 @@ package godevmandb
 
 import (
 	"context"
-	"database/sql"
 )
 
 const CountUsers = `-- name: CountUsers :one
@@ -29,9 +28,9 @@ RETURNING username, userlevel, notes, updated_on, created_on
 `
 
 type CreateUserParams struct {
-	Username  string         `json:"username"`
-	Userlevel int16          `json:"userlevel"`
-	Notes     sql.NullString `json:"notes"`
+	Username  string  `json:"username"`
+	Userlevel int16   `json:"userlevel"`
+	Notes     *string `json:"notes"`
 }
 
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
@@ -194,9 +193,9 @@ RETURNING username, userlevel, notes, updated_on, created_on
 `
 
 type UpdateUserParams struct {
-	Username  string         `json:"username"`
-	Userlevel int16          `json:"userlevel"`
-	Notes     sql.NullString `json:"notes"`
+	Username  string  `json:"username"`
+	Userlevel int16   `json:"userlevel"`
+	Notes     *string `json:"notes"`
 }
 
 func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, error) {

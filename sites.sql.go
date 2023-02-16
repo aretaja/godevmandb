@@ -7,7 +7,6 @@ package godevmandb
 
 import (
 	"context"
-	"database/sql"
 )
 
 const CountSites = `-- name: CountSites :one
@@ -51,16 +50,16 @@ RETURNING site_id, country_id, uident, descr, latitude, longitude, area, addr, n
 `
 
 type CreateSiteParams struct {
-	CountryID int64           `json:"country_id"`
-	Uident    sql.NullString  `json:"uident"`
-	Descr     string          `json:"descr"`
-	Latitude  sql.NullFloat64 `json:"latitude"`
-	Longitude sql.NullFloat64 `json:"longitude"`
-	Area      sql.NullString  `json:"area"`
-	Addr      sql.NullString  `json:"addr"`
-	Notes     sql.NullString  `json:"notes"`
-	ExtID     sql.NullInt64   `json:"ext_id"`
-	ExtName   sql.NullString  `json:"ext_name"`
+	CountryID int64    `json:"country_id"`
+	Uident    *string  `json:"uident"`
+	Descr     string   `json:"descr"`
+	Latitude  *float32 `json:"latitude"`
+	Longitude *float32 `json:"longitude"`
+	Area      *string  `json:"area"`
+	Addr      *string  `json:"addr"`
+	Notes     *string  `json:"notes"`
+	ExtID     *int64   `json:"ext_id"`
+	ExtName   *string  `json:"ext_name"`
 }
 
 func (q *Queries) CreateSite(ctx context.Context, arg CreateSiteParams) (Site, error) {
@@ -200,7 +199,7 @@ ORDER BY host_name
 `
 
 // Relations
-func (q *Queries) GetSiteDevices(ctx context.Context, siteID sql.NullInt64) ([]Device, error) {
+func (q *Queries) GetSiteDevices(ctx context.Context, siteID *int64) ([]Device, error) {
 	rows, err := q.db.Query(ctx, GetSiteDevices, siteID)
 	if err != nil {
 		return nil, err
@@ -312,17 +311,17 @@ RETURNING site_id, country_id, uident, descr, latitude, longitude, area, addr, n
 `
 
 type UpdateSiteParams struct {
-	SiteID    int64           `json:"site_id"`
-	CountryID int64           `json:"country_id"`
-	Uident    sql.NullString  `json:"uident"`
-	Descr     string          `json:"descr"`
-	Latitude  sql.NullFloat64 `json:"latitude"`
-	Longitude sql.NullFloat64 `json:"longitude"`
-	Area      sql.NullString  `json:"area"`
-	Addr      sql.NullString  `json:"addr"`
-	Notes     sql.NullString  `json:"notes"`
-	ExtID     sql.NullInt64   `json:"ext_id"`
-	ExtName   sql.NullString  `json:"ext_name"`
+	SiteID    int64    `json:"site_id"`
+	CountryID int64    `json:"country_id"`
+	Uident    *string  `json:"uident"`
+	Descr     string   `json:"descr"`
+	Latitude  *float32 `json:"latitude"`
+	Longitude *float32 `json:"longitude"`
+	Area      *string  `json:"area"`
+	Addr      *string  `json:"addr"`
+	Notes     *string  `json:"notes"`
+	ExtID     *int64   `json:"ext_id"`
+	ExtName   *string  `json:"ext_name"`
 }
 
 func (q *Queries) UpdateSite(ctx context.Context, arg UpdateSiteParams) (Site, error) {

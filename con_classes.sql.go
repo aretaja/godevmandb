@@ -7,7 +7,6 @@ package godevmandb
 
 import (
 	"context"
-	"database/sql"
 	"time"
 )
 
@@ -30,8 +29,8 @@ RETURNING con_class_id, descr, notes, updated_on, created_on
 `
 
 type CreateConClassParams struct {
-	Descr string         `json:"descr"`
-	Notes sql.NullString `json:"notes"`
+	Descr string  `json:"descr"`
+	Notes *string `json:"notes"`
 }
 
 func (q *Queries) CreateConClass(ctx context.Context, arg CreateConClassParams) (ConClass, error) {
@@ -195,9 +194,9 @@ RETURNING con_class_id, descr, notes, updated_on, created_on
 `
 
 type UpdateConClassParams struct {
-	ConClassID int64          `json:"con_class_id"`
-	Descr      string         `json:"descr"`
-	Notes      sql.NullString `json:"notes"`
+	ConClassID int64   `json:"con_class_id"`
+	Descr      string  `json:"descr"`
+	Notes      *string `json:"notes"`
 }
 
 func (q *Queries) UpdateConClass(ctx context.Context, arg UpdateConClassParams) (ConClass, error) {

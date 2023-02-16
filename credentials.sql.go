@@ -7,7 +7,6 @@ package godevmandb
 
 import (
 	"context"
-	"database/sql"
 	"time"
 )
 
@@ -30,9 +29,9 @@ RETURNING cred_id, label, username, enc_secret, updated_on, created_on
 `
 
 type CreateCredentialParams struct {
-	Label     string         `json:"label"`
-	Username  sql.NullString `json:"username"`
-	EncSecret string         `json:"enc_secret"`
+	Label     string  `json:"label"`
+	Username  *string `json:"username"`
+	EncSecret string  `json:"enc_secret"`
 }
 
 func (q *Queries) CreateCredential(ctx context.Context, arg CreateCredentialParams) (Credential, error) {
@@ -161,10 +160,10 @@ RETURNING cred_id, label, username, enc_secret, updated_on, created_on
 `
 
 type UpdateCredentialParams struct {
-	CredID    int64          `json:"cred_id"`
-	Label     string         `json:"label"`
-	Username  sql.NullString `json:"username"`
-	EncSecret string         `json:"enc_secret"`
+	CredID    int64   `json:"cred_id"`
+	Label     string  `json:"label"`
+	Username  *string `json:"username"`
+	EncSecret string  `json:"enc_secret"`
 }
 
 func (q *Queries) UpdateCredential(ctx context.Context, arg UpdateCredentialParams) (Credential, error) {

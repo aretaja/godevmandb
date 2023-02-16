@@ -7,7 +7,6 @@ package godevmandb
 
 import (
 	"context"
-	"database/sql"
 	"time"
 )
 
@@ -30,10 +29,10 @@ RETURNING cent_id, manufacturer, serial_nr, part, descr, updated_on, created_on
 `
 
 type CreateCustomEntityParams struct {
-	Manufacturer string         `json:"manufacturer"`
-	SerialNr     string         `json:"serial_nr"`
-	Part         sql.NullString `json:"part"`
-	Descr        sql.NullString `json:"descr"`
+	Manufacturer string  `json:"manufacturer"`
+	SerialNr     string  `json:"serial_nr"`
+	Part         *string `json:"part"`
+	Descr        *string `json:"descr"`
 }
 
 func (q *Queries) CreateCustomEntity(ctx context.Context, arg CreateCustomEntityParams) (CustomEntity, error) {
@@ -171,11 +170,11 @@ RETURNING cent_id, manufacturer, serial_nr, part, descr, updated_on, created_on
 `
 
 type UpdateCustomEntityParams struct {
-	CentID       int64          `json:"cent_id"`
-	Manufacturer string         `json:"manufacturer"`
-	SerialNr     string         `json:"serial_nr"`
-	Part         sql.NullString `json:"part"`
-	Descr        sql.NullString `json:"descr"`
+	CentID       int64   `json:"cent_id"`
+	Manufacturer string  `json:"manufacturer"`
+	SerialNr     string  `json:"serial_nr"`
+	Part         *string `json:"part"`
+	Descr        *string `json:"descr"`
 }
 
 func (q *Queries) UpdateCustomEntity(ctx context.Context, arg UpdateCustomEntityParams) (CustomEntity, error) {

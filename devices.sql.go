@@ -7,7 +7,6 @@ package godevmandb
 
 import (
 	"context"
-	"database/sql"
 	"time"
 
 	"github.com/jackc/pgtype"
@@ -82,30 +81,30 @@ RETURNING dev_id, site_id, dom_id, snmp_main_id, snmp_ro_id, parent, sys_id, ip4
 `
 
 type CreateDeviceParams struct {
-	SiteID           sql.NullInt64  `json:"site_id"`
-	DomID            int64          `json:"dom_id"`
-	SnmpMainID       sql.NullInt64  `json:"snmp_main_id"`
-	SnmpRoID         sql.NullInt64  `json:"snmp_ro_id"`
-	Parent           sql.NullInt64  `json:"parent"`
-	SysID            string         `json:"sys_id"`
-	Ip4Addr          pgtype.Inet    `json:"ip4_addr"`
-	Ip6Addr          pgtype.Inet    `json:"ip6_addr"`
-	HostName         string         `json:"host_name"`
-	SysName          sql.NullString `json:"sys_name"`
-	SysLocation      sql.NullString `json:"sys_location"`
-	SysContact       sql.NullString `json:"sys_contact"`
-	SwVersion        sql.NullString `json:"sw_version"`
-	ExtModel         sql.NullString `json:"ext_model"`
-	Installed        bool           `json:"installed"`
-	Monitor          bool           `json:"monitor"`
-	Graph            bool           `json:"graph"`
-	Backup           bool           `json:"backup"`
-	Source           string         `json:"source"`
-	TypeChanged      bool           `json:"type_changed"`
-	BackupFailed     bool           `json:"backup_failed"`
-	ValidationFailed bool           `json:"validation_failed"`
-	Unresponsive     bool           `json:"unresponsive"`
-	Notes            sql.NullString `json:"notes"`
+	SiteID           *int64      `json:"site_id"`
+	DomID            int64       `json:"dom_id"`
+	SnmpMainID       *int64      `json:"snmp_main_id"`
+	SnmpRoID         *int64      `json:"snmp_ro_id"`
+	Parent           *int64      `json:"parent"`
+	SysID            string      `json:"sys_id"`
+	Ip4Addr          pgtype.Inet `json:"ip4_addr"`
+	Ip6Addr          pgtype.Inet `json:"ip6_addr"`
+	HostName         string      `json:"host_name"`
+	SysName          *string     `json:"sys_name"`
+	SysLocation      *string     `json:"sys_location"`
+	SysContact       *string     `json:"sys_contact"`
+	SwVersion        *string     `json:"sw_version"`
+	ExtModel         *string     `json:"ext_model"`
+	Installed        bool        `json:"installed"`
+	Monitor          bool        `json:"monitor"`
+	Graph            bool        `json:"graph"`
+	Backup           bool        `json:"backup"`
+	Source           string      `json:"source"`
+	TypeChanged      bool        `json:"type_changed"`
+	BackupFailed     bool        `json:"backup_failed"`
+	ValidationFailed bool        `json:"validation_failed"`
+	Unresponsive     bool        `json:"unresponsive"`
+	Notes            *string     `json:"notes"`
 }
 
 func (q *Queries) CreateDevice(ctx context.Context, arg CreateDeviceParams) (Device, error) {
@@ -670,7 +669,7 @@ ORDER BY vc_id
 `
 
 // Relations
-func (q *Queries) GetDevicePeerXconnects(ctx context.Context, peerDevID sql.NullInt64) ([]Xconnect, error) {
+func (q *Queries) GetDevicePeerXconnects(ctx context.Context, peerDevID *int64) ([]Xconnect, error) {
 	rows, err := q.db.Query(ctx, GetDevicePeerXconnects, peerDevID)
 	if err != nil {
 		return nil, err
@@ -956,19 +955,19 @@ LIMIT NULLIF($13::int, 0) OFFSET NULLIF($12::int, 0)
 `
 
 type GetDevicesParams struct {
-	UpdatedGe  time.Time      `json:"updated_ge"`
-	UpdatedLe  time.Time      `json:"updated_le"`
-	CreatedGe  time.Time      `json:"created_ge"`
-	CreatedLe  time.Time      `json:"created_le"`
-	SysIDF     string         `json:"sys_id_f"`
-	HostNameF  string         `json:"host_name_f"`
-	SwVersionF sql.NullString `json:"sw_version_f"`
-	NotesF     sql.NullString `json:"notes_f"`
-	NameF      sql.NullString `json:"name_f"`
-	Ip4AddrF   pgtype.Inet    `json:"ip4_addr_f"`
-	Ip6AddrF   pgtype.Inet    `json:"ip6_addr_f"`
-	OffsetQ    int32          `json:"offset_q"`
-	LimitQ     int32          `json:"limit_q"`
+	UpdatedGe  time.Time   `json:"updated_ge"`
+	UpdatedLe  time.Time   `json:"updated_le"`
+	CreatedGe  time.Time   `json:"created_ge"`
+	CreatedLe  time.Time   `json:"created_le"`
+	SysIDF     string      `json:"sys_id_f"`
+	HostNameF  string      `json:"host_name_f"`
+	SwVersionF *string     `json:"sw_version_f"`
+	NotesF     *string     `json:"notes_f"`
+	NameF      *string     `json:"name_f"`
+	Ip4AddrF   pgtype.Inet `json:"ip4_addr_f"`
+	Ip6AddrF   pgtype.Inet `json:"ip6_addr_f"`
+	OffsetQ    int32       `json:"offset_q"`
+	LimitQ     int32       `json:"limit_q"`
 }
 
 func (q *Queries) GetDevices(ctx context.Context, arg GetDevicesParams) ([]Device, error) {
@@ -1064,31 +1063,31 @@ RETURNING dev_id, site_id, dom_id, snmp_main_id, snmp_ro_id, parent, sys_id, ip4
 `
 
 type UpdateDeviceParams struct {
-	DevID            int64          `json:"dev_id"`
-	SiteID           sql.NullInt64  `json:"site_id"`
-	DomID            int64          `json:"dom_id"`
-	SnmpMainID       sql.NullInt64  `json:"snmp_main_id"`
-	SnmpRoID         sql.NullInt64  `json:"snmp_ro_id"`
-	Parent           sql.NullInt64  `json:"parent"`
-	SysID            string         `json:"sys_id"`
-	Ip4Addr          pgtype.Inet    `json:"ip4_addr"`
-	Ip6Addr          pgtype.Inet    `json:"ip6_addr"`
-	HostName         string         `json:"host_name"`
-	SysName          sql.NullString `json:"sys_name"`
-	SysLocation      sql.NullString `json:"sys_location"`
-	SysContact       sql.NullString `json:"sys_contact"`
-	SwVersion        sql.NullString `json:"sw_version"`
-	ExtModel         sql.NullString `json:"ext_model"`
-	Installed        bool           `json:"installed"`
-	Monitor          bool           `json:"monitor"`
-	Graph            bool           `json:"graph"`
-	Backup           bool           `json:"backup"`
-	Source           string         `json:"source"`
-	TypeChanged      bool           `json:"type_changed"`
-	BackupFailed     bool           `json:"backup_failed"`
-	ValidationFailed bool           `json:"validation_failed"`
-	Unresponsive     bool           `json:"unresponsive"`
-	Notes            sql.NullString `json:"notes"`
+	DevID            int64       `json:"dev_id"`
+	SiteID           *int64      `json:"site_id"`
+	DomID            int64       `json:"dom_id"`
+	SnmpMainID       *int64      `json:"snmp_main_id"`
+	SnmpRoID         *int64      `json:"snmp_ro_id"`
+	Parent           *int64      `json:"parent"`
+	SysID            string      `json:"sys_id"`
+	Ip4Addr          pgtype.Inet `json:"ip4_addr"`
+	Ip6Addr          pgtype.Inet `json:"ip6_addr"`
+	HostName         string      `json:"host_name"`
+	SysName          *string     `json:"sys_name"`
+	SysLocation      *string     `json:"sys_location"`
+	SysContact       *string     `json:"sys_contact"`
+	SwVersion        *string     `json:"sw_version"`
+	ExtModel         *string     `json:"ext_model"`
+	Installed        bool        `json:"installed"`
+	Monitor          bool        `json:"monitor"`
+	Graph            bool        `json:"graph"`
+	Backup           bool        `json:"backup"`
+	Source           string      `json:"source"`
+	TypeChanged      bool        `json:"type_changed"`
+	BackupFailed     bool        `json:"backup_failed"`
+	ValidationFailed bool        `json:"validation_failed"`
+	Unresponsive     bool        `json:"unresponsive"`
+	Notes            *string     `json:"notes"`
 }
 
 func (q *Queries) UpdateDevice(ctx context.Context, arg UpdateDeviceParams) (Device, error) {

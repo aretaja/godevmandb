@@ -7,7 +7,6 @@ package godevmandb
 
 import (
 	"context"
-	"database/sql"
 )
 
 const CountIntBwStats = `-- name: CountIntBwStats :one
@@ -51,16 +50,16 @@ RETURNING bw_id, if_id, to50in, to75in, to90in, to100in, to50out, to75out, to90o
 `
 
 type CreateIntBwStatParams struct {
-	IfID     int64         `json:"if_id"`
-	To50in   sql.NullInt16 `json:"to50in"`
-	To75in   sql.NullInt16 `json:"to75in"`
-	To90in   sql.NullInt16 `json:"to90in"`
-	To100in  sql.NullInt16 `json:"to100in"`
-	To50out  sql.NullInt16 `json:"to50out"`
-	To75out  sql.NullInt16 `json:"to75out"`
-	To90out  sql.NullInt16 `json:"to90out"`
-	To100out sql.NullInt16 `json:"to100out"`
-	IfGroup  string        `json:"if_group"`
+	IfID     int64  `json:"if_id"`
+	To50in   *int16 `json:"to50in"`
+	To75in   *int16 `json:"to75in"`
+	To90in   *int16 `json:"to90in"`
+	To100in  *int16 `json:"to100in"`
+	To50out  *int16 `json:"to50out"`
+	To75out  *int16 `json:"to75out"`
+	To90out  *int16 `json:"to90out"`
+	To100out *int16 `json:"to100out"`
+	IfGroup  string `json:"if_group"`
 }
 
 func (q *Queries) CreateIntBwStat(ctx context.Context, arg CreateIntBwStatParams) (IntBwStat, error) {
@@ -233,17 +232,17 @@ RETURNING bw_id, if_id, to50in, to75in, to90in, to100in, to50out, to75out, to90o
 `
 
 type UpdateIntBwStatParams struct {
-	BwID     int64         `json:"bw_id"`
-	IfID     int64         `json:"if_id"`
-	To50in   sql.NullInt16 `json:"to50in"`
-	To75in   sql.NullInt16 `json:"to75in"`
-	To90in   sql.NullInt16 `json:"to90in"`
-	To100in  sql.NullInt16 `json:"to100in"`
-	To50out  sql.NullInt16 `json:"to50out"`
-	To75out  sql.NullInt16 `json:"to75out"`
-	To90out  sql.NullInt16 `json:"to90out"`
-	To100out sql.NullInt16 `json:"to100out"`
-	IfGroup  string        `json:"if_group"`
+	BwID     int64  `json:"bw_id"`
+	IfID     int64  `json:"if_id"`
+	To50in   *int16 `json:"to50in"`
+	To75in   *int16 `json:"to75in"`
+	To90in   *int16 `json:"to90in"`
+	To100in  *int16 `json:"to100in"`
+	To50out  *int16 `json:"to50out"`
+	To75out  *int16 `json:"to75out"`
+	To90out  *int16 `json:"to90out"`
+	To100out *int16 `json:"to100out"`
+	IfGroup  string `json:"if_group"`
 }
 
 func (q *Queries) UpdateIntBwStat(ctx context.Context, arg UpdateIntBwStatParams) (IntBwStat, error) {

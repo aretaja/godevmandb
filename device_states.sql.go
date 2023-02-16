@@ -7,7 +7,7 @@ package godevmandb
 
 import (
 	"context"
-	"database/sql"
+	"time"
 )
 
 const CountDeviceStates = `-- name: CountDeviceStates :one
@@ -29,10 +29,10 @@ RETURNING dev_id, up_time, down_time, method, updated_on, created_on
 `
 
 type CreateDeviceStateParams struct {
-	DevID    int64        `json:"dev_id"`
-	UpTime   sql.NullTime `json:"up_time"`
-	DownTime sql.NullTime `json:"down_time"`
-	Method   string       `json:"method"`
+	DevID    int64      `json:"dev_id"`
+	UpTime   *time.Time `json:"up_time"`
+	DownTime *time.Time `json:"down_time"`
+	Method   string     `json:"method"`
 }
 
 func (q *Queries) CreateDeviceState(ctx context.Context, arg CreateDeviceStateParams) (DeviceState, error) {
@@ -177,10 +177,10 @@ RETURNING dev_id, up_time, down_time, method, updated_on, created_on
 `
 
 type UpdateDeviceStateParams struct {
-	DevID    int64        `json:"dev_id"`
-	UpTime   sql.NullTime `json:"up_time"`
-	DownTime sql.NullTime `json:"down_time"`
-	Method   string       `json:"method"`
+	DevID    int64      `json:"dev_id"`
+	UpTime   *time.Time `json:"up_time"`
+	DownTime *time.Time `json:"down_time"`
+	Method   string     `json:"method"`
 }
 
 func (q *Queries) UpdateDeviceState(ctx context.Context, arg UpdateDeviceStateParams) (DeviceState, error) {

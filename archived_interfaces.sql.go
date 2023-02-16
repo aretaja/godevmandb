@@ -7,7 +7,6 @@ package godevmandb
 
 import (
 	"context"
-	"database/sql"
 	"time"
 
 	"github.com/jackc/pgtype"
@@ -58,17 +57,17 @@ RETURNING ifa_id, ifindex, otn_if_id, cisco_opt_power_index, hostname, host_ip4,
 `
 
 type CreateArchivedInterfaceParams struct {
-	Ifindex            sql.NullInt64  `json:"ifindex"`
-	OtnIfID            sql.NullInt64  `json:"otn_if_id"`
-	CiscoOptPowerIndex sql.NullString `json:"cisco_opt_power_index"`
+	Ifindex            *int64         `json:"ifindex"`
+	OtnIfID            *int64         `json:"otn_if_id"`
+	CiscoOptPowerIndex *string        `json:"cisco_opt_power_index"`
 	Hostname           string         `json:"hostname"`
 	HostIp4            pgtype.Inet    `json:"host_ip4"`
 	HostIp6            pgtype.Inet    `json:"host_ip6"`
 	Manufacturer       string         `json:"manufacturer"`
 	Model              string         `json:"model"`
 	Descr              string         `json:"descr"`
-	Alias              sql.NullString `json:"alias"`
-	TypeEnum           sql.NullInt16  `json:"type_enum"`
+	Alias              *string        `json:"alias"`
+	TypeEnum           *int16         `json:"type_enum"`
 	Mac                pgtype.Macaddr `json:"mac"`
 }
 
@@ -203,12 +202,12 @@ type GetArchivedInterfacesParams struct {
 	UpdatedLe time.Time      `json:"updated_le"`
 	CreatedGe time.Time      `json:"created_ge"`
 	CreatedLe time.Time      `json:"created_le"`
-	IfindexF  sql.NullString `json:"ifindex_f"`
+	IfindexF  *string        `json:"ifindex_f"`
 	HostnameF string         `json:"hostname_f"`
 	HostIp4F  pgtype.Inet    `json:"host_ip4_f"`
 	HostIp6F  pgtype.Inet    `json:"host_ip6_f"`
 	DescrF    string         `json:"descr_f"`
-	AliasF    sql.NullString `json:"alias_f"`
+	AliasF    *string        `json:"alias_f"`
 	MacF      pgtype.Macaddr `json:"mac_f"`
 	OffsetQ   int32          `json:"offset_q"`
 	LimitQ    int32          `json:"limit_q"`
@@ -284,17 +283,17 @@ RETURNING ifa_id, ifindex, otn_if_id, cisco_opt_power_index, hostname, host_ip4,
 
 type UpdateArchivedInterfaceParams struct {
 	IfaID              int64          `json:"ifa_id"`
-	Ifindex            sql.NullInt64  `json:"ifindex"`
-	OtnIfID            sql.NullInt64  `json:"otn_if_id"`
-	CiscoOptPowerIndex sql.NullString `json:"cisco_opt_power_index"`
+	Ifindex            *int64         `json:"ifindex"`
+	OtnIfID            *int64         `json:"otn_if_id"`
+	CiscoOptPowerIndex *string        `json:"cisco_opt_power_index"`
 	Hostname           string         `json:"hostname"`
 	HostIp4            pgtype.Inet    `json:"host_ip4"`
 	HostIp6            pgtype.Inet    `json:"host_ip6"`
 	Manufacturer       string         `json:"manufacturer"`
 	Model              string         `json:"model"`
 	Descr              string         `json:"descr"`
-	Alias              sql.NullString `json:"alias"`
-	TypeEnum           sql.NullInt16  `json:"type_enum"`
+	Alias              *string        `json:"alias"`
+	TypeEnum           *int16         `json:"type_enum"`
 	Mac                pgtype.Macaddr `json:"mac"`
 }
 

@@ -7,7 +7,6 @@ package godevmandb
 
 import (
 	"context"
-	"database/sql"
 	"time"
 )
 
@@ -39,14 +38,14 @@ RETURNING con_id, site_id, con_prov_id, con_type_id, con_cap_id, con_class_id, h
 `
 
 type CreateConnectionParams struct {
-	SiteID     int64          `json:"site_id"`
-	ConProvID  int64          `json:"con_prov_id"`
-	ConTypeID  int64          `json:"con_type_id"`
-	ConCapID   int64          `json:"con_cap_id"`
-	ConClassID int64          `json:"con_class_id"`
-	Hint       sql.NullString `json:"hint"`
-	Notes      sql.NullString `json:"notes"`
-	InUse      bool           `json:"in_use"`
+	SiteID     int64   `json:"site_id"`
+	ConProvID  int64   `json:"con_prov_id"`
+	ConTypeID  int64   `json:"con_type_id"`
+	ConCapID   int64   `json:"con_cap_id"`
+	ConClassID int64   `json:"con_class_id"`
+	Hint       *string `json:"hint"`
+	Notes      *string `json:"notes"`
+	InUse      bool    `json:"in_use"`
 }
 
 func (q *Queries) CreateConnection(ctx context.Context, arg CreateConnectionParams) (Connection, error) {
@@ -203,7 +202,7 @@ WHERE con_id = $1
 `
 
 // Relations
-func (q *Queries) GetConnectionInterfaces(ctx context.Context, conID sql.NullInt64) ([]Interface, error) {
+func (q *Queries) GetConnectionInterfaces(ctx context.Context, conID *int64) ([]Interface, error) {
 	rows, err := q.db.Query(ctx, GetConnectionInterfaces, conID)
 	if err != nil {
 		return nil, err
@@ -366,15 +365,15 @@ RETURNING con_id, site_id, con_prov_id, con_type_id, con_cap_id, con_class_id, h
 `
 
 type UpdateConnectionParams struct {
-	ConID      int64          `json:"con_id"`
-	SiteID     int64          `json:"site_id"`
-	ConProvID  int64          `json:"con_prov_id"`
-	ConTypeID  int64          `json:"con_type_id"`
-	ConCapID   int64          `json:"con_cap_id"`
-	ConClassID int64          `json:"con_class_id"`
-	Hint       sql.NullString `json:"hint"`
-	Notes      sql.NullString `json:"notes"`
-	InUse      bool           `json:"in_use"`
+	ConID      int64   `json:"con_id"`
+	SiteID     int64   `json:"site_id"`
+	ConProvID  int64   `json:"con_prov_id"`
+	ConTypeID  int64   `json:"con_type_id"`
+	ConCapID   int64   `json:"con_cap_id"`
+	ConClassID int64   `json:"con_class_id"`
+	Hint       *string `json:"hint"`
+	Notes      *string `json:"notes"`
+	InUse      bool    `json:"in_use"`
 }
 
 func (q *Queries) UpdateConnection(ctx context.Context, arg UpdateConnectionParams) (Connection, error) {

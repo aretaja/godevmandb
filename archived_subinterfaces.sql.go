@@ -7,7 +7,6 @@ package godevmandb
 
 import (
 	"context"
-	"database/sql"
 	"time"
 
 	"github.com/jackc/pgtype"
@@ -54,16 +53,16 @@ RETURNING sifa_id, ifindex, descr, parent_descr, alias, type, mac, hostname, hos
 `
 
 type CreateArchivedSubinterfaceParams struct {
-	Ifindex     sql.NullInt64  `json:"ifindex"`
+	Ifindex     *int64         `json:"ifindex"`
 	Descr       string         `json:"descr"`
-	ParentDescr sql.NullString `json:"parent_descr"`
-	Alias       sql.NullString `json:"alias"`
-	Type        sql.NullString `json:"type"`
+	ParentDescr *string        `json:"parent_descr"`
+	Alias       *string        `json:"alias"`
+	Type        *string        `json:"type"`
 	Mac         pgtype.Macaddr `json:"mac"`
 	Hostname    string         `json:"hostname"`
 	HostIp4     pgtype.Inet    `json:"host_ip4"`
 	HostIp6     pgtype.Inet    `json:"host_ip6"`
-	Notes       sql.NullString `json:"notes"`
+	Notes       *string        `json:"notes"`
 }
 
 func (q *Queries) CreateArchivedSubinterface(ctx context.Context, arg CreateArchivedSubinterfaceParams) (ArchivedSubinterface, error) {
@@ -191,12 +190,12 @@ type GetArchivedSubinterfacesParams struct {
 	UpdatedLe time.Time      `json:"updated_le"`
 	CreatedGe time.Time      `json:"created_ge"`
 	CreatedLe time.Time      `json:"created_le"`
-	IfindexF  sql.NullString `json:"ifindex_f"`
+	IfindexF  *string        `json:"ifindex_f"`
 	HostnameF string         `json:"hostname_f"`
 	HostIp4F  pgtype.Inet    `json:"host_ip4_f"`
 	HostIp6F  pgtype.Inet    `json:"host_ip6_f"`
 	DescrF    string         `json:"descr_f"`
-	AliasF    sql.NullString `json:"alias_f"`
+	AliasF    *string        `json:"alias_f"`
 	MacF      pgtype.Macaddr `json:"mac_f"`
 	OffsetQ   int32          `json:"offset_q"`
 	LimitQ    int32          `json:"limit_q"`
@@ -268,16 +267,16 @@ RETURNING sifa_id, ifindex, descr, parent_descr, alias, type, mac, hostname, hos
 
 type UpdateArchivedSubinterfaceParams struct {
 	SifaID      int64          `json:"sifa_id"`
-	Ifindex     sql.NullInt64  `json:"ifindex"`
+	Ifindex     *int64         `json:"ifindex"`
 	Descr       string         `json:"descr"`
-	ParentDescr sql.NullString `json:"parent_descr"`
-	Alias       sql.NullString `json:"alias"`
-	Type        sql.NullString `json:"type"`
+	ParentDescr *string        `json:"parent_descr"`
+	Alias       *string        `json:"alias"`
+	Type        *string        `json:"type"`
 	Mac         pgtype.Macaddr `json:"mac"`
 	Hostname    string         `json:"hostname"`
 	HostIp4     pgtype.Inet    `json:"host_ip4"`
 	HostIp6     pgtype.Inet    `json:"host_ip6"`
-	Notes       sql.NullString `json:"notes"`
+	Notes       *string        `json:"notes"`
 }
 
 func (q *Queries) UpdateArchivedSubinterface(ctx context.Context, arg UpdateArchivedSubinterfaceParams) (ArchivedSubinterface, error) {

@@ -7,7 +7,6 @@ package godevmandb
 
 import (
 	"context"
-	"database/sql"
 )
 
 const CountInterfaceRelations = `-- name: CountInterfaceRelations :one
@@ -29,9 +28,9 @@ RETURNING ir_id, if_id, if_id_up, if_id_down, updated_on, created_on
 `
 
 type CreateInterfaceRelationParams struct {
-	IfID     int64         `json:"if_id"`
-	IfIDUp   sql.NullInt64 `json:"if_id_up"`
-	IfIDDown sql.NullInt64 `json:"if_id_down"`
+	IfID     int64  `json:"if_id"`
+	IfIDUp   *int64 `json:"if_id_up"`
+	IfIDDown *int64 `json:"if_id_down"`
 }
 
 func (q *Queries) CreateInterfaceRelation(ctx context.Context, arg CreateInterfaceRelationParams) (InterfaceRelation, error) {
@@ -239,10 +238,10 @@ RETURNING ir_id, if_id, if_id_up, if_id_down, updated_on, created_on
 `
 
 type UpdateInterfaceRelationParams struct {
-	IrID     int64         `json:"ir_id"`
-	IfID     int64         `json:"if_id"`
-	IfIDUp   sql.NullInt64 `json:"if_id_up"`
-	IfIDDown sql.NullInt64 `json:"if_id_down"`
+	IrID     int64  `json:"ir_id"`
+	IfID     int64  `json:"if_id"`
+	IfIDUp   *int64 `json:"if_id_up"`
+	IfIDDown *int64 `json:"if_id_down"`
 }
 
 func (q *Queries) UpdateInterfaceRelation(ctx context.Context, arg UpdateInterfaceRelationParams) (InterfaceRelation, error) {

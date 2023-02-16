@@ -7,7 +7,6 @@ package godevmandb
 
 import (
 	"context"
-	"database/sql"
 	"time"
 )
 
@@ -43,10 +42,10 @@ type CreateSnmpCredentialParams struct {
 	Variant   int32             `json:"variant"`
 	AuthName  string            `json:"auth_name"`
 	AuthProto NullSnmpAuthProto `json:"auth_proto"`
-	AuthPass  sql.NullString    `json:"auth_pass"`
+	AuthPass  *string           `json:"auth_pass"`
 	SecLevel  NullSnmpSecLevel  `json:"sec_level"`
 	PrivProto NullSnmpPrivProto `json:"priv_proto"`
-	PrivPass  sql.NullString    `json:"priv_pass"`
+	PrivPass  *string           `json:"priv_pass"`
 }
 
 func (q *Queries) CreateSnmpCredential(ctx context.Context, arg CreateSnmpCredentialParams) (SnmpCredential, error) {
@@ -321,10 +320,10 @@ type UpdateSnmpCredentialParams struct {
 	Variant    int32             `json:"variant"`
 	AuthName   string            `json:"auth_name"`
 	AuthProto  NullSnmpAuthProto `json:"auth_proto"`
-	AuthPass   sql.NullString    `json:"auth_pass"`
+	AuthPass   *string           `json:"auth_pass"`
 	SecLevel   NullSnmpSecLevel  `json:"sec_level"`
 	PrivProto  NullSnmpPrivProto `json:"priv_proto"`
-	PrivPass   sql.NullString    `json:"priv_pass"`
+	PrivPass   *string           `json:"priv_pass"`
 }
 
 func (q *Queries) UpdateSnmpCredential(ctx context.Context, arg UpdateSnmpCredentialParams) (SnmpCredential, error) {
