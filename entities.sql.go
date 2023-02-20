@@ -7,6 +7,7 @@ package godevmandb
 
 import (
 	"context"
+	"time"
 )
 
 const CountEntities = `-- name: CountEntities :one
@@ -122,18 +123,98 @@ func (q *Queries) DeleteEntity(ctx context.Context, entID int64) error {
 const GetEntities = `-- name: GetEntities :many
 SELECT ent_id, parent_ent_id, snmp_ent_id, dev_id, slot, descr, model, hw_product, hw_revision, serial_nr, sw_product, sw_revision, manufacturer, physical, updated_on, created_on
 FROM entities
-ORDER BY ent_id
-LIMIT $1
-OFFSET $2
+WHERE (
+    $1::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR updated_on >= $1
+  )
+  AND (
+    $2::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR updated_on <= $2
+  )
+  AND (
+    $3::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR created_on >= $3
+  )
+  AND (
+    $4::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR created_on <= $4
+  )
+  AND (
+    $5::text = ''
+    OR slot ILIKE $5
+  )
+  AND (
+    $6::text = ''
+    OR descr ILIKE $6
+  )
+  AND (
+    $7::text = ''
+    OR model ILIKE $7
+  )
+  AND (
+    $8::text = ''
+    OR hw_product ILIKE $8
+  )
+  AND (
+    $9::text = ''
+    OR hw_revision ILIKE $9
+  )
+  AND (
+    $10::text = ''
+    OR serial_nr ILIKE $10
+  )
+  AND (
+    $11::text = ''
+    OR sw_product ILIKE $11
+  )
+  AND (
+    $12::text = ''
+    OR sw_revision ILIKE $12
+  )
+  AND (
+    $13::text = ''
+    OR manufacturer ILIKE $13
+  )
+ORDER BY created_on
+LIMIT NULLIF($15::int, 0) OFFSET NULLIF($14::int, 0)
 `
 
 type GetEntitiesParams struct {
-	Limit  int32 `json:"limit"`
-	Offset int32 `json:"offset"`
+	UpdatedGe     time.Time `json:"updated_ge"`
+	UpdatedLe     time.Time `json:"updated_le"`
+	CreatedGe     time.Time `json:"created_ge"`
+	CreatedLe     time.Time `json:"created_le"`
+	SlotF         string    `json:"slot_f"`
+	DescrF        string    `json:"descr_f"`
+	ModelF        string    `json:"model_f"`
+	HwProductF    string    `json:"hw_product_f"`
+	HwRevisionF   string    `json:"hw_revision_f"`
+	SerialNrF     string    `json:"serial_nr_f"`
+	SwProductF    string    `json:"sw_product_f"`
+	SwRevisionF   string    `json:"sw_revision_f"`
+	ManufacturerF string    `json:"manufacturer_f"`
+	OffsetQ       int32     `json:"offset_q"`
+	LimitQ        int32     `json:"limit_q"`
 }
 
 func (q *Queries) GetEntities(ctx context.Context, arg GetEntitiesParams) ([]Entity, error) {
-	rows, err := q.db.Query(ctx, GetEntities, arg.Limit, arg.Offset)
+	rows, err := q.db.Query(ctx, GetEntities,
+		arg.UpdatedGe,
+		arg.UpdatedLe,
+		arg.CreatedGe,
+		arg.CreatedLe,
+		arg.SlotF,
+		arg.DescrF,
+		arg.ModelF,
+		arg.HwProductF,
+		arg.HwRevisionF,
+		arg.SerialNrF,
+		arg.SwProductF,
+		arg.SwRevisionF,
+		arg.ManufacturerF,
+		arg.OffsetQ,
+		arg.LimitQ,
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -197,6 +278,51 @@ func (q *Queries) GetEntity(ctx context.Context, entID int64) (Entity, error) {
 		&i.CreatedOn,
 	)
 	return i, err
+}
+
+const GetEntityChilds = `-- name: GetEntityChilds :many
+SELECT t2.ent_id, t2.parent_ent_id, t2.snmp_ent_id, t2.dev_id, t2.slot, t2.descr, t2.model, t2.hw_product, t2.hw_revision, t2.serial_nr, t2.sw_product, t2.sw_revision, t2.manufacturer, t2.physical, t2.updated_on, t2.created_on
+FROM entities t1
+  INNER JOIN entities t2 ON t2.parent_ent_id = t1.ent_id
+WHERE t1.ent_id = $1
+`
+
+// Relations
+func (q *Queries) GetEntityChilds(ctx context.Context, entID int64) ([]Entity, error) {
+	rows, err := q.db.Query(ctx, GetEntityChilds, entID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Entity
+	for rows.Next() {
+		var i Entity
+		if err := rows.Scan(
+			&i.EntID,
+			&i.ParentEntID,
+			&i.SnmpEntID,
+			&i.DevID,
+			&i.Slot,
+			&i.Descr,
+			&i.Model,
+			&i.HwProduct,
+			&i.HwRevision,
+			&i.SerialNr,
+			&i.SwProduct,
+			&i.SwRevision,
+			&i.Manufacturer,
+			&i.Physical,
+			&i.UpdatedOn,
+			&i.CreatedOn,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const GetEntityDevice = `-- name: GetEntityDevice :one
@@ -330,7 +456,7 @@ func (q *Queries) GetEntityInterfaces(ctx context.Context, entID *int64) ([]Inte
 const GetEntityParent = `-- name: GetEntityParent :one
 SELECT t2.ent_id, t2.parent_ent_id, t2.snmp_ent_id, t2.dev_id, t2.slot, t2.descr, t2.model, t2.hw_product, t2.hw_revision, t2.serial_nr, t2.sw_product, t2.sw_revision, t2.manufacturer, t2.physical, t2.updated_on, t2.created_on
 FROM entities t1
-  INNER JOIN entities t2 ON t2.ent_id = t1.parent
+  INNER JOIN entities t2 ON t2.ent_id = t1.parent_ent_id
 WHERE t1.ent_id = $1
 `
 

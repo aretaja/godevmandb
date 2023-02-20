@@ -1,9 +1,60 @@
 -- name: GetEntities :many
 SELECT *
 FROM entities
-ORDER BY ent_id
-LIMIT $1
-OFFSET $2;
+WHERE (
+    @updated_ge::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR updated_on >= @updated_ge
+  )
+  AND (
+    @updated_le::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR updated_on <= @updated_le
+  )
+  AND (
+    @created_ge::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR created_on >= @created_ge
+  )
+  AND (
+    @created_le::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR created_on <= @created_le
+  )
+  AND (
+    @slot_f::text = ''
+    OR slot ILIKE @slot_f
+  )
+  AND (
+    @descr_f::text = ''
+    OR descr ILIKE @descr_f
+  )
+  AND (
+    @model_f::text = ''
+    OR model ILIKE @model_f
+  )
+  AND (
+    @hw_product_f::text = ''
+    OR hw_product ILIKE @hw_product_f
+  )
+  AND (
+    @hw_revision_f::text = ''
+    OR hw_revision ILIKE @hw_revision_f
+  )
+  AND (
+    @serial_nr_f::text = ''
+    OR serial_nr ILIKE @serial_nr_f
+  )
+  AND (
+    @sw_product_f::text = ''
+    OR sw_product ILIKE @sw_product_f
+  )
+  AND (
+    @sw_revision_f::text = ''
+    OR sw_revision ILIKE @sw_revision_f
+  )
+  AND (
+    @manufacturer_f::text = ''
+    OR manufacturer ILIKE @manufacturer_f
+  )
+ORDER BY created_on
+LIMIT NULLIF(@limit_q::int, 0) OFFSET NULLIF(@offset_q::int, 0);
 
 -- name: GetEntity :one
 SELECT *
@@ -80,7 +131,14 @@ WHERE t1.ent_id = $1;
 -- name: GetEntityParent :one
 SELECT t2.*
 FROM entities t1
-  INNER JOIN entities t2 ON t2.ent_id = t1.parent
+  INNER JOIN entities t2 ON t2.ent_id = t1.parent_ent_id
+WHERE t1.ent_id = $1;
+
+-- Relations
+-- name: GetEntityChilds :many
+SELECT t2.*
+FROM entities t1
+  INNER JOIN entities t2 ON t2.parent_ent_id = t1.ent_id
 WHERE t1.ent_id = $1;
 
 -- Relations
