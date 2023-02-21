@@ -1,9 +1,28 @@
 -- name: GetIntBwStats :many
 SELECT *
 FROM int_bw_stats
-ORDER BY bw_id
-LIMIT $1
-OFFSET $2;
+WHERE (
+    @updated_ge::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR updated_on >= @updated_ge
+  )
+  AND (
+    @updated_le::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR updated_on <= @updated_le
+  )
+  AND (
+    @created_ge::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR created_on >= @created_ge
+  )
+  AND (
+    @created_le::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR created_on <= @created_le
+  )
+  AND (
+    @if_group_f::text = ''
+    OR if_group ILIKE @if_group_f
+  )
+ORDER BY created_on
+LIMIT NULLIF(@limit_q::int, 0) OFFSET NULLIF(@offset_q::int, 0);
 
 -- name: GetIntBwStat :one
 SELECT *
