@@ -164,7 +164,7 @@ FROM interfaces t1
 WHERE t1.if_id = $1;
 
 -- Foreign keys
--- name: GetInterfaceOtnIfId :one
+-- name: GetInterfaceOtnIf :one
 SELECT t2.*
 FROM interfaces t1
   INNER JOIN interfaces t2 ON t2.if_id = t1.otn_if_id
@@ -228,14 +228,14 @@ WHERE t1.if_id = $1
 ORDER BY vlan;
 
 -- Relations
--- name: GetInterfaceInterfaceSubinterfaces :many
+-- name: GetInterfaceSubinterfaces :many
 SELECT *
 FROM subinterfaces
 WHERE if_id = $1
 ORDER BY descr;
 
 -- Relations
--- name: GetterfaceInterfaceXconnects :many
+-- name: GetInterfaceXconnects :many
 SELECT *
 FROM xconnects
 WHERE if_id = $1

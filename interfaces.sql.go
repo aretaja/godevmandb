@@ -480,49 +480,7 @@ func (q *Queries) GetInterfaceInterfaceRelationsLowerFor(ctx context.Context, if
 	return items, nil
 }
 
-const GetInterfaceInterfaceSubinterfaces = `-- name: GetInterfaceInterfaceSubinterfaces :many
-SELECT sif_id, if_id, ifindex, descr, alias, oper, adm, speed, type_enum, mac, notes, updated_on, created_on
-FROM subinterfaces
-WHERE if_id = $1
-ORDER BY descr
-`
-
-// Relations
-func (q *Queries) GetInterfaceInterfaceSubinterfaces(ctx context.Context, ifID *int64) ([]Subinterface, error) {
-	rows, err := q.db.Query(ctx, GetInterfaceInterfaceSubinterfaces, ifID)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []Subinterface
-	for rows.Next() {
-		var i Subinterface
-		if err := rows.Scan(
-			&i.SifID,
-			&i.IfID,
-			&i.Ifindex,
-			&i.Descr,
-			&i.Alias,
-			&i.Oper,
-			&i.Adm,
-			&i.Speed,
-			&i.TypeEnum,
-			&i.Mac,
-			&i.Notes,
-			&i.UpdatedOn,
-			&i.CreatedOn,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
-const GetInterfaceOtnIfId = `-- name: GetInterfaceOtnIfId :one
+const GetInterfaceOtnIf = `-- name: GetInterfaceOtnIf :one
 SELECT t2.if_id, t2.con_id, t2.parent, t2.otn_if_id, t2.dev_id, t2.ent_id, t2.ifindex, t2.descr, t2.alias, t2.oper, t2.adm, t2.speed, t2.minspeed, t2.type_enum, t2.mac, t2.monstatus, t2.monerrors, t2.monload, t2.updated_on, t2.created_on, t2.montraffic
 FROM interfaces t1
   INNER JOIN interfaces t2 ON t2.if_id = t1.otn_if_id
@@ -530,8 +488,8 @@ WHERE t1.if_id = $1
 `
 
 // Foreign keys
-func (q *Queries) GetInterfaceOtnIfId(ctx context.Context, ifID int64) (Interface, error) {
-	row := q.db.QueryRow(ctx, GetInterfaceOtnIfId, ifID)
+func (q *Queries) GetInterfaceOtnIf(ctx context.Context, ifID int64) (Interface, error) {
+	row := q.db.QueryRow(ctx, GetInterfaceOtnIf, ifID)
 	var i Interface
 	err := row.Scan(
 		&i.IfID,
@@ -596,6 +554,48 @@ func (q *Queries) GetInterfaceParent(ctx context.Context, ifID int64) (Interface
 	return i, err
 }
 
+const GetInterfaceSubinterfaces = `-- name: GetInterfaceSubinterfaces :many
+SELECT sif_id, if_id, ifindex, descr, alias, oper, adm, speed, type_enum, mac, notes, updated_on, created_on
+FROM subinterfaces
+WHERE if_id = $1
+ORDER BY descr
+`
+
+// Relations
+func (q *Queries) GetInterfaceSubinterfaces(ctx context.Context, ifID *int64) ([]Subinterface, error) {
+	rows, err := q.db.Query(ctx, GetInterfaceSubinterfaces, ifID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Subinterface
+	for rows.Next() {
+		var i Subinterface
+		if err := rows.Scan(
+			&i.SifID,
+			&i.IfID,
+			&i.Ifindex,
+			&i.Descr,
+			&i.Alias,
+			&i.Oper,
+			&i.Adm,
+			&i.Speed,
+			&i.TypeEnum,
+			&i.Mac,
+			&i.Notes,
+			&i.UpdatedOn,
+			&i.CreatedOn,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const GetInterfaceVlans = `-- name: GetInterfaceVlans :many
 SELECT t3.v_id, t3.dev_id, t3.vlan, t3.descr, t3.updated_on, t3.created_on
 FROM interfaces t1
@@ -620,6 +620,50 @@ func (q *Queries) GetInterfaceVlans(ctx context.Context, ifID int64) ([]Vlan, er
 			&i.DevID,
 			&i.Vlan,
 			&i.Descr,
+			&i.UpdatedOn,
+			&i.CreatedOn,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const GetInterfaceXconnects = `-- name: GetInterfaceXconnects :many
+SELECT xc_id, dev_id, peer_dev_id, if_id, vc_idx, vc_id, peer_ip, peer_ifalias, xname, descr, op_stat, op_stat_in, op_stat_out, updated_on, created_on
+FROM xconnects
+WHERE if_id = $1
+ORDER BY vc_id
+`
+
+// Relations
+func (q *Queries) GetInterfaceXconnects(ctx context.Context, ifID *int64) ([]Xconnect, error) {
+	rows, err := q.db.Query(ctx, GetInterfaceXconnects, ifID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Xconnect
+	for rows.Next() {
+		var i Xconnect
+		if err := rows.Scan(
+			&i.XcID,
+			&i.DevID,
+			&i.PeerDevID,
+			&i.IfID,
+			&i.VcIdx,
+			&i.VcID,
+			&i.PeerIp,
+			&i.PeerIfalias,
+			&i.Xname,
+			&i.Descr,
+			&i.OpStat,
+			&i.OpStatIn,
+			&i.OpStatOut,
 			&i.UpdatedOn,
 			&i.CreatedOn,
 		); err != nil {
@@ -771,50 +815,6 @@ func (q *Queries) GetInterfaces(ctx context.Context, arg GetInterfacesParams) ([
 			&i.UpdatedOn,
 			&i.CreatedOn,
 			&i.Montraffic,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
-const GetterfaceInterfaceXconnects = `-- name: GetterfaceInterfaceXconnects :many
-SELECT xc_id, dev_id, peer_dev_id, if_id, vc_idx, vc_id, peer_ip, peer_ifalias, xname, descr, op_stat, op_stat_in, op_stat_out, updated_on, created_on
-FROM xconnects
-WHERE if_id = $1
-ORDER BY vc_id
-`
-
-// Relations
-func (q *Queries) GetterfaceInterfaceXconnects(ctx context.Context, ifID *int64) ([]Xconnect, error) {
-	rows, err := q.db.Query(ctx, GetterfaceInterfaceXconnects, ifID)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []Xconnect
-	for rows.Next() {
-		var i Xconnect
-		if err := rows.Scan(
-			&i.XcID,
-			&i.DevID,
-			&i.PeerDevID,
-			&i.IfID,
-			&i.VcIdx,
-			&i.VcID,
-			&i.PeerIp,
-			&i.PeerIfalias,
-			&i.Xname,
-			&i.Descr,
-			&i.OpStat,
-			&i.OpStatIn,
-			&i.OpStatOut,
-			&i.UpdatedOn,
-			&i.CreatedOn,
 		); err != nil {
 			return nil, err
 		}
