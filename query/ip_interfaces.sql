@@ -1,9 +1,50 @@
 -- name: GetIpInterfaces :many
 SELECT *
 FROM ip_interfaces
-ORDER BY dev_id, descr
-LIMIT $1
-OFFSET $2;
+WHERE (
+    @updated_ge::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR updated_on >= @updated_ge
+  )
+  AND (
+    @updated_le::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR updated_on <= @updated_le
+  )
+  AND (
+    @created_ge::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR created_on >= @created_ge
+  )
+  AND (
+    @created_le::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR created_on <= @created_le
+  )
+  AND (
+    @dev_id_f::text = ''
+    OR CAST(dev_id AS text) LIKE @dev_id_f
+  )
+  AND (
+    sqlc.narg('ifindex_f')::text IS NULL
+    OR (sqlc.narg('ifindex_f')::text = 'isnull' AND ifindex IS NULL)
+    OR (sqlc.narg('ifindex_f')::text = 'isempty' AND CAST(ifindex AS text) = '')
+    OR CAST(ifindex AS text) LIKE sqlc.narg('ifindex_f')
+  )
+  AND (
+    sqlc.narg('descr_f')::text IS NULL
+    OR (sqlc.narg('descr_f')::text = 'isnull' AND descr IS NULL)
+    OR (sqlc.narg('descr_f')::text = 'isempty' AND descr = '')
+    OR descr ILIKE sqlc.narg('descr_f')
+  )
+  AND (
+    sqlc.narg('alias_f')::text IS NULL
+    OR (sqlc.narg('alias_f')::text = 'isnull' AND alias IS NULL)
+    OR (sqlc.narg('alias_f')::text = 'isempty' AND alias = '')
+    OR alias ILIKE sqlc.narg('alias_f')
+  )
+  AND (
+    @ip_addr_f::inet IS NULL
+    OR ip_addr <<= @ip_addr_f
+  )
+ORDER BY created_on
+LIMIT NULLIF(@limit_q::int, 0) OFFSET NULLIF(@offset_q::int, 0);
 
 -- name: GetIpInterface :one
 SELECT *

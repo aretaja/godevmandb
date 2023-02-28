@@ -7,6 +7,7 @@ package godevmandb
 
 import (
 	"context"
+	"time"
 
 	"github.com/jackc/pgtype"
 )
@@ -143,18 +144,80 @@ func (q *Queries) GetIpInterfaceDevice(ctx context.Context, ipID int64) (Device,
 const GetIpInterfaces = `-- name: GetIpInterfaces :many
 SELECT ip_id, dev_id, ifindex, ip_addr, descr, alias, updated_on, created_on
 FROM ip_interfaces
-ORDER BY dev_id, descr
-LIMIT $1
-OFFSET $2
+WHERE (
+    $1::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR updated_on >= $1
+  )
+  AND (
+    $2::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR updated_on <= $2
+  )
+  AND (
+    $3::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR created_on >= $3
+  )
+  AND (
+    $4::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR created_on <= $4
+  )
+  AND (
+    $5::text = ''
+    OR CAST(dev_id AS text) LIKE $5
+  )
+  AND (
+    $6::text IS NULL
+    OR ($6::text = 'isnull' AND ifindex IS NULL)
+    OR ($6::text = 'isempty' AND CAST(ifindex AS text) = '')
+    OR CAST(ifindex AS text) LIKE $6
+  )
+  AND (
+    $7::text IS NULL
+    OR ($7::text = 'isnull' AND descr IS NULL)
+    OR ($7::text = 'isempty' AND descr = '')
+    OR descr ILIKE $7
+  )
+  AND (
+    $8::text IS NULL
+    OR ($8::text = 'isnull' AND alias IS NULL)
+    OR ($8::text = 'isempty' AND alias = '')
+    OR alias ILIKE $8
+  )
+  AND (
+    $9::inet IS NULL
+    OR ip_addr <<= $9
+  )
+ORDER BY created_on
+LIMIT NULLIF($11::int, 0) OFFSET NULLIF($10::int, 0)
 `
 
 type GetIpInterfacesParams struct {
-	Limit  int32 `json:"limit"`
-	Offset int32 `json:"offset"`
+	UpdatedGe time.Time   `json:"updated_ge"`
+	UpdatedLe time.Time   `json:"updated_le"`
+	CreatedGe time.Time   `json:"created_ge"`
+	CreatedLe time.Time   `json:"created_le"`
+	DevIDF    string      `json:"dev_id_f"`
+	IfindexF  *string     `json:"ifindex_f"`
+	DescrF    *string     `json:"descr_f"`
+	AliasF    *string     `json:"alias_f"`
+	IpAddrF   pgtype.Inet `json:"ip_addr_f"`
+	OffsetQ   int32       `json:"offset_q"`
+	LimitQ    int32       `json:"limit_q"`
 }
 
 func (q *Queries) GetIpInterfaces(ctx context.Context, arg GetIpInterfacesParams) ([]IpInterface, error) {
-	rows, err := q.db.Query(ctx, GetIpInterfaces, arg.Limit, arg.Offset)
+	rows, err := q.db.Query(ctx, GetIpInterfaces,
+		arg.UpdatedGe,
+		arg.UpdatedLe,
+		arg.CreatedGe,
+		arg.CreatedLe,
+		arg.DevIDF,
+		arg.IfindexF,
+		arg.DescrF,
+		arg.AliasF,
+		arg.IpAddrF,
+		arg.OffsetQ,
+		arg.LimitQ,
+	)
 	if err != nil {
 		return nil, err
 	}
