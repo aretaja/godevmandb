@@ -411,29 +411,45 @@ func (q *Queries) GetInterfaceInterfaceRelations(ctx context.Context, ifID int64
 }
 
 const GetInterfaceInterfaceRelationsHigherFor = `-- name: GetInterfaceInterfaceRelationsHigherFor :many
-SELECT t2.ir_id, t2.if_id, t2.if_id_up, t2.if_id_down, t2.updated_on, t2.created_on
+SELECT t3.if_id, t3.con_id, t3.parent, t3.otn_if_id, t3.dev_id, t3.ent_id, t3.ifindex, t3.descr, t3.alias, t3.oper, t3.adm, t3.speed, t3.minspeed, t3.type_enum, t3.mac, t3.monstatus, t3.monerrors, t3.monload, t3.updated_on, t3.created_on, t3.montraffic
 FROM interfaces t1
   INNER JOIN interface_relations t2 ON t2.if_id_up = t1.if_id
+  INNER JOIN interfaces t3 ON t3.if_id = t2.if_id
 WHERE t1.if_id = $1
 `
 
 // Relations
-func (q *Queries) GetInterfaceInterfaceRelationsHigherFor(ctx context.Context, ifID int64) ([]InterfaceRelation, error) {
+func (q *Queries) GetInterfaceInterfaceRelationsHigherFor(ctx context.Context, ifID int64) ([]Interface, error) {
 	rows, err := q.db.Query(ctx, GetInterfaceInterfaceRelationsHigherFor, ifID)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []InterfaceRelation
+	var items []Interface
 	for rows.Next() {
-		var i InterfaceRelation
+		var i Interface
 		if err := rows.Scan(
-			&i.IrID,
 			&i.IfID,
-			&i.IfIDUp,
-			&i.IfIDDown,
+			&i.ConID,
+			&i.Parent,
+			&i.OtnIfID,
+			&i.DevID,
+			&i.EntID,
+			&i.Ifindex,
+			&i.Descr,
+			&i.Alias,
+			&i.Oper,
+			&i.Adm,
+			&i.Speed,
+			&i.Minspeed,
+			&i.TypeEnum,
+			&i.Mac,
+			&i.Monstatus,
+			&i.Monerrors,
+			&i.Monload,
 			&i.UpdatedOn,
 			&i.CreatedOn,
+			&i.Montraffic,
 		); err != nil {
 			return nil, err
 		}
@@ -446,29 +462,45 @@ func (q *Queries) GetInterfaceInterfaceRelationsHigherFor(ctx context.Context, i
 }
 
 const GetInterfaceInterfaceRelationsLowerFor = `-- name: GetInterfaceInterfaceRelationsLowerFor :many
-SELECT t2.ir_id, t2.if_id, t2.if_id_up, t2.if_id_down, t2.updated_on, t2.created_on
+SELECT t3.if_id, t3.con_id, t3.parent, t3.otn_if_id, t3.dev_id, t3.ent_id, t3.ifindex, t3.descr, t3.alias, t3.oper, t3.adm, t3.speed, t3.minspeed, t3.type_enum, t3.mac, t3.monstatus, t3.monerrors, t3.monload, t3.updated_on, t3.created_on, t3.montraffic
 FROM interfaces t1
   INNER JOIN interface_relations t2 ON t2.if_id_down = t1.if_id
+  INNER JOIN interfaces t3 ON t2.if_id = t3.if_id
 WHERE t1.if_id = $1
 `
 
 // Relations
-func (q *Queries) GetInterfaceInterfaceRelationsLowerFor(ctx context.Context, ifID int64) ([]InterfaceRelation, error) {
+func (q *Queries) GetInterfaceInterfaceRelationsLowerFor(ctx context.Context, ifID int64) ([]Interface, error) {
 	rows, err := q.db.Query(ctx, GetInterfaceInterfaceRelationsLowerFor, ifID)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []InterfaceRelation
+	var items []Interface
 	for rows.Next() {
-		var i InterfaceRelation
+		var i Interface
 		if err := rows.Scan(
-			&i.IrID,
 			&i.IfID,
-			&i.IfIDUp,
-			&i.IfIDDown,
+			&i.ConID,
+			&i.Parent,
+			&i.OtnIfID,
+			&i.DevID,
+			&i.EntID,
+			&i.Ifindex,
+			&i.Descr,
+			&i.Alias,
+			&i.Oper,
+			&i.Adm,
+			&i.Speed,
+			&i.Minspeed,
+			&i.TypeEnum,
+			&i.Mac,
+			&i.Monstatus,
+			&i.Monerrors,
+			&i.Monload,
 			&i.UpdatedOn,
 			&i.CreatedOn,
+			&i.Montraffic,
 		); err != nil {
 			return nil, err
 		}

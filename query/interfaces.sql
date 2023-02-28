@@ -206,16 +206,18 @@ WHERE if_id = $1;
 
 -- Relations
 -- name: GetInterfaceInterfaceRelationsHigherFor :many
-SELECT t2.*
+SELECT t3.*
 FROM interfaces t1
   INNER JOIN interface_relations t2 ON t2.if_id_up = t1.if_id
+  INNER JOIN interfaces t3 ON t3.if_id = t2.if_id
 WHERE t1.if_id = $1;
 
 -- Relations
 -- name: GetInterfaceInterfaceRelationsLowerFor :many
-SELECT t2.*
+SELECT t3.*
 FROM interfaces t1
   INNER JOIN interface_relations t2 ON t2.if_id_down = t1.if_id
+  INNER JOIN interfaces t3 ON t2.if_id = t3.if_id
 WHERE t1.if_id = $1;
 
 -- Relations
