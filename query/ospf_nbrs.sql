@@ -1,9 +1,38 @@
 -- name: GetOspfNbrs :many
 SELECT *
 FROM ospf_nbrs
-ORDER BY descr
-LIMIT $1
-OFFSET $2;
+WHERE (
+    @updated_ge::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR updated_on >= @updated_ge
+  )
+  AND (
+    @updated_le::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR updated_on <= @updated_le
+  )
+  AND (
+    @created_ge::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR created_on >= @created_ge
+  )
+  AND (
+    @created_le::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR created_on <= @created_le
+  )
+  AND (
+    @dev_id_f::text = ''
+    OR CAST(dev_id AS text) LIKE @dev_id_f
+  )
+  AND (
+    sqlc.narg('condition_f')::text IS NULL
+    OR (sqlc.narg('condition_f')::text = 'isnull' AND condition IS NULL)
+    OR (sqlc.narg('condition_f')::text = 'isempty' AND condition = '')
+    OR condition ILIKE sqlc.narg('condition_f')
+  )
+  AND (
+    @nbr_ip_f::inet IS NULL
+    OR nbr_ip <<= @nbr_ip_f
+  )
+ORDER BY created_on
+LIMIT NULLIF(@limit_q::int, 0) OFFSET NULLIF(@offset_q::int, 0);
 
 -- name: GetOspfNbr :one
 SELECT *

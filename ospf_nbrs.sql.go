@@ -7,6 +7,7 @@ package godevmandb
 
 import (
 	"context"
+	"time"
 
 	"github.com/jackc/pgtype"
 )
@@ -129,18 +130,64 @@ func (q *Queries) GetOspfNbrDevice(ctx context.Context, nbrID int64) (Device, er
 const GetOspfNbrs = `-- name: GetOspfNbrs :many
 SELECT nbr_id, dev_id, nbr_ip, condition, updated_on, created_on
 FROM ospf_nbrs
-ORDER BY descr
-LIMIT $1
-OFFSET $2
+WHERE (
+    $1::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR updated_on >= $1
+  )
+  AND (
+    $2::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR updated_on <= $2
+  )
+  AND (
+    $3::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR created_on >= $3
+  )
+  AND (
+    $4::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR created_on <= $4
+  )
+  AND (
+    $5::text = ''
+    OR CAST(dev_id AS text) LIKE $5
+  )
+  AND (
+    $6::text IS NULL
+    OR ($6::text = 'isnull' AND condition IS NULL)
+    OR ($6::text = 'isempty' AND condition = '')
+    OR condition ILIKE $6
+  )
+  AND (
+    $7::inet IS NULL
+    OR nbr_ip <<= $7
+  )
+ORDER BY created_on
+LIMIT NULLIF($9::int, 0) OFFSET NULLIF($8::int, 0)
 `
 
 type GetOspfNbrsParams struct {
-	Limit  int32 `json:"limit"`
-	Offset int32 `json:"offset"`
+	UpdatedGe  time.Time   `json:"updated_ge"`
+	UpdatedLe  time.Time   `json:"updated_le"`
+	CreatedGe  time.Time   `json:"created_ge"`
+	CreatedLe  time.Time   `json:"created_le"`
+	DevIDF     string      `json:"dev_id_f"`
+	ConditionF *string     `json:"condition_f"`
+	NbrIpF     pgtype.Inet `json:"nbr_ip_f"`
+	OffsetQ    int32       `json:"offset_q"`
+	LimitQ     int32       `json:"limit_q"`
 }
 
 func (q *Queries) GetOspfNbrs(ctx context.Context, arg GetOspfNbrsParams) ([]OspfNbr, error) {
-	rows, err := q.db.Query(ctx, GetOspfNbrs, arg.Limit, arg.Offset)
+	rows, err := q.db.Query(ctx, GetOspfNbrs,
+		arg.UpdatedGe,
+		arg.UpdatedLe,
+		arg.CreatedGe,
+		arg.CreatedLe,
+		arg.DevIDF,
+		arg.ConditionF,
+		arg.NbrIpF,
+		arg.OffsetQ,
+		arg.LimitQ,
+	)
 	if err != nil {
 		return nil, err
 	}
