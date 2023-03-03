@@ -7,21 +7,22 @@ package godevmandb
 
 import (
 	"context"
+	"time"
 )
 
-const CountRlfNbrs = `-- name: CountRlfNbrs :one
+const CountRlNbrs = `-- name: CountRlNbrs :one
 SELECT COUNT(*)
 FROM rl_nbrs
 `
 
-func (q *Queries) CountRlfNbrs(ctx context.Context) (int64, error) {
-	row := q.db.QueryRow(ctx, CountRlfNbrs)
+func (q *Queries) CountRlNbrs(ctx context.Context) (int64, error) {
+	row := q.db.QueryRow(ctx, CountRlNbrs)
 	var count int64
 	err := row.Scan(&count)
 	return count, err
 }
 
-const CreateRlfNbr = `-- name: CreateRlfNbr :one
+const CreateRlNbr = `-- name: CreateRlNbr :one
 INSERT INTO rl_nbrs (
         dev_id,
         nbr_ent_id,
@@ -31,14 +32,14 @@ VALUES ($1, $2, $3)
 RETURNING nbr_id, dev_id, nbr_ent_id, nbr_sysname, updated_on, created_on
 `
 
-type CreateRlfNbrParams struct {
+type CreateRlNbrParams struct {
 	DevID      int64  `json:"dev_id"`
 	NbrEntID   *int64 `json:"nbr_ent_id"`
 	NbrSysname string `json:"nbr_sysname"`
 }
 
-func (q *Queries) CreateRlfNbr(ctx context.Context, arg CreateRlfNbrParams) (RlNbr, error) {
-	row := q.db.QueryRow(ctx, CreateRlfNbr, arg.DevID, arg.NbrEntID, arg.NbrSysname)
+func (q *Queries) CreateRlNbr(ctx context.Context, arg CreateRlNbrParams) (RlNbr, error) {
+	row := q.db.QueryRow(ctx, CreateRlNbr, arg.DevID, arg.NbrEntID, arg.NbrSysname)
 	var i RlNbr
 	err := row.Scan(
 		&i.NbrID,
@@ -51,24 +52,24 @@ func (q *Queries) CreateRlfNbr(ctx context.Context, arg CreateRlfNbrParams) (RlN
 	return i, err
 }
 
-const DeleteRlfNbr = `-- name: DeleteRlfNbr :exec
+const DeleteRlNbr = `-- name: DeleteRlNbr :exec
 DELETE FROM rl_nbrs
 WHERE nbr_id = $1
 `
 
-func (q *Queries) DeleteRlfNbr(ctx context.Context, nbrID int64) error {
-	_, err := q.db.Exec(ctx, DeleteRlfNbr, nbrID)
+func (q *Queries) DeleteRlNbr(ctx context.Context, nbrID int64) error {
+	_, err := q.db.Exec(ctx, DeleteRlNbr, nbrID)
 	return err
 }
 
-const GetRlfNbr = `-- name: GetRlfNbr :one
+const GetRlNbr = `-- name: GetRlNbr :one
 SELECT nbr_id, dev_id, nbr_ent_id, nbr_sysname, updated_on, created_on
 FROM rl_nbrs
 WHERE nbr_id = $1
 `
 
-func (q *Queries) GetRlfNbr(ctx context.Context, nbrID int64) (RlNbr, error) {
-	row := q.db.QueryRow(ctx, GetRlfNbr, nbrID)
+func (q *Queries) GetRlNbr(ctx context.Context, nbrID int64) (RlNbr, error) {
+	row := q.db.QueryRow(ctx, GetRlNbr, nbrID)
 	var i RlNbr
 	err := row.Scan(
 		&i.NbrID,
@@ -81,7 +82,7 @@ func (q *Queries) GetRlfNbr(ctx context.Context, nbrID int64) (RlNbr, error) {
 	return i, err
 }
 
-const GetRlfNbrDevice = `-- name: GetRlfNbrDevice :one
+const GetRlNbrDevice = `-- name: GetRlNbrDevice :one
 SELECT t2.dev_id, t2.site_id, t2.dom_id, t2.snmp_main_id, t2.snmp_ro_id, t2.parent, t2.sys_id, t2.ip4_addr, t2.ip6_addr, t2.host_name, t2.sys_name, t2.sys_location, t2.sys_contact, t2.sw_version, t2.ext_model, t2.installed, t2.monitor, t2.graph, t2.backup, t2.source, t2.type_changed, t2.backup_failed, t2.validation_failed, t2.unresponsive, t2.notes, t2.updated_on, t2.created_on
 FROM rl_nbrs t1
     INNER JOIN devices t2 ON t2.dev_id = t1.dev_id
@@ -89,8 +90,8 @@ WHERE t1.nbr_id = $1
 `
 
 // Foreign keys
-func (q *Queries) GetRlfNbrDevice(ctx context.Context, nbrID int64) (Device, error) {
-	row := q.db.QueryRow(ctx, GetRlfNbrDevice, nbrID)
+func (q *Queries) GetRlNbrDevice(ctx context.Context, nbrID int64) (Device, error) {
+	row := q.db.QueryRow(ctx, GetRlNbrDevice, nbrID)
 	var i Device
 	err := row.Scan(
 		&i.DevID,
@@ -124,7 +125,7 @@ func (q *Queries) GetRlfNbrDevice(ctx context.Context, nbrID int64) (Device, err
 	return i, err
 }
 
-const GetRlfNbrEntity = `-- name: GetRlfNbrEntity :one
+const GetRlNbrEntity = `-- name: GetRlNbrEntity :one
 SELECT t2.ent_id, t2.parent_ent_id, t2.snmp_ent_id, t2.dev_id, t2.slot, t2.descr, t2.model, t2.hw_product, t2.hw_revision, t2.serial_nr, t2.sw_product, t2.sw_revision, t2.manufacturer, t2.physical, t2.updated_on, t2.created_on
 FROM rl_nbrs t1
     INNER JOIN entities t2 ON t2.ent_id = t1.nbr_ent_id
@@ -132,8 +133,8 @@ WHERE t1.nbr_id = $1
 `
 
 // Foreign keys
-func (q *Queries) GetRlfNbrEntity(ctx context.Context, nbrID int64) (Entity, error) {
-	row := q.db.QueryRow(ctx, GetRlfNbrEntity, nbrID)
+func (q *Queries) GetRlNbrEntity(ctx context.Context, nbrID int64) (Entity, error) {
+	row := q.db.QueryRow(ctx, GetRlNbrEntity, nbrID)
 	var i Entity
 	err := row.Scan(
 		&i.EntID,
@@ -156,21 +157,67 @@ func (q *Queries) GetRlfNbrEntity(ctx context.Context, nbrID int64) (Entity, err
 	return i, err
 }
 
-const GetRlfNbrs = `-- name: GetRlfNbrs :many
+const GetRlNbrs = `-- name: GetRlNbrs :many
 SELECT nbr_id, dev_id, nbr_ent_id, nbr_sysname, updated_on, created_on
 FROM rl_nbrs
-ORDER BY nbr_sysname
-LIMIT $1
-OFFSET $2
+WHERE (
+    $1::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR updated_on >= $1
+  )
+  AND (
+    $2::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR updated_on <= $2
+  )
+  AND (
+    $3::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR created_on >= $3
+  )
+  AND (
+    $4::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR created_on <= $4
+  )
+  AND (
+    $5::text = ''
+    OR CAST(dev_id AS text) LIKE $5
+  )
+  AND (
+    $6::text IS NULL
+    OR ($6::text = 'isnull' AND nbr_ent_id IS NULL)
+    OR ($6::text = 'isempty' AND CAST(nbr_ent_id AS text) = '')
+    OR CAST(nbr_ent_id AS text) LIKE $6
+  )
+  AND (
+    $7::text = ''
+    OR nbr_sysname ILIKE $7
+  )
+ORDER BY created_on
+LIMIT NULLIF($9::int, 0) OFFSET NULLIF($8::int, 0)
 `
 
-type GetRlfNbrsParams struct {
-	Limit  int32 `json:"limit"`
-	Offset int32 `json:"offset"`
+type GetRlNbrsParams struct {
+	UpdatedGe   time.Time `json:"updated_ge"`
+	UpdatedLe   time.Time `json:"updated_le"`
+	CreatedGe   time.Time `json:"created_ge"`
+	CreatedLe   time.Time `json:"created_le"`
+	DevIDF      string    `json:"dev_id_f"`
+	NbrEntIDF   *string   `json:"nbr_ent_id_f"`
+	NbrSysnameF string    `json:"nbr_sysname_f"`
+	OffsetQ     int32     `json:"offset_q"`
+	LimitQ      int32     `json:"limit_q"`
 }
 
-func (q *Queries) GetRlfNbrs(ctx context.Context, arg GetRlfNbrsParams) ([]RlNbr, error) {
-	rows, err := q.db.Query(ctx, GetRlfNbrs, arg.Limit, arg.Offset)
+func (q *Queries) GetRlNbrs(ctx context.Context, arg GetRlNbrsParams) ([]RlNbr, error) {
+	rows, err := q.db.Query(ctx, GetRlNbrs,
+		arg.UpdatedGe,
+		arg.UpdatedLe,
+		arg.CreatedGe,
+		arg.CreatedLe,
+		arg.DevIDF,
+		arg.NbrEntIDF,
+		arg.NbrSysnameF,
+		arg.OffsetQ,
+		arg.LimitQ,
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -196,7 +243,7 @@ func (q *Queries) GetRlfNbrs(ctx context.Context, arg GetRlfNbrsParams) ([]RlNbr
 	return items, nil
 }
 
-const UpdateRlfNbr = `-- name: UpdateRlfNbr :one
+const UpdateRlNbr = `-- name: UpdateRlNbr :one
 UPDATE rl_nbrs
 SET dev_id = $2,
     nbr_ent_id = $3,
@@ -205,15 +252,15 @@ WHERE nbr_id = $1
 RETURNING nbr_id, dev_id, nbr_ent_id, nbr_sysname, updated_on, created_on
 `
 
-type UpdateRlfNbrParams struct {
+type UpdateRlNbrParams struct {
 	NbrID      int64  `json:"nbr_id"`
 	DevID      int64  `json:"dev_id"`
 	NbrEntID   *int64 `json:"nbr_ent_id"`
 	NbrSysname string `json:"nbr_sysname"`
 }
 
-func (q *Queries) UpdateRlfNbr(ctx context.Context, arg UpdateRlfNbrParams) (RlNbr, error) {
-	row := q.db.QueryRow(ctx, UpdateRlfNbr,
+func (q *Queries) UpdateRlNbr(ctx context.Context, arg UpdateRlNbrParams) (RlNbr, error) {
+	row := q.db.QueryRow(ctx, UpdateRlNbr,
 		arg.NbrID,
 		arg.DevID,
 		arg.NbrEntID,
