@@ -77,10 +77,17 @@ WHERE (
   )
   AND (
     $5::text = ''
+    OR ($5 = 'isempty' AND descr = '')
     OR descr ILIKE $5
   )
+  AND (
+    $6::text IS NULL
+    OR ($6::text = 'isnull' AND notes IS NULL)
+    OR ($6::text = 'isempty' AND notes = '')
+    OR notes ILIKE $6
+  )
 ORDER BY created_on
-LIMIT NULLIF($7::int, 0) OFFSET NULLIF($6::int, 0)
+LIMIT NULLIF($8::int, 0) OFFSET NULLIF($7::int, 0)
 `
 
 type GetConCapacitiesParams struct {
@@ -89,6 +96,7 @@ type GetConCapacitiesParams struct {
 	CreatedGe time.Time `json:"created_ge"`
 	CreatedLe time.Time `json:"created_le"`
 	DescrF    string    `json:"descr_f"`
+	NotesF    *string   `json:"notes_f"`
 	OffsetQ   int32     `json:"offset_q"`
 	LimitQ    int32     `json:"limit_q"`
 }
@@ -100,6 +108,7 @@ func (q *Queries) GetConCapacities(ctx context.Context, arg GetConCapacitiesPara
 		arg.CreatedGe,
 		arg.CreatedLe,
 		arg.DescrF,
+		arg.NotesF,
 		arg.OffsetQ,
 		arg.LimitQ,
 	)

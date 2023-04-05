@@ -147,21 +147,17 @@ WHERE (
     OR created_on <= $4
   )
   AND (
-    $5::text = ''
-    OR CAST(dev_id AS text) LIKE $5
+    $5::text IS NULL
+    OR ($5::text = 'isnull' AND condition IS NULL)
+    OR ($5::text = 'isempty' AND condition = '')
+    OR condition ILIKE $5
   )
   AND (
-    $6::text IS NULL
-    OR ($6::text = 'isnull' AND condition IS NULL)
-    OR ($6::text = 'isempty' AND condition = '')
-    OR condition ILIKE $6
-  )
-  AND (
-    $7::inet IS NULL
-    OR nbr_ip <<= $7
+    $6::inet IS NULL
+    OR nbr_ip <<= $6
   )
 ORDER BY created_on
-LIMIT NULLIF($9::int, 0) OFFSET NULLIF($8::int, 0)
+LIMIT NULLIF($8::int, 0) OFFSET NULLIF($7::int, 0)
 `
 
 type GetOspfNbrsParams struct {
@@ -169,7 +165,6 @@ type GetOspfNbrsParams struct {
 	UpdatedLe  time.Time   `json:"updated_le"`
 	CreatedGe  time.Time   `json:"created_ge"`
 	CreatedLe  time.Time   `json:"created_le"`
-	DevIDF     string      `json:"dev_id_f"`
 	ConditionF *string     `json:"condition_f"`
 	NbrIpF     pgtype.Inet `json:"nbr_ip_f"`
 	OffsetQ    int32       `json:"offset_q"`
@@ -182,7 +177,6 @@ func (q *Queries) GetOspfNbrs(ctx context.Context, arg GetOspfNbrsParams) ([]Osp
 		arg.UpdatedLe,
 		arg.CreatedGe,
 		arg.CreatedLe,
-		arg.DevIDF,
 		arg.ConditionF,
 		arg.NbrIpF,
 		arg.OffsetQ,

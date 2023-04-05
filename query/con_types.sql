@@ -19,7 +19,14 @@ WHERE (
   )
   AND (
     @descr_f::text = ''
+    OR (@descr_f = 'isempty' AND descr = '')
     OR descr ILIKE @descr_f
+  )
+  AND (
+    sqlc.narg('notes_f')::text IS NULL
+    OR (sqlc.narg('notes_f')::text = 'isnull' AND notes IS NULL)
+    OR (sqlc.narg('notes_f')::text = 'isempty' AND notes = '')
+    OR notes ILIKE sqlc.narg('notes_f')
   )
 ORDER BY created_on
 LIMIT NULLIF(@limit_q::int, 0) OFFSET NULLIF(@offset_q::int, 0);

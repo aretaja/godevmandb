@@ -930,44 +930,109 @@ WHERE (
     OR host_name ILIKE $6
   )
   AND (
-    $7::text IS NULL
-    OR sw_version ILIKE $7
+    $7::text = ''
+    OR source ILIKE $7
   )
   AND (
     $8::text IS NULL
-    OR notes ILIKE $8
+    OR ($8::text = 'isnull' AND sw_version IS NULL)
+    OR ($8::text = 'isempty' AND sw_version = '')
+    OR sw_version ILIKE $8
   )
   AND (
     $9::text IS NULL
-    OR host_name ILIKE $9
-    OR sys_name ILIKE $9
+    OR ($9::text = 'isnull' AND notes IS NULL)
+    OR ($9::text = 'isempty' AND notes = '')
+    OR notes ILIKE $9
   )
   AND (
-    $10::inet IS NULL
-    OR ip4_addr <<= $10
+    $10::text IS NULL
+    OR ($10::text = 'isnull' AND sys_name IS NULL)
+    OR ($10::text = 'isempty' AND sys_name = '')
+    OR sys_name ILIKE $10
   )
   AND (
-    $11::inet IS NULL
-    OR ip6_addr <<= $11
+    $11::text IS NULL
+    OR ($11::text = 'isnull' AND ext_model IS NULL)
+    OR ($11::text = 'isempty' AND ext_model = '')
+    OR ext_model ILIKE $11
+  )
+  AND (
+    $12::inet IS NULL
+    OR ip4_addr <<= $12
+  )
+  AND (
+    $13::inet IS NULL
+    OR ip6_addr <<= $13
+  )
+  AND (
+    $14::text = ''
+    OR ($14::text = 'true' AND installed = true)
+    OR ($14::text = 'false' AND installed = false)
+  )
+  AND (
+    $15::text = ''
+    OR ($15::text = 'true' AND monitor = true)
+    OR ($15::text = 'false' AND monitor = false)
+  )
+  AND (
+    $16::text = ''
+    OR ($16::text = 'true' AND graph = true)
+    OR ($16::text = 'false' AND graph = false)
+  )
+  AND (
+    $17::text = ''
+    OR ($17::text = 'true' AND backup = true)
+    OR ($17::text = 'false' AND backup = false)
+  )
+  AND (
+    $18::text = ''
+    OR ($18::text = 'true' AND type_changed = true)
+    OR ($18::text = 'false' AND type_changed = false)
+  )
+  AND (
+    $19::text = ''
+    OR ($19::text = 'true' AND backup_failed = true)
+    OR ($19::text = 'false' AND backup_failed = false)
+  )
+  AND (
+    $20::text = ''
+    OR ($20::text = 'true' AND validation_failed = true)
+    OR ($20::text = 'false' AND validation_failed = false)
+  )
+  AND (
+    $21::text = ''
+    OR ($21::text = 'true' AND unresponsive = true)
+    OR ($21::text = 'false' AND unresponsive = false)
   )
 ORDER BY created_on
-LIMIT NULLIF($13::int, 0) OFFSET NULLIF($12::int, 0)
+LIMIT NULLIF($23::int, 0) OFFSET NULLIF($22::int, 0)
 `
 
 type GetDevicesParams struct {
-	UpdatedGe  time.Time   `json:"updated_ge"`
-	UpdatedLe  time.Time   `json:"updated_le"`
-	CreatedGe  time.Time   `json:"created_ge"`
-	CreatedLe  time.Time   `json:"created_le"`
-	SysIDF     string      `json:"sys_id_f"`
-	HostNameF  string      `json:"host_name_f"`
-	SwVersionF *string     `json:"sw_version_f"`
-	NotesF     *string     `json:"notes_f"`
-	NameF      *string     `json:"name_f"`
-	Ip4AddrF   pgtype.Inet `json:"ip4_addr_f"`
-	Ip6AddrF   pgtype.Inet `json:"ip6_addr_f"`
-	OffsetQ    int32       `json:"offset_q"`
-	LimitQ     int32       `json:"limit_q"`
+	UpdatedGe         time.Time   `json:"updated_ge"`
+	UpdatedLe         time.Time   `json:"updated_le"`
+	CreatedGe         time.Time   `json:"created_ge"`
+	CreatedLe         time.Time   `json:"created_le"`
+	SysIDF            string      `json:"sys_id_f"`
+	HostNameF         string      `json:"host_name_f"`
+	SourceF           string      `json:"source_f"`
+	SwVersionF        *string     `json:"sw_version_f"`
+	NotesF            *string     `json:"notes_f"`
+	SysNameF          *string     `json:"sys_name_f"`
+	ExtModelF         *string     `json:"ext_model_f"`
+	Ip4AddrF          pgtype.Inet `json:"ip4_addr_f"`
+	Ip6AddrF          pgtype.Inet `json:"ip6_addr_f"`
+	InstalledF        string      `json:"installed_f"`
+	MonitorF          string      `json:"monitor_f"`
+	GraphF            string      `json:"graph_f"`
+	BackupF           string      `json:"backup_f"`
+	TypeChangedF      string      `json:"type_changed_f"`
+	BackupFailedF     string      `json:"backup_failed_f"`
+	ValidationFailedF string      `json:"validation_failed_f"`
+	UnresponsiveF     string      `json:"unresponsive_f"`
+	OffsetQ           int32       `json:"offset_q"`
+	LimitQ            int32       `json:"limit_q"`
 }
 
 func (q *Queries) GetDevices(ctx context.Context, arg GetDevicesParams) ([]Device, error) {
@@ -978,11 +1043,21 @@ func (q *Queries) GetDevices(ctx context.Context, arg GetDevicesParams) ([]Devic
 		arg.CreatedLe,
 		arg.SysIDF,
 		arg.HostNameF,
+		arg.SourceF,
 		arg.SwVersionF,
 		arg.NotesF,
-		arg.NameF,
+		arg.SysNameF,
+		arg.ExtModelF,
 		arg.Ip4AddrF,
 		arg.Ip6AddrF,
+		arg.InstalledF,
+		arg.MonitorF,
+		arg.GraphF,
+		arg.BackupF,
+		arg.TypeChangedF,
+		arg.BackupFailedF,
+		arg.ValidationFailedF,
+		arg.UnresponsiveF,
 		arg.OffsetQ,
 		arg.LimitQ,
 	)

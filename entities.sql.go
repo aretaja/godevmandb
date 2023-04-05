@@ -140,43 +140,71 @@ WHERE (
     OR created_on <= $4
   )
   AND (
-    $5::text = ''
-    OR slot ILIKE $5
+    $5::text IS NULL
+    OR ($5::text = 'isnull' AND snmp_ent_id IS NULL)
+    OR snmp_ent_id = $5
   )
   AND (
-    $6::text = ''
-    OR descr ILIKE $6
+    $6::text IS NULL
+    OR ($6::text = 'isnull' AND slot IS NULL)
+    OR ($6::text = 'isempty' AND slot = '')
+    OR slot ILIKE $6
   )
   AND (
-    $7::text = ''
-    OR model ILIKE $7
+    $7::text IS NULL
+    OR ($7::text = 'isnull' AND descr IS NULL)
+    OR ($7::text = 'isempty' AND descr = '')
+    OR descr ILIKE $7
   )
   AND (
-    $8::text = ''
-    OR hw_product ILIKE $8
+    $8::text IS NULL
+    OR ($8::text = 'isnull' AND model IS NULL)
+    OR ($8::text = 'isempty' AND model = '')
+    OR model ILIKE $8
   )
   AND (
-    $9::text = ''
-    OR hw_revision ILIKE $9
+    $9::text IS NULL
+    OR ($9::text = 'isnull' AND hw_product IS NULL)
+    OR ($9::text = 'isempty' AND hw_product = '')
+    OR hw_product ILIKE $9
   )
   AND (
-    $10::text = ''
-    OR serial_nr ILIKE $10
+    $10::text IS NULL
+    OR ($10::text = 'isnull' AND hw_revision IS NULL)
+    OR ($10::text = 'isempty' AND hw_revision = '')
+    OR hw_revision ILIKE $10
   )
   AND (
-    $11::text = ''
-    OR sw_product ILIKE $11
+    $11::text IS NULL
+    OR ($11::text = 'isnull' AND serial_nr IS NULL)
+    OR ($11::text = 'isempty' AND serial_nr = '')
+    OR serial_nr ILIKE $11
   )
   AND (
-    $12::text = ''
-    OR sw_revision ILIKE $12
+    $12::text IS NULL
+    OR ($12::text = 'isnull' AND sw_product IS NULL)
+    OR ($12::text = 'isempty' AND sw_product = '')
+    OR sw_product ILIKE $12
   )
   AND (
-    $13::text = ''
-    OR manufacturer ILIKE $13
+    $13::text IS NULL
+    OR ($13::text = 'isnull' AND sw_revision IS NULL)
+    OR ($13::text = 'isempty' AND sw_revision = '')
+    OR sw_revision ILIKE $13
+  )
+  AND (
+    $14::text IS NULL
+    OR ($14::text = 'isnull' AND manufacturer IS NULL)
+    OR ($14::text = 'isempty' AND manufacturer = '')
+    OR manufacturer ILIKE $14
+  )
+  AND (
+    $15::text = ''
+    OR ($15::text = 'true' AND physical = true)
+    OR ($15::text = 'false' AND physical = false)
   )
 ORDER BY created_on
-LIMIT NULLIF($15::int, 0) OFFSET NULLIF($14::int, 0)
+LIMIT NULLIF($17::int, 0) OFFSET NULLIF($16::int, 0)
 `
 
 type GetEntitiesParams struct {
@@ -184,15 +212,17 @@ type GetEntitiesParams struct {
 	UpdatedLe     time.Time `json:"updated_le"`
 	CreatedGe     time.Time `json:"created_ge"`
 	CreatedLe     time.Time `json:"created_le"`
-	SlotF         string    `json:"slot_f"`
-	DescrF        string    `json:"descr_f"`
-	ModelF        string    `json:"model_f"`
-	HwProductF    string    `json:"hw_product_f"`
-	HwRevisionF   string    `json:"hw_revision_f"`
-	SerialNrF     string    `json:"serial_nr_f"`
-	SwProductF    string    `json:"sw_product_f"`
-	SwRevisionF   string    `json:"sw_revision_f"`
-	ManufacturerF string    `json:"manufacturer_f"`
+	SnmpEntIDF    *string   `json:"snmp_ent_id_f"`
+	SlotF         *string   `json:"slot_f"`
+	DescrF        *string   `json:"descr_f"`
+	ModelF        *string   `json:"model_f"`
+	HwProductF    *string   `json:"hw_product_f"`
+	HwRevisionF   *string   `json:"hw_revision_f"`
+	SerialNrF     *string   `json:"serial_nr_f"`
+	SwProductF    *string   `json:"sw_product_f"`
+	SwRevisionF   *string   `json:"sw_revision_f"`
+	ManufacturerF *string   `json:"manufacturer_f"`
+	PhysicalF     string    `json:"physical_f"`
 	OffsetQ       int32     `json:"offset_q"`
 	LimitQ        int32     `json:"limit_q"`
 }
@@ -203,6 +233,7 @@ func (q *Queries) GetEntities(ctx context.Context, arg GetEntitiesParams) ([]Ent
 		arg.UpdatedLe,
 		arg.CreatedGe,
 		arg.CreatedLe,
+		arg.SnmpEntIDF,
 		arg.SlotF,
 		arg.DescrF,
 		arg.ModelF,
@@ -212,6 +243,7 @@ func (q *Queries) GetEntities(ctx context.Context, arg GetEntitiesParams) ([]Ent
 		arg.SwProductF,
 		arg.SwRevisionF,
 		arg.ManufacturerF,
+		arg.PhysicalF,
 		arg.OffsetQ,
 		arg.LimitQ,
 	)

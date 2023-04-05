@@ -7,6 +7,7 @@ package godevmandb
 
 import (
 	"context"
+	"time"
 )
 
 const CountDeviceLicenses = `-- name: CountDeviceLicenses :one
@@ -156,18 +157,128 @@ func (q *Queries) GetDeviceLicenseDevice(ctx context.Context, licID int64) (Devi
 const GetDeviceLicenses = `-- name: GetDeviceLicenses :many
 SELECT lic_id, dev_id, product, descr, installed, unlocked, tot_inst, used, condition, updated_on, created_on
 FROM device_licenses
-ORDER BY dev_id, descr
-LIMIT $1
-OFFSET $2
+WHERE (
+    $1::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR updated_on >= $1
+  )
+  AND (
+    $2::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR updated_on <= $2
+  )
+  AND (
+    $3::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR created_on >= $3
+  )
+  AND (
+    $4::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR created_on <= $4
+  )
+  AND (
+    $3::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR created_on >= $3
+  )
+  AND (
+    $5::text IS NULL
+    OR ($5::text = 'isnull' AND installed IS NULL)
+    OR installed <= CAST($5 AS integer)
+  )
+  AND (
+    $6::text IS NULL
+    OR ($6::text = 'isnull' AND installed IS NULL)
+    OR installed >= CAST($6 AS integer)
+  )
+  AND (
+    $7::text IS NULL
+    OR ($7::text = 'isnull' AND unlocked IS NULL)
+    OR unlocked <= CAST($7 AS integer)
+  )
+  AND (
+    $8::text IS NULL
+    OR ($8::text = 'isnull' AND unlocked IS NULL)
+    OR unlocked >= CAST($8 AS integer)
+  )
+  AND (
+    $9::text IS NULL
+    OR ($9::text = 'isnull' AND tot_inst IS NULL)
+    OR tot_inst <= CAST($9 AS integer)
+  )
+  AND (
+    $10::text IS NULL
+    OR ($10::text = 'isnull' AND tot_inst IS NULL)
+    OR tot_inst >= CAST($10 AS integer)
+  )
+  AND (
+    $11::text IS NULL
+    OR ($11::text = 'isnull' AND used IS NULL)
+    OR used <= CAST($11 AS integer)
+  )
+  AND (
+    $12::text IS NULL
+    OR ($12::text = 'isnull' AND used IS NULL)
+    OR used >= CAST($12 AS integer)
+  )
+  AND (
+    $13::text IS NULL
+    OR ($13::text = 'isnull' AND product IS NULL)
+    OR ($13::text = 'isempty' AND product = '')
+    OR product ILIKE $13
+  )
+  AND (
+    $14::text IS NULL
+    OR ($14::text = 'isnull' AND descr IS NULL)
+    OR ($14::text = 'isempty' AND descr = '')
+    OR descr ILIKE $14
+  )
+  AND (
+    $15::text IS NULL
+    OR ($15::text = 'isnull' AND condition IS NULL)
+    OR ($15::text = 'isempty' AND condition = '')
+    OR condition ILIKE $15
+  )
+ORDER BY created_on
+LIMIT NULLIF($17::int, 0) OFFSET NULLIF($16::int, 0)
 `
 
 type GetDeviceLicensesParams struct {
-	Limit  int32 `json:"limit"`
-	Offset int32 `json:"offset"`
+	UpdatedGe   time.Time `json:"updated_ge"`
+	UpdatedLe   time.Time `json:"updated_le"`
+	CreatedGe   time.Time `json:"created_ge"`
+	CreatedLe   time.Time `json:"created_le"`
+	InstalledLe *string   `json:"installed_le"`
+	InstalledGe *string   `json:"installed_ge"`
+	UnlockedLe  *string   `json:"unlocked_le"`
+	UnlockedGe  *string   `json:"unlocked_ge"`
+	TotInstLe   *string   `json:"tot_inst_le"`
+	TotInstGe   *string   `json:"tot_inst_ge"`
+	UsedLe      *string   `json:"used_le"`
+	UsedGe      *string   `json:"used_ge"`
+	ProductF    *string   `json:"product_f"`
+	DescrF      *string   `json:"descr_f"`
+	ConditionF  *string   `json:"condition_f"`
+	OffsetQ     int32     `json:"offset_q"`
+	LimitQ      int32     `json:"limit_q"`
 }
 
 func (q *Queries) GetDeviceLicenses(ctx context.Context, arg GetDeviceLicensesParams) ([]DeviceLicense, error) {
-	rows, err := q.db.Query(ctx, GetDeviceLicenses, arg.Limit, arg.Offset)
+	rows, err := q.db.Query(ctx, GetDeviceLicenses,
+		arg.UpdatedGe,
+		arg.UpdatedLe,
+		arg.CreatedGe,
+		arg.CreatedLe,
+		arg.InstalledLe,
+		arg.InstalledGe,
+		arg.UnlockedLe,
+		arg.UnlockedGe,
+		arg.TotInstLe,
+		arg.TotInstGe,
+		arg.UsedLe,
+		arg.UsedGe,
+		arg.ProductF,
+		arg.DescrF,
+		arg.ConditionF,
+		arg.OffsetQ,
+		arg.LimitQ,
+	)
 	if err != nil {
 		return nil, err
 	}

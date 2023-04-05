@@ -7,6 +7,7 @@ package godevmandb
 
 import (
 	"context"
+	"time"
 )
 
 const CountUsers = `-- name: CountUsers :one
@@ -148,18 +149,70 @@ func (q *Queries) GetUserUserGraps(ctx context.Context, username string) ([]User
 const GetUsers = `-- name: GetUsers :many
 SELECT username, userlevel, notes, updated_on, created_on
 FROM users
-ORDER BY username
-LIMIT $1
-OFFSET $2
+WHERE (
+    $1::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR updated_on >= $1
+  )
+  AND (
+    $2::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR updated_on <= $2
+  )
+  AND (
+    $3::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR created_on >= $3
+  )
+  AND (
+    $4::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR created_on <= $4
+  )
+  AND (
+    $5::text = ''
+    OR username = $5
+  )
+  AND (
+    $6::text = ''
+    OR userlevel <= CAST($6 AS integer)
+  )
+  AND (
+    $7::text = ''
+    OR userlevel <= CAST($7 AS integer)
+  )
+  AND (
+    $8::text IS NULL
+    OR ($8::text = 'isnull' AND notes IS NULL)
+    OR ($8::text = 'isempty' AND notes = '')
+    OR notes ILIKE $8
+  )
+ORDER BY created_on
+LIMIT NULLIF($10::int, 0) OFFSET NULLIF($9::int, 0)
 `
 
 type GetUsersParams struct {
-	Limit  int32 `json:"limit"`
-	Offset int32 `json:"offset"`
+	UpdatedGe   time.Time `json:"updated_ge"`
+	UpdatedLe   time.Time `json:"updated_le"`
+	CreatedGe   time.Time `json:"created_ge"`
+	CreatedLe   time.Time `json:"created_le"`
+	UsernameF   string    `json:"username_f"`
+	UserlevelLe string    `json:"userlevel_le"`
+	UserlevelGe string    `json:"userlevel_ge"`
+	NotesF      *string   `json:"notes_f"`
+	OffsetQ     int32     `json:"offset_q"`
+	LimitQ      int32     `json:"limit_q"`
 }
 
 func (q *Queries) GetUsers(ctx context.Context, arg GetUsersParams) ([]User, error) {
-	rows, err := q.db.Query(ctx, GetUsers, arg.Limit, arg.Offset)
+	rows, err := q.db.Query(ctx, GetUsers,
+		arg.UpdatedGe,
+		arg.UpdatedLe,
+		arg.CreatedGe,
+		arg.CreatedLe,
+		arg.UsernameF,
+		arg.UserlevelLe,
+		arg.UserlevelGe,
+		arg.NotesF,
+		arg.OffsetQ,
+		arg.LimitQ,
+	)
 	if err != nil {
 		return nil, err
 	}

@@ -18,8 +18,26 @@ WHERE (
     OR created_on <= @created_le
   )
   AND (
+    @manufacturer_f::text = ''
+    OR (@manufacturer_f = 'isempty' AND manufacturer = '')
+    OR manufacturer ILIKE @manufacturer_f
+  )
+  AND (
     @serial_nr_f::text = ''
+    OR (@serial_nr_f = 'isempty' AND serial_nr = '')
     OR serial_nr ILIKE @serial_nr_f
+  )
+  AND (
+    sqlc.narg('part_f')::text IS NULL
+    OR (sqlc.narg('part_f')::text = 'isnull' AND part IS NULL)
+    OR (sqlc.narg('part_f')::text = 'isempty' AND part = '')
+    OR part ILIKE sqlc.narg('part_f')
+  )
+  AND (
+    sqlc.narg('descr_f')::text IS NULL
+    OR (sqlc.narg('descr_f')::text = 'isnull' AND descr IS NULL)
+    OR (sqlc.narg('descr_f')::text = 'isempty' AND descr = '')
+    OR descr ILIKE sqlc.narg('descr_f')
   )
 ORDER BY created_on
 LIMIT NULLIF(@limit_q::int, 0) OFFSET NULLIF(@offset_q::int, 0);

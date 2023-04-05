@@ -29,6 +29,15 @@ WHERE (
     @model_f::text = ''
     OR model ILIKE @model_f
   )
+  AND (
+    @hc_f::text = ''
+    OR (@hc_f::text = 'true' AND hc = true)
+    OR (@hc_f::text = 'false' AND hc = false)
+  )
+  AND (
+    @snmp_ver_f::text = ''
+    OR CAST(snmp_ver AS text) = @snmp_ver_f
+  )
 ORDER BY created_on
 LIMIT NULLIF(@limit_q::int, 0) OFFSET NULLIF(@offset_q::int, 0);
 

@@ -189,21 +189,117 @@ WHERE (
     OR created_on <= $4
   )
   AND (
-    $5::text = ''
-    OR if_group ILIKE $5
+    $5::text IS NULL
+    OR ($5::text = 'isnull' AND to50in IS NULL)
+    OR to50in <= CAST($5 AS integer)
+  )
+  AND (
+    $6::text IS NULL
+    OR ($6::text = 'isnull' AND to50in IS NULL)
+    OR to50in >= CAST($6 AS integer)
+  )
+  AND (
+    $7::text IS NULL
+    OR ($7::text = 'isnull' AND to75in IS NULL)
+    OR to75in <= CAST($7 AS integer)
+  )
+  AND (
+    $8::text IS NULL
+    OR ($8::text = 'isnull' AND to75in IS NULL)
+    OR to75in >= CAST($8 AS integer)
+  )
+  AND (
+    $9::text IS NULL
+    OR ($9::text = 'isnull' AND to90in IS NULL)
+    OR to90in <= CAST($9 AS integer)
+  )
+  AND (
+    $10::text IS NULL
+    OR ($10::text = 'isnull' AND to90in IS NULL)
+    OR to90in >= CAST($10 AS integer)
+  )
+  AND (
+    $11::text IS NULL
+    OR ($11::text = 'isnull' AND to100in IS NULL)
+    OR to100in <= CAST($11 AS integer)
+  )
+  AND (
+    $12::text IS NULL
+    OR ($12::text = 'isnull' AND to100in IS NULL)
+    OR to100in >= CAST($12 AS integer)
+  )
+  AND (
+    $13::text IS NULL
+    OR ($13::text = 'isnull' AND to50out IS NULL)
+    OR to50out <= CAST($13 AS integer)
+  )
+  AND (
+    $14::text IS NULL
+    OR ($14::text = 'isnull' AND to50out IS NULL)
+    OR to50out >= CAST($14 AS integer)
+  )
+  AND (
+    $15::text IS NULL
+    OR ($15::text = 'isnull' AND to75out IS NULL)
+    OR to75out <= CAST($15 AS integer)
+  )
+  AND (
+    $16::text IS NULL
+    OR ($16::text = 'isnull' AND to75out IS NULL)
+    OR to75out >= CAST($16 AS integer)
+  )
+  AND (
+    $17::text IS NULL
+    OR ($17::text = 'isnull' AND to90out IS NULL)
+    OR to90out <= CAST($17 AS integer)
+  )
+  AND (
+    $18::text IS NULL
+    OR ($18::text = 'isnull' AND to90out IS NULL)
+    OR to90out >= CAST($18 AS integer)
+  )
+  AND (
+    $19::text IS NULL
+    OR ($19::text = 'isnull' AND to100out IS NULL)
+    OR to100out <= CAST($19 AS integer)
+  )
+  AND (
+    $20::text IS NULL
+    OR ($20::text = 'isnull' AND to100out IS NULL)
+    OR to100out >= CAST($20 AS integer)
+  )
+  AND (
+    $21::text = ''
+    OR if_group ILIKE $21
   )
 ORDER BY created_on
-LIMIT NULLIF($7::int, 0) OFFSET NULLIF($6::int, 0)
+LIMIT NULLIF($23::int, 0) OFFSET NULLIF($22::int, 0)
 `
 
 type GetIntBwStatsParams struct {
-	UpdatedGe time.Time `json:"updated_ge"`
-	UpdatedLe time.Time `json:"updated_le"`
-	CreatedGe time.Time `json:"created_ge"`
-	CreatedLe time.Time `json:"created_le"`
-	IfGroupF  string    `json:"if_group_f"`
-	OffsetQ   int32     `json:"offset_q"`
-	LimitQ    int32     `json:"limit_q"`
+	UpdatedGe  time.Time `json:"updated_ge"`
+	UpdatedLe  time.Time `json:"updated_le"`
+	CreatedGe  time.Time `json:"created_ge"`
+	CreatedLe  time.Time `json:"created_le"`
+	To50inLe   *string   `json:"to50in_le"`
+	To50inGe   *string   `json:"to50in_ge"`
+	To75inLe   *string   `json:"to75in_le"`
+	To75inGe   *string   `json:"to75in_ge"`
+	To90inLe   *string   `json:"to90in_le"`
+	To90inGe   *string   `json:"to90in_ge"`
+	To100inLe  *string   `json:"to100in_le"`
+	To100inGe  *string   `json:"to100in_ge"`
+	To50outLe  *string   `json:"to50out_le"`
+	To50outGe  *string   `json:"to50out_ge"`
+	To75outLe  *string   `json:"to75out_le"`
+	To75outGe  *string   `json:"to75out_ge"`
+	To90outLe  *string   `json:"to90out_le"`
+	To90outGe  *string   `json:"to90out_ge"`
+	To100outLe *string   `json:"to100out_le"`
+	To100outGe *string   `json:"to100out_ge"`
+	IfGroupF   string    `json:"if_group_f"`
+	OffsetQ    int32     `json:"offset_q"`
+	LimitQ     int32     `json:"limit_q"`
 }
 
 func (q *Queries) GetIntBwStats(ctx context.Context, arg GetIntBwStatsParams) ([]IntBwStat, error) {
@@ -212,6 +308,22 @@ func (q *Queries) GetIntBwStats(ctx context.Context, arg GetIntBwStatsParams) ([
 		arg.UpdatedLe,
 		arg.CreatedGe,
 		arg.CreatedLe,
+		arg.To50inLe,
+		arg.To50inGe,
+		arg.To75inLe,
+		arg.To75inGe,
+		arg.To90inLe,
+		arg.To90inGe,
+		arg.To100inLe,
+		arg.To100inGe,
+		arg.To50outLe,
+		arg.To50outGe,
+		arg.To75outLe,
+		arg.To75outGe,
+		arg.To90outLe,
+		arg.To90outGe,
+		arg.To100outLe,
+		arg.To100outGe,
 		arg.IfGroupF,
 		arg.OffsetQ,
 		arg.LimitQ,

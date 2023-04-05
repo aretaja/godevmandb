@@ -67,6 +67,18 @@ WHERE (
     @mac_f::macaddr IS NULL
     OR mac = @mac_f
   )
+  AND (
+    @monstatus_f::text = ''
+    OR CAST(monstatus AS text) = @monstatus_f
+  )
+  AND (
+    @monerrors_f::text = ''
+    OR CAST(monerrors AS text) = @monerrors_f
+  )
+  AND (
+    @monload_f::text = ''
+    OR CAST(monload AS text) = @monload_f
+  )
 ORDER BY created_on
 LIMIT NULLIF(@limit_q::int, 0) OFFSET NULLIF(@offset_q::int, 0);
 

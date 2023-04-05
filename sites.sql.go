@@ -7,6 +7,7 @@ package godevmandb
 
 import (
 	"context"
+	"time"
 )
 
 const CountSites = `-- name: CountSites :one
@@ -250,18 +251,99 @@ func (q *Queries) GetSiteDevices(ctx context.Context, siteID *int64) ([]Device, 
 const GetSites = `-- name: GetSites :many
 SELECT site_id, country_id, uident, descr, latitude, longitude, area, addr, notes, ext_id, ext_name, updated_on, created_on
 FROM sites
-ORDER BY descr
-LIMIT $1
-OFFSET $2
+WHERE (
+    $1::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR updated_on >= $1
+  )
+  AND (
+    $2::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR updated_on <= $2
+  )
+  AND (
+    $3::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR created_on >= $3
+  )
+  AND (
+    $4::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR created_on <= $4
+  )
+  AND (
+    $5::text IS NULL
+    OR ($5::text = 'isnull' AND uident IS NULL)
+    OR ($5::text = 'isempty' AND uident = '')
+    OR uident ILIKE $5
+  )
+  AND (
+    $6::text = ''
+    OR ($6 = 'isempty' AND descr = '')
+    OR descr ILIKE $6
+  )
+  AND (
+    $7::text IS NULL
+    OR ($7::text = 'isnull' AND area IS NULL)
+    OR ($7::text = 'isempty' AND area = '')
+    OR area ILIKE $7
+  )
+  AND (
+    $8::text IS NULL
+    OR ($8::text = 'isnull' AND addr IS NULL)
+    OR ($8::text = 'isempty' AND addr = '')
+    OR addr ILIKE $8
+  )
+  AND (
+    $9::text IS NULL
+    OR ($9::text = 'isnull' AND notes IS NULL)
+    OR ($9::text = 'isempty' AND notes = '')
+    OR notes ILIKE $9
+  )
+  AND (
+    $10::text IS NULL
+    OR ($10::text = 'isnull' AND ext_name IS NULL)
+    OR ($10::text = 'isempty' AND ext_name = '')
+    OR ext_name ILIKE $10
+  )
+  AND (
+    $11::text IS NULL
+    OR ($11::text = 'isnull' AND ext_id IS NULL)
+    OR ($11::text = 'isempty' AND CAST(ext_id AS text) = '')
+    OR CAST(ext_id AS text) LIKE $11
+  )
+ORDER BY created_on
+LIMIT NULLIF($13::int, 0) OFFSET NULLIF($12::int, 0)
 `
 
 type GetSitesParams struct {
-	Limit  int32 `json:"limit"`
-	Offset int32 `json:"offset"`
+	UpdatedGe time.Time `json:"updated_ge"`
+	UpdatedLe time.Time `json:"updated_le"`
+	CreatedGe time.Time `json:"created_ge"`
+	CreatedLe time.Time `json:"created_le"`
+	UidentF   *string   `json:"uident_f"`
+	DescrF    string    `json:"descr_f"`
+	AreaF     *string   `json:"area_f"`
+	AddrF     *string   `json:"addr_f"`
+	NotesF    *string   `json:"notes_f"`
+	ExtNameF  *string   `json:"ext_name_f"`
+	ExtIDF    *string   `json:"ext_id_f"`
+	OffsetQ   int32     `json:"offset_q"`
+	LimitQ    int32     `json:"limit_q"`
 }
 
 func (q *Queries) GetSites(ctx context.Context, arg GetSitesParams) ([]Site, error) {
-	rows, err := q.db.Query(ctx, GetSites, arg.Limit, arg.Offset)
+	rows, err := q.db.Query(ctx, GetSites,
+		arg.UpdatedGe,
+		arg.UpdatedLe,
+		arg.CreatedGe,
+		arg.CreatedLe,
+		arg.UidentF,
+		arg.DescrF,
+		arg.AreaF,
+		arg.AddrF,
+		arg.NotesF,
+		arg.ExtNameF,
+		arg.ExtIDF,
+		arg.OffsetQ,
+		arg.LimitQ,
+	)
 	if err != nil {
 		return nil, err
 	}

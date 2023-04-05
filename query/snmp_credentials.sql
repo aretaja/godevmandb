@@ -21,6 +21,10 @@ WHERE (
     @label_f::text = ''
     OR label ILIKE @label_f
   )
+  AND (
+    @variant_f::text = ''
+    OR CAST(variant AS text) = @variant_f
+  )
 ORDER BY created_on
 LIMIT NULLIF(@limit_q::int, 0) OFFSET NULLIF(@offset_q::int, 0);
 

@@ -7,6 +7,7 @@ package godevmandb
 
 import (
 	"context"
+	"time"
 )
 
 const CountUserGraphs = `-- name: CountUserGraphs :one
@@ -109,18 +110,63 @@ func (q *Queries) GetUserGraphUser(ctx context.Context, graphID int64) (User, er
 const GetUserGraphs = `-- name: GetUserGraphs :many
 SELECT graph_id, username, uri, descr, shared, updated_on, created_on
 FROM user_graphs
-ORDER BY username
-LIMIT $1
-OFFSET $2
+WHERE (
+    $1::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR updated_on >= $1
+  )
+  AND (
+    $2::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR updated_on <= $2
+  )
+  AND (
+    $3::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR created_on >= $3
+  )
+  AND (
+    $4::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR created_on <= $4
+  )
+  AND (
+    $5::text = ''
+    OR username = $5
+  )
+  AND (
+    $6::text = ''
+    OR descr = $6
+  )
+  AND (
+    $7::text = ''
+    OR ($7::text = 'true' AND shared = true)
+    OR ($7::text = 'false' AND shared = false)
+  )
+ORDER BY created_on
+LIMIT NULLIF($9::int, 0) OFFSET NULLIF($8::int, 0)
 `
 
 type GetUserGraphsParams struct {
-	Limit  int32 `json:"limit"`
-	Offset int32 `json:"offset"`
+	UpdatedGe time.Time `json:"updated_ge"`
+	UpdatedLe time.Time `json:"updated_le"`
+	CreatedGe time.Time `json:"created_ge"`
+	CreatedLe time.Time `json:"created_le"`
+	UsernameF string    `json:"username_f"`
+	DescrF    string    `json:"descr_f"`
+	SharedF   string    `json:"shared_f"`
+	OffsetQ   int32     `json:"offset_q"`
+	LimitQ    int32     `json:"limit_q"`
 }
 
 func (q *Queries) GetUserGraphs(ctx context.Context, arg GetUserGraphsParams) ([]UserGraph, error) {
-	rows, err := q.db.Query(ctx, GetUserGraphs, arg.Limit, arg.Offset)
+	rows, err := q.db.Query(ctx, GetUserGraphs,
+		arg.UpdatedGe,
+		arg.UpdatedLe,
+		arg.CreatedGe,
+		arg.CreatedLe,
+		arg.UsernameF,
+		arg.DescrF,
+		arg.SharedF,
+		arg.OffsetQ,
+		arg.LimitQ,
+	)
 	if err != nil {
 		return nil, err
 	}

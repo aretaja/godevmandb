@@ -155,50 +155,77 @@ WHERE (
   )
   AND (
     $5::text IS NULL
+    OR ($5::text = 'isnull' AND ifindex IS NULL)
+    OR ($5::text = 'isempty' AND CAST(ifindex AS text) = '')
     OR CAST(ifindex AS text) LIKE $5
   )
   AND (
     $6::text = ''
-    OR hostname ILIKE $6
+    OR ($6 = 'isempty' AND descr = '')
+    OR descr ILIKE $6
   )
   AND (
-    $7::inet IS NULL
-    OR host_ip4 <<= $7
+    $7::text IS NULL
+    OR ($7::text = 'isnull' AND parent_descr IS NULL)
+    OR ($7::text = 'isempty' AND parent_descr = '')
+    OR parent_descr ILIKE $7
   )
   AND (
-    $8::inet IS NULL
-    OR host_ip6 <<= $8
+    $8::text IS NULL
+    OR ($8::text = 'isnull' AND alias IS NULL)
+    OR ($8::text = 'isempty' AND alias = '')
+    OR alias ILIKE $8
   )
   AND (
-    $9::text = ''
-    OR descr ILIKE $9
+    $9::text IS NULL
+    OR ($9::text = 'isnull' AND type IS NULL)
+    OR ($9::text = 'isempty' AND type = '')
+    OR type ILIKE $9
   )
   AND (
-    $10::text IS NULL
-    OR alias ILIKE $10
+    $10::macaddr IS NULL
+    OR mac = $10
   )
   AND (
-    $11::macaddr IS NULL
-    OR mac = $11
+    $11::text = ''
+    OR ($11 = 'isempty' AND hostname = '')
+    OR hostname ILIKE $11
+  )
+  AND (
+    $12::inet IS NULL
+    OR host_ip4 <<= $12
+  )
+  AND (
+    $13::inet IS NULL
+    OR host_ip6 <<= $13
+  )
+  AND (
+    $14::text IS NULL
+    OR ($14::text = 'isnull' AND notes IS NULL)
+    OR ($14::text = 'isempty' AND notes = '')
+    OR notes ILIKE $14
   )
 ORDER BY created_on
-LIMIT NULLIF($13::int, 0) OFFSET NULLIF($12::int, 0)
+LIMIT NULLIF($16::int, 0) OFFSET NULLIF($15::int, 0)
 `
 
 type GetArchivedSubinterfacesParams struct {
-	UpdatedGe time.Time      `json:"updated_ge"`
-	UpdatedLe time.Time      `json:"updated_le"`
-	CreatedGe time.Time      `json:"created_ge"`
-	CreatedLe time.Time      `json:"created_le"`
-	IfindexF  *string        `json:"ifindex_f"`
-	HostnameF string         `json:"hostname_f"`
-	HostIp4F  pgtype.Inet    `json:"host_ip4_f"`
-	HostIp6F  pgtype.Inet    `json:"host_ip6_f"`
-	DescrF    string         `json:"descr_f"`
-	AliasF    *string        `json:"alias_f"`
-	MacF      pgtype.Macaddr `json:"mac_f"`
-	OffsetQ   int32          `json:"offset_q"`
-	LimitQ    int32          `json:"limit_q"`
+	UpdatedGe    time.Time      `json:"updated_ge"`
+	UpdatedLe    time.Time      `json:"updated_le"`
+	CreatedGe    time.Time      `json:"created_ge"`
+	CreatedLe    time.Time      `json:"created_le"`
+	IfindexF     *string        `json:"ifindex_f"`
+	DescrF       string         `json:"descr_f"`
+	ParentDescrF *string        `json:"parent_descr_f"`
+	AliasF       *string        `json:"alias_f"`
+	TypeF        *string        `json:"type_f"`
+	MacF         pgtype.Macaddr `json:"mac_f"`
+	HostnameF    string         `json:"hostname_f"`
+	HostIp4F     pgtype.Inet    `json:"host_ip4_f"`
+	HostIp6F     pgtype.Inet    `json:"host_ip6_f"`
+	NotesF       *string        `json:"notes_f"`
+	OffsetQ      int32          `json:"offset_q"`
+	LimitQ       int32          `json:"limit_q"`
 }
 
 func (q *Queries) GetArchivedSubinterfaces(ctx context.Context, arg GetArchivedSubinterfacesParams) ([]ArchivedSubinterface, error) {
@@ -208,12 +235,15 @@ func (q *Queries) GetArchivedSubinterfaces(ctx context.Context, arg GetArchivedS
 		arg.CreatedGe,
 		arg.CreatedLe,
 		arg.IfindexF,
+		arg.DescrF,
+		arg.ParentDescrF,
+		arg.AliasF,
+		arg.TypeF,
+		arg.MacF,
 		arg.HostnameF,
 		arg.HostIp4F,
 		arg.HostIp6F,
-		arg.DescrF,
-		arg.AliasF,
-		arg.MacF,
+		arg.NotesF,
 		arg.OffsetQ,
 		arg.LimitQ,
 	)

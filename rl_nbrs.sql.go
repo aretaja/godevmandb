@@ -178,20 +178,10 @@ WHERE (
   )
   AND (
     $5::text = ''
-    OR CAST(dev_id AS text) LIKE $5
-  )
-  AND (
-    $6::text IS NULL
-    OR ($6::text = 'isnull' AND nbr_ent_id IS NULL)
-    OR ($6::text = 'isempty' AND CAST(nbr_ent_id AS text) = '')
-    OR CAST(nbr_ent_id AS text) LIKE $6
-  )
-  AND (
-    $7::text = ''
-    OR nbr_sysname ILIKE $7
+    OR nbr_sysname ILIKE $5
   )
 ORDER BY created_on
-LIMIT NULLIF($9::int, 0) OFFSET NULLIF($8::int, 0)
+LIMIT NULLIF($7::int, 0) OFFSET NULLIF($6::int, 0)
 `
 
 type GetRlNbrsParams struct {
@@ -199,8 +189,6 @@ type GetRlNbrsParams struct {
 	UpdatedLe   time.Time `json:"updated_le"`
 	CreatedGe   time.Time `json:"created_ge"`
 	CreatedLe   time.Time `json:"created_le"`
-	DevIDF      string    `json:"dev_id_f"`
-	NbrEntIDF   *string   `json:"nbr_ent_id_f"`
 	NbrSysnameF string    `json:"nbr_sysname_f"`
 	OffsetQ     int32     `json:"offset_q"`
 	LimitQ      int32     `json:"limit_q"`
@@ -212,8 +200,6 @@ func (q *Queries) GetRlNbrs(ctx context.Context, arg GetRlNbrsParams) ([]RlNbr, 
 		arg.UpdatedLe,
 		arg.CreatedGe,
 		arg.CreatedLe,
-		arg.DevIDF,
-		arg.NbrEntIDF,
 		arg.NbrSysnameF,
 		arg.OffsetQ,
 		arg.LimitQ,

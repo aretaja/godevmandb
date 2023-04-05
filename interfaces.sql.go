@@ -778,26 +778,41 @@ WHERE (
     $13::macaddr IS NULL
     OR mac = $13
   )
+  AND (
+    $14::text = ''
+    OR CAST(monstatus AS text) = $14
+  )
+  AND (
+    $15::text = ''
+    OR CAST(monerrors AS text) = $15
+  )
+  AND (
+    $16::text = ''
+    OR CAST(monload AS text) = $16
+  )
 ORDER BY created_on
-LIMIT NULLIF($15::int, 0) OFFSET NULLIF($14::int, 0)
+LIMIT NULLIF($18::int, 0) OFFSET NULLIF($17::int, 0)
 `
 
 type GetInterfacesParams struct {
-	UpdatedGe time.Time      `json:"updated_ge"`
-	UpdatedLe time.Time      `json:"updated_le"`
-	CreatedGe time.Time      `json:"created_ge"`
-	CreatedLe time.Time      `json:"created_le"`
-	IfindexF  *string        `json:"ifindex_f"`
-	DescrF    string         `json:"descr_f"`
-	AliasF    *string        `json:"alias_f"`
-	OperF     *string        `json:"oper_f"`
-	AdmF      *string        `json:"adm_f"`
-	SpeedF    *string        `json:"speed_f"`
-	MinspeedF *string        `json:"minspeed_f"`
-	TypeEnumF *string        `json:"type_enum_f"`
-	MacF      pgtype.Macaddr `json:"mac_f"`
-	OffsetQ   int32          `json:"offset_q"`
-	LimitQ    int32          `json:"limit_q"`
+	UpdatedGe  time.Time      `json:"updated_ge"`
+	UpdatedLe  time.Time      `json:"updated_le"`
+	CreatedGe  time.Time      `json:"created_ge"`
+	CreatedLe  time.Time      `json:"created_le"`
+	IfindexF   *string        `json:"ifindex_f"`
+	DescrF     string         `json:"descr_f"`
+	AliasF     *string        `json:"alias_f"`
+	OperF      *string        `json:"oper_f"`
+	AdmF       *string        `json:"adm_f"`
+	SpeedF     *string        `json:"speed_f"`
+	MinspeedF  *string        `json:"minspeed_f"`
+	TypeEnumF  *string        `json:"type_enum_f"`
+	MacF       pgtype.Macaddr `json:"mac_f"`
+	MonstatusF string         `json:"monstatus_f"`
+	MonerrorsF string         `json:"monerrors_f"`
+	MonloadF   string         `json:"monload_f"`
+	OffsetQ    int32          `json:"offset_q"`
+	LimitQ     int32          `json:"limit_q"`
 }
 
 func (q *Queries) GetInterfaces(ctx context.Context, arg GetInterfacesParams) ([]Interface, error) {
@@ -815,6 +830,9 @@ func (q *Queries) GetInterfaces(ctx context.Context, arg GetInterfacesParams) ([
 		arg.MinspeedF,
 		arg.TypeEnumF,
 		arg.MacF,
+		arg.MonstatusF,
+		arg.MonerrorsF,
+		arg.MonloadF,
 		arg.OffsetQ,
 		arg.LimitQ,
 	)

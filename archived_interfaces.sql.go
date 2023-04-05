@@ -167,50 +167,89 @@ WHERE (
   )
   AND (
     $5::text IS NULL
+    OR ($5::text = 'isnull' AND ifindex IS NULL)
+    OR ($5::text = 'isempty' AND CAST(ifindex AS text) = '')
     OR CAST(ifindex AS text) LIKE $5
   )
   AND (
-    $6::text = ''
-    OR hostname ILIKE $6
+    $6::text IS NULL
+    OR ($6::text = 'isnull' AND otn_if_id IS NULL)
+    OR ($6::text = 'isempty' AND CAST(otn_if_id AS text) = '')
+    OR CAST(otn_if_id AS text) LIKE $6
   )
   AND (
-    $7::inet IS NULL
-    OR host_ip4 <<= $7
+    $7::text IS NULL
+    OR ($7::text = 'isnull' AND cisco_opt_power_index IS NULL)
+    OR ($7::text = 'isempty' AND cisco_opt_power_index = '')
+    OR cisco_opt_power_index ILIKE $7
   )
   AND (
-    $8::inet IS NULL
-    OR host_ip6 <<= $8
+    $8::text = ''
+    OR ($8  = 'isempty' AND hostname = '')
+    OR hostname ILIKE $8
   )
   AND (
-    $9::text = ''
-    OR descr ILIKE $9
+    $9::inet IS NULL
+    OR host_ip4 <<= $9
   )
   AND (
-    $10::text IS NULL
-    OR alias ILIKE $10
+    $10::inet IS NULL
+    OR host_ip6 <<= $10
   )
   AND (
-    $11::macaddr IS NULL
-    OR mac = $11
+    $11::text = ''
+    OR ($11 = 'isempty' AND manufacturer = '')
+    OR manufacturer ILIKE $11
+  )
+  AND (
+    $12::text = ''
+    OR ($12  = 'isempty' AND model = '')
+    OR model ILIKE $12
+  )
+  AND (
+    $13::text = ''
+    OR ($13  = 'isempty' AND descr = '')
+    OR descr ILIKE $13
+  )
+  AND (
+    $14::text IS NULL
+    OR ($14::text = 'isnull' AND alias IS NULL)
+    OR ($14::text = 'isempty' AND alias = '')
+    OR alias ILIKE $14
+  )
+  AND (
+    $15::text IS NULL
+    OR ($15::text = 'isnull' AND type_enum IS NULL)
+    OR ($15::text = 'isempty' AND CAST(type_enum AS text) = '')
+    OR CAST(type_enum AS text) LIKE $15
+  )
+  AND (
+    $16::macaddr IS NULL
+    OR mac = $16
   )
 ORDER BY created_on
-LIMIT NULLIF($13::int, 0) OFFSET NULLIF($12::int, 0)
+LIMIT NULLIF($18::int, 0) OFFSET NULLIF($17::int, 0)
 `
 
 type GetArchivedInterfacesParams struct {
-	UpdatedGe time.Time      `json:"updated_ge"`
-	UpdatedLe time.Time      `json:"updated_le"`
-	CreatedGe time.Time      `json:"created_ge"`
-	CreatedLe time.Time      `json:"created_le"`
-	IfindexF  *string        `json:"ifindex_f"`
-	HostnameF string         `json:"hostname_f"`
-	HostIp4F  pgtype.Inet    `json:"host_ip4_f"`
-	HostIp6F  pgtype.Inet    `json:"host_ip6_f"`
-	DescrF    string         `json:"descr_f"`
-	AliasF    *string        `json:"alias_f"`
-	MacF      pgtype.Macaddr `json:"mac_f"`
-	OffsetQ   int32          `json:"offset_q"`
-	LimitQ    int32          `json:"limit_q"`
+	UpdatedGe           time.Time      `json:"updated_ge"`
+	UpdatedLe           time.Time      `json:"updated_le"`
+	CreatedGe           time.Time      `json:"created_ge"`
+	CreatedLe           time.Time      `json:"created_le"`
+	IfindexF            *string        `json:"ifindex_f"`
+	OtnIfIDF            *string        `json:"otn_if_id_f"`
+	CiscoOptPowerIndexF *string        `json:"cisco_opt_power_index_f"`
+	HostnameF           string         `json:"hostname_f"`
+	HostIp4F            pgtype.Inet    `json:"host_ip4_f"`
+	HostIp6F            pgtype.Inet    `json:"host_ip6_f"`
+	ManufacturerF       string         `json:"manufacturer_f"`
+	ModelF              string         `json:"model_f"`
+	DescrF              string         `json:"descr_f"`
+	AliasF              *string        `json:"alias_f"`
+	TypeEnumF           *string        `json:"type_enum_f"`
+	MacF                pgtype.Macaddr `json:"mac_f"`
+	OffsetQ             int32          `json:"offset_q"`
+	LimitQ              int32          `json:"limit_q"`
 }
 
 func (q *Queries) GetArchivedInterfaces(ctx context.Context, arg GetArchivedInterfacesParams) ([]ArchivedInterface, error) {
@@ -220,11 +259,16 @@ func (q *Queries) GetArchivedInterfaces(ctx context.Context, arg GetArchivedInte
 		arg.CreatedGe,
 		arg.CreatedLe,
 		arg.IfindexF,
+		arg.OtnIfIDF,
+		arg.CiscoOptPowerIndexF,
 		arg.HostnameF,
 		arg.HostIp4F,
 		arg.HostIp6F,
+		arg.ManufacturerF,
+		arg.ModelF,
 		arg.DescrF,
 		arg.AliasF,
+		arg.TypeEnumF,
 		arg.MacF,
 		arg.OffsetQ,
 		arg.LimitQ,

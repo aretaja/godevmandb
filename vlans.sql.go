@@ -7,6 +7,7 @@ package godevmandb
 
 import (
 	"context"
+	"time"
 )
 
 const CountVlans = `-- name: CountVlans :one
@@ -175,18 +176,58 @@ func (q *Queries) GetVlanInterfaces(ctx context.Context, vID int64) ([]Interface
 const GetVlans = `-- name: GetVlans :many
 SELECT v_id, dev_id, vlan, descr, updated_on, created_on
 FROM vlans
-ORDER BY dev_id, vlan
-LIMIT $1
-OFFSET $2
+WHERE (
+    $1::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR updated_on >= $1
+  )
+  AND (
+    $2::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR updated_on <= $2
+  )
+  AND (
+    $3::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR created_on >= $3
+  )
+  AND (
+    $4::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR created_on <= $4
+  )
+  AND (
+    $5::text IS NULL
+    OR ($5::text = 'isnull' AND descr IS NULL)
+    OR ($5::text = 'isempty' AND descr = '')
+    OR descr ILIKE $5
+  )
+  AND (
+    $6::text = ''
+    OR CAST(vlan AS text) LIKE $6
+  )
+ORDER BY created_on
+LIMIT NULLIF($8::int, 0) OFFSET NULLIF($7::int, 0)
 `
 
 type GetVlansParams struct {
-	Limit  int32 `json:"limit"`
-	Offset int32 `json:"offset"`
+	UpdatedGe time.Time `json:"updated_ge"`
+	UpdatedLe time.Time `json:"updated_le"`
+	CreatedGe time.Time `json:"created_ge"`
+	CreatedLe time.Time `json:"created_le"`
+	DescrF    *string   `json:"descr_f"`
+	VlanF     string    `json:"vlan_f"`
+	OffsetQ   int32     `json:"offset_q"`
+	LimitQ    int32     `json:"limit_q"`
 }
 
 func (q *Queries) GetVlans(ctx context.Context, arg GetVlansParams) ([]Vlan, error) {
-	rows, err := q.db.Query(ctx, GetVlans, arg.Limit, arg.Offset)
+	rows, err := q.db.Query(ctx, GetVlans,
+		arg.UpdatedGe,
+		arg.UpdatedLe,
+		arg.CreatedGe,
+		arg.CreatedLe,
+		arg.DescrF,
+		arg.VlanF,
+		arg.OffsetQ,
+		arg.LimitQ,
+	)
 	if err != nil {
 		return nil, err
 	}

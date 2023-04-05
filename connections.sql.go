@@ -293,11 +293,24 @@ WHERE (
     OR created_on <= $4
   )
   AND (
-    $5::text = ''
+    $5::text IS NULL
+    OR ($5::text = 'isnull' AND hint IS NULL)
+    OR ($5::text = 'isempty' AND hint = '')
     OR hint ILIKE $5
   )
+  AND (
+    $6::text IS NULL
+    OR ($6::text = 'isnull' AND notes IS NULL)
+    OR ($6::text = 'isempty' AND notes = '')
+    OR notes ILIKE $6
+  )
+  AND (
+    $7::text = ''
+    OR ($7::text = 'true' AND in_use = true)
+    OR ($7::text = 'false' AND in_use = false)
+  )
 ORDER BY created_on
-LIMIT NULLIF($7::int, 0) OFFSET NULLIF($6::int, 0)
+LIMIT NULLIF($9::int, 0) OFFSET NULLIF($8::int, 0)
 `
 
 type GetConnectionsParams struct {
@@ -305,7 +318,9 @@ type GetConnectionsParams struct {
 	UpdatedLe time.Time `json:"updated_le"`
 	CreatedGe time.Time `json:"created_ge"`
 	CreatedLe time.Time `json:"created_le"`
-	HintF     string    `json:"hint_f"`
+	HintF     *string   `json:"hint_f"`
+	NotesF    *string   `json:"notes_f"`
+	InUseF    string    `json:"in_use_f"`
 	OffsetQ   int32     `json:"offset_q"`
 	LimitQ    int32     `json:"limit_q"`
 }
@@ -317,6 +332,8 @@ func (q *Queries) GetConnections(ctx context.Context, arg GetConnectionsParams) 
 		arg.CreatedGe,
 		arg.CreatedLe,
 		arg.HintF,
+		arg.NotesF,
+		arg.InUseF,
 		arg.OffsetQ,
 		arg.LimitQ,
 	)

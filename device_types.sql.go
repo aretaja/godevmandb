@@ -206,8 +206,17 @@ WHERE (
     $7::text = ''
     OR model ILIKE $7
   )
+  AND (
+    $8::text = ''
+    OR ($8::text = 'true' AND hc = true)
+    OR ($8::text = 'false' AND hc = false)
+  )
+  AND (
+    $9::text = ''
+    OR CAST(snmp_ver AS text) = $9
+  )
 ORDER BY created_on
-LIMIT NULLIF($9::int, 0) OFFSET NULLIF($8::int, 0)
+LIMIT NULLIF($11::int, 0) OFFSET NULLIF($10::int, 0)
 `
 
 type GetDeviceTypesParams struct {
@@ -218,6 +227,8 @@ type GetDeviceTypesParams struct {
 	SysIDF        string    `json:"sys_id_f"`
 	ManufacturerF string    `json:"manufacturer_f"`
 	ModelF        string    `json:"model_f"`
+	HcF           string    `json:"hc_f"`
+	SnmpVerF      string    `json:"snmp_ver_f"`
 	OffsetQ       int32     `json:"offset_q"`
 	LimitQ        int32     `json:"limit_q"`
 }
@@ -231,6 +242,8 @@ func (q *Queries) GetDeviceTypes(ctx context.Context, arg GetDeviceTypesParams) 
 		arg.SysIDF,
 		arg.ManufacturerF,
 		arg.ModelF,
+		arg.HcF,
+		arg.SnmpVerF,
 		arg.OffsetQ,
 		arg.LimitQ,
 	)

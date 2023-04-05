@@ -86,20 +86,41 @@ WHERE (
   )
   AND (
     $5::text = ''
-    OR serial_nr ILIKE $5
+    OR ($5 = 'isempty' AND manufacturer = '')
+    OR manufacturer ILIKE $5
+  )
+  AND (
+    $6::text = ''
+    OR ($6 = 'isempty' AND serial_nr = '')
+    OR serial_nr ILIKE $6
+  )
+  AND (
+    $7::text IS NULL
+    OR ($7::text = 'isnull' AND part IS NULL)
+    OR ($7::text = 'isempty' AND part = '')
+    OR part ILIKE $7
+  )
+  AND (
+    $8::text IS NULL
+    OR ($8::text = 'isnull' AND descr IS NULL)
+    OR ($8::text = 'isempty' AND descr = '')
+    OR descr ILIKE $8
   )
 ORDER BY created_on
-LIMIT NULLIF($7::int, 0) OFFSET NULLIF($6::int, 0)
+LIMIT NULLIF($10::int, 0) OFFSET NULLIF($9::int, 0)
 `
 
 type GetCustomEntitiesParams struct {
-	UpdatedGe time.Time `json:"updated_ge"`
-	UpdatedLe time.Time `json:"updated_le"`
-	CreatedGe time.Time `json:"created_ge"`
-	CreatedLe time.Time `json:"created_le"`
-	SerialNrF string    `json:"serial_nr_f"`
-	OffsetQ   int32     `json:"offset_q"`
-	LimitQ    int32     `json:"limit_q"`
+	UpdatedGe     time.Time `json:"updated_ge"`
+	UpdatedLe     time.Time `json:"updated_le"`
+	CreatedGe     time.Time `json:"created_ge"`
+	CreatedLe     time.Time `json:"created_le"`
+	ManufacturerF string    `json:"manufacturer_f"`
+	SerialNrF     string    `json:"serial_nr_f"`
+	PartF         *string   `json:"part_f"`
+	DescrF        *string   `json:"descr_f"`
+	OffsetQ       int32     `json:"offset_q"`
+	LimitQ        int32     `json:"limit_q"`
 }
 
 func (q *Queries) GetCustomEntities(ctx context.Context, arg GetCustomEntitiesParams) ([]CustomEntity, error) {
@@ -108,7 +129,10 @@ func (q *Queries) GetCustomEntities(ctx context.Context, arg GetCustomEntitiesPa
 		arg.UpdatedLe,
 		arg.CreatedGe,
 		arg.CreatedLe,
+		arg.ManufacturerF,
 		arg.SerialNrF,
+		arg.PartF,
+		arg.DescrF,
 		arg.OffsetQ,
 		arg.LimitQ,
 	)

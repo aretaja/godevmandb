@@ -134,8 +134,12 @@ WHERE (
     $5::text = ''
     OR label ILIKE $5
   )
+  AND (
+    $6::text = ''
+    OR CAST(variant AS text) = $6
+  )
 ORDER BY created_on
-LIMIT NULLIF($7::int, 0) OFFSET NULLIF($6::int, 0)
+LIMIT NULLIF($8::int, 0) OFFSET NULLIF($7::int, 0)
 `
 
 type GetSnmpCredentialsParams struct {
@@ -144,6 +148,7 @@ type GetSnmpCredentialsParams struct {
 	CreatedGe time.Time `json:"created_ge"`
 	CreatedLe time.Time `json:"created_le"`
 	LabelF    string    `json:"label_f"`
+	VariantF  string    `json:"variant_f"`
 	OffsetQ   int32     `json:"offset_q"`
 	LimitQ    int32     `json:"limit_q"`
 }
@@ -155,6 +160,7 @@ func (q *Queries) GetSnmpCredentials(ctx context.Context, arg GetSnmpCredentials
 		arg.CreatedGe,
 		arg.CreatedLe,
 		arg.LabelF,
+		arg.VariantF,
 		arg.OffsetQ,
 		arg.LimitQ,
 	)

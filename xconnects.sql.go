@@ -7,6 +7,7 @@ package godevmandb
 
 import (
 	"context"
+	"time"
 
 	"github.com/jackc/pgtype"
 )
@@ -271,18 +272,110 @@ func (q *Queries) GetXconnectPeerDevice(ctx context.Context, xcID int64) (Device
 const GetXconnects = `-- name: GetXconnects :many
 SELECT xc_id, dev_id, peer_dev_id, if_id, vc_idx, vc_id, peer_ip, peer_ifalias, xname, descr, op_stat, op_stat_in, op_stat_out, updated_on, created_on
 FROM xconnects
-ORDER BY dev_id, if_id
-LIMIT $1
-OFFSET $2
+WHERE (
+    $1::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR updated_on >= $1
+  )
+  AND (
+    $2::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR updated_on <= $2
+  )
+  AND (
+    $3::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR created_on >= $3
+  )
+  AND (
+    $4::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR created_on <= $4
+  )
+  AND (
+    $5::text = ''
+    OR CAST(vc_idx AS text) = $5
+  )
+  AND (
+    $6::text = ''
+    OR CAST(vc_id AS text) = $6
+  )
+  AND (
+    $7::inet IS NULL
+    OR peer_ip <<= $7
+  )
+  AND (
+    $8::text IS NULL
+    OR ($8::text = 'isnull' AND peer_ifalias IS NULL)
+    OR ($8::text = 'isempty' AND peer_ifalias = '')
+    OR peer_ifalias ILIKE $8
+  )
+  AND (
+    $9::text IS NULL
+    OR ($9::text = 'isnull' AND xname IS NULL)
+    OR ($9::text = 'isempty' AND xname = '')
+    OR xname ILIKE $9
+  )
+  AND (
+    $10::text IS NULL
+    OR ($10::text = 'isnull' AND descr IS NULL)
+    OR ($10::text = 'isempty' AND descr = '')
+    OR descr ILIKE $10
+  )
+  AND (
+    $11::text IS NULL
+    OR ($11::text = 'isnull' AND op_stat IS NULL)
+    OR ($11::text = 'isempty' AND op_stat = '')
+    OR op_stat ILIKE $11
+  )
+  AND (
+    $12::text IS NULL
+    OR ($12::text = 'isnull' AND op_stat_in IS NULL)
+    OR ($12::text = 'isempty' AND op_stat_in = '')
+    OR op_stat_in ILIKE $12
+  )
+  AND (
+    $13::text IS NULL
+    OR ($13::text = 'isnull' AND op_stat_out IS NULL)
+    OR ($13::text = 'isempty' AND op_stat_out = '')
+    OR op_stat_out ILIKE $13
+  )
+ORDER BY created_on
+LIMIT NULLIF($15::int, 0) OFFSET NULLIF($14::int, 0)
 `
 
 type GetXconnectsParams struct {
-	Limit  int32 `json:"limit"`
-	Offset int32 `json:"offset"`
+	UpdatedGe    time.Time   `json:"updated_ge"`
+	UpdatedLe    time.Time   `json:"updated_le"`
+	CreatedGe    time.Time   `json:"created_ge"`
+	CreatedLe    time.Time   `json:"created_le"`
+	VcIdxF       string      `json:"vc_idx_f"`
+	VcIDF        string      `json:"vc_id_f"`
+	PeerIpF      pgtype.Inet `json:"peer_ip_f"`
+	PeerIfaliasF *string     `json:"peer_ifalias_f"`
+	XnameF       *string     `json:"xname_f"`
+	DescrF       *string     `json:"descr_f"`
+	OpStatF      *string     `json:"op_stat_f"`
+	OpStatInF    *string     `json:"op_stat_in_f"`
+	OpStatOutF   *string     `json:"op_stat_out_f"`
+	OffsetQ      int32       `json:"offset_q"`
+	LimitQ       int32       `json:"limit_q"`
 }
 
 func (q *Queries) GetXconnects(ctx context.Context, arg GetXconnectsParams) ([]Xconnect, error) {
-	rows, err := q.db.Query(ctx, GetXconnects, arg.Limit, arg.Offset)
+	rows, err := q.db.Query(ctx, GetXconnects,
+		arg.UpdatedGe,
+		arg.UpdatedLe,
+		arg.CreatedGe,
+		arg.CreatedLe,
+		arg.VcIdxF,
+		arg.VcIDF,
+		arg.PeerIpF,
+		arg.PeerIfaliasF,
+		arg.XnameF,
+		arg.DescrF,
+		arg.OpStatF,
+		arg.OpStatInF,
+		arg.OpStatOutF,
+		arg.OffsetQ,
+		arg.LimitQ,
+	)
 	if err != nil {
 		return nil, err
 	}

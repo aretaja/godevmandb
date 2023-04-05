@@ -18,10 +18,6 @@ WHERE (
     OR created_on <= @created_le
   )
   AND (
-    @dev_id_f::text = ''
-    OR CAST(dev_id AS text) LIKE @dev_id_f
-  )
-  AND (
     sqlc.narg('condition_f')::text IS NULL
     OR (sqlc.narg('condition_f')::text = 'isnull' AND condition IS NULL)
     OR (sqlc.narg('condition_f')::text = 'isempty' AND condition = '')

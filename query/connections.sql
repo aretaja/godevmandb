@@ -18,8 +18,21 @@ WHERE (
     OR created_on <= @created_le
   )
   AND (
-    @hint_f::text = ''
-    OR hint ILIKE @hint_f
+    sqlc.narg('hint_f')::text IS NULL
+    OR (sqlc.narg('hint_f')::text = 'isnull' AND hint IS NULL)
+    OR (sqlc.narg('hint_f')::text = 'isempty' AND hint = '')
+    OR hint ILIKE sqlc.narg('hint_f')
+  )
+  AND (
+    sqlc.narg('notes_f')::text IS NULL
+    OR (sqlc.narg('notes_f')::text = 'isnull' AND notes IS NULL)
+    OR (sqlc.narg('notes_f')::text = 'isempty' AND notes = '')
+    OR notes ILIKE sqlc.narg('notes_f')
+  )
+  AND (
+    @in_use_f::text = ''
+    OR (@in_use_f::text = 'true' AND in_use = true)
+    OR (@in_use_f::text = 'false' AND in_use = false)
   )
 ORDER BY created_on
 LIMIT NULLIF(@limit_q::int, 0) OFFSET NULLIF(@offset_q::int, 0);

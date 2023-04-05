@@ -9,18 +9,6 @@ import (
 	"context"
 )
 
-const CountInterfaces2vlans = `-- name: CountInterfaces2vlans :one
-SELECT COUNT(*)
-FROM interfaces2vlans
-`
-
-func (q *Queries) CountInterfaces2vlans(ctx context.Context) (int64, error) {
-	row := q.db.QueryRow(ctx, CountInterfaces2vlans)
-	var count int64
-	err := row.Scan(&count)
-	return count, err
-}
-
 const CreateInterface2vlan = `-- name: CreateInterface2vlan :one
 INSERT INTO interfaces2vlans (v_id, if_id)
 VALUES ($1, $2)

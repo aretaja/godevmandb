@@ -130,18 +130,51 @@ func (q *Queries) GetDeviceStateDevice(ctx context.Context, devID int64) (Device
 const GetDeviceStates = `-- name: GetDeviceStates :many
 SELECT dev_id, up_time, down_time, method, updated_on, created_on
 FROM device_states
-ORDER BY updated_on
-LIMIT $1
-OFFSET $2
+WHERE (
+    $1::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR updated_on >= $1
+  )
+  AND (
+    $2::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR updated_on <= $2
+  )
+  AND (
+    $3::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR created_on >= $3
+  )
+  AND (
+    $4::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR created_on <= $4
+  )
+  AND (
+    $5::text = ''
+    OR ($5 = 'isempty' AND method = '')
+    OR method ILIKE $5
+  )
+ORDER BY created_on
+LIMIT NULLIF($7::int, 0) OFFSET NULLIF($6::int, 0)
 `
 
 type GetDeviceStatesParams struct {
-	Limit  int32 `json:"limit"`
-	Offset int32 `json:"offset"`
+	UpdatedGe time.Time `json:"updated_ge"`
+	UpdatedLe time.Time `json:"updated_le"`
+	CreatedGe time.Time `json:"created_ge"`
+	CreatedLe time.Time `json:"created_le"`
+	MethodF   string    `json:"method_f"`
+	OffsetQ   int32     `json:"offset_q"`
+	LimitQ    int32     `json:"limit_q"`
 }
 
 func (q *Queries) GetDeviceStates(ctx context.Context, arg GetDeviceStatesParams) ([]DeviceState, error) {
-	rows, err := q.db.Query(ctx, GetDeviceStates, arg.Limit, arg.Offset)
+	rows, err := q.db.Query(ctx, GetDeviceStates,
+		arg.UpdatedGe,
+		arg.UpdatedLe,
+		arg.CreatedGe,
+		arg.CreatedLe,
+		arg.MethodF,
+		arg.OffsetQ,
+		arg.LimitQ,
+	)
 	if err != nil {
 		return nil, err
 	}

@@ -7,6 +7,7 @@ package godevmandb
 
 import (
 	"context"
+	"time"
 
 	"github.com/jackc/pgtype"
 )
@@ -173,18 +174,113 @@ func (q *Queries) GetSubinterfaceInterface(ctx context.Context, sifID int64) (In
 const GetSubinterfaces = `-- name: GetSubinterfaces :many
 SELECT sif_id, if_id, ifindex, descr, alias, oper, adm, speed, type_enum, mac, notes, updated_on, created_on
 FROM subinterfaces
-ORDER BY descr
-LIMIT $1
-OFFSET $2
+WHERE (
+    $1::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR updated_on >= $1
+  )
+  AND (
+    $2::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR updated_on <= $2
+  )
+  AND (
+    $3::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR created_on >= $3
+  )
+  AND (
+    $4::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR created_on <= $4
+  )
+  AND (
+    $5::text IS NULL
+    OR ($5::text = 'isnull' AND ifindex IS NULL)
+    OR ($5::text = 'isempty' AND CAST(ifindex AS text) = '')
+    OR CAST(ifindex AS text) LIKE $5
+  )
+  AND (
+    $6::text = ''
+    OR ($6 = 'isempty' AND descr = '')
+    OR descr ILIKE $6
+  )
+  AND (
+    $7::text IS NULL
+    OR ($7::text = 'isnull' AND alias IS NULL)
+    OR ($7::text = 'isempty' AND alias = '')
+    OR alias ILIKE $7
+  )
+  AND (
+    $8::text IS NULL
+    OR ($8::text = 'isnull' AND oper IS NULL)
+    OR ($8::text = 'isempty' AND CAST(oper AS text) = '')
+    OR CAST(oper AS text) LIKE $8
+  )
+  AND (
+    $9::text IS NULL
+    OR ($9::text = 'isnull' AND adm IS NULL)
+    OR ($9::text = 'isempty' AND CAST(adm AS text) = '')
+    OR CAST(adm AS text) LIKE $9
+  )
+  AND (
+    $10::text IS NULL
+    OR ($10::text = 'isnull' AND speed IS NULL)
+    OR ($10::text = 'isempty' AND CAST(speed AS text) = '')
+    OR CAST(speed AS text) LIKE $10
+  )
+  AND (
+    $11::text IS NULL
+    OR ($11::text = 'isnull' AND type_enum IS NULL)
+    OR ($11::text = 'isempty' AND CAST(type_enum AS text) = '')
+    OR CAST(type_enum AS text) LIKE $11
+  )
+  AND (
+    $12::macaddr IS NULL
+    OR mac = $12
+  )
+  AND (
+    $13::text IS NULL
+    OR ($13::text = 'isnull' AND notes IS NULL)
+    OR ($13::text = 'isempty' AND notes = '')
+    OR notes ILIKE $13
+  )
+ORDER BY created_on
+LIMIT NULLIF($15::int, 0) OFFSET NULLIF($14::int, 0)
 `
 
 type GetSubinterfacesParams struct {
-	Limit  int32 `json:"limit"`
-	Offset int32 `json:"offset"`
+	UpdatedGe time.Time      `json:"updated_ge"`
+	UpdatedLe time.Time      `json:"updated_le"`
+	CreatedGe time.Time      `json:"created_ge"`
+	CreatedLe time.Time      `json:"created_le"`
+	IfindexF  *string        `json:"ifindex_f"`
+	DescrF    string         `json:"descr_f"`
+	AliasF    *string        `json:"alias_f"`
+	OperF     *string        `json:"oper_f"`
+	AdmF      *string        `json:"adm_f"`
+	SpeedF    *string        `json:"speed_f"`
+	TypeEnumF *string        `json:"type_enum_f"`
+	MacF      pgtype.Macaddr `json:"mac_f"`
+	NotesF    *string        `json:"notes_f"`
+	OffsetQ   int32          `json:"offset_q"`
+	LimitQ    int32          `json:"limit_q"`
 }
 
 func (q *Queries) GetSubinterfaces(ctx context.Context, arg GetSubinterfacesParams) ([]Subinterface, error) {
-	rows, err := q.db.Query(ctx, GetSubinterfaces, arg.Limit, arg.Offset)
+	rows, err := q.db.Query(ctx, GetSubinterfaces,
+		arg.UpdatedGe,
+		arg.UpdatedLe,
+		arg.CreatedGe,
+		arg.CreatedLe,
+		arg.IfindexF,
+		arg.DescrF,
+		arg.AliasF,
+		arg.OperF,
+		arg.AdmF,
+		arg.SpeedF,
+		arg.TypeEnumF,
+		arg.MacF,
+		arg.NotesF,
+		arg.OffsetQ,
+		arg.LimitQ,
+	)
 	if err != nil {
 		return nil, err
 	}

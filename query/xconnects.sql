@@ -1,9 +1,72 @@
 -- name: GetXconnects :many
 SELECT *
 FROM xconnects
-ORDER BY dev_id, if_id
-LIMIT $1
-OFFSET $2;
+WHERE (
+    @updated_ge::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR updated_on >= @updated_ge
+  )
+  AND (
+    @updated_le::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR updated_on <= @updated_le
+  )
+  AND (
+    @created_ge::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR created_on >= @created_ge
+  )
+  AND (
+    @created_le::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR created_on <= @created_le
+  )
+  AND (
+    @vc_idx_f::text = ''
+    OR CAST(vc_idx AS text) = @vc_idx_f
+  )
+  AND (
+    @vc_id_f::text = ''
+    OR CAST(vc_id AS text) = @vc_id_f
+  )
+  AND (
+    @peer_ip_f::inet IS NULL
+    OR peer_ip <<= @peer_ip_f
+  )
+  AND (
+    sqlc.narg('peer_ifalias_f')::text IS NULL
+    OR (sqlc.narg('peer_ifalias_f')::text = 'isnull' AND peer_ifalias IS NULL)
+    OR (sqlc.narg('peer_ifalias_f')::text = 'isempty' AND peer_ifalias = '')
+    OR peer_ifalias ILIKE sqlc.narg('peer_ifalias_f')
+  )
+  AND (
+    sqlc.narg('xname_f')::text IS NULL
+    OR (sqlc.narg('xname_f')::text = 'isnull' AND xname IS NULL)
+    OR (sqlc.narg('xname_f')::text = 'isempty' AND xname = '')
+    OR xname ILIKE sqlc.narg('xname_f')
+  )
+  AND (
+    sqlc.narg('descr_f')::text IS NULL
+    OR (sqlc.narg('descr_f')::text = 'isnull' AND descr IS NULL)
+    OR (sqlc.narg('descr_f')::text = 'isempty' AND descr = '')
+    OR descr ILIKE sqlc.narg('descr_f')
+  )
+  AND (
+    sqlc.narg('op_stat_f')::text IS NULL
+    OR (sqlc.narg('op_stat_f')::text = 'isnull' AND op_stat IS NULL)
+    OR (sqlc.narg('op_stat_f')::text = 'isempty' AND op_stat = '')
+    OR op_stat ILIKE sqlc.narg('op_stat_f')
+  )
+  AND (
+    sqlc.narg('op_stat_in_f')::text IS NULL
+    OR (sqlc.narg('op_stat_in_f')::text = 'isnull' AND op_stat_in IS NULL)
+    OR (sqlc.narg('op_stat_in_f')::text = 'isempty' AND op_stat_in = '')
+    OR op_stat_in ILIKE sqlc.narg('op_stat_in_f')
+  )
+  AND (
+    sqlc.narg('op_stat_out_f')::text IS NULL
+    OR (sqlc.narg('op_stat_out_f')::text = 'isnull' AND op_stat_out IS NULL)
+    OR (sqlc.narg('op_stat_out_f')::text = 'isempty' AND op_stat_out = '')
+    OR op_stat_out ILIKE sqlc.narg('op_stat_out_f')
+  )
+ORDER BY created_on
+LIMIT NULLIF(@limit_q::int, 0) OFFSET NULLIF(@offset_q::int, 0);
 
 -- name: GetXconnect :one
 SELECT *
