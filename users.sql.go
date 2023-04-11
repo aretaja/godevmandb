@@ -110,7 +110,7 @@ func (q *Queries) GetUserUserAuthzs(ctx context.Context, username string) ([]Use
 	return items, nil
 }
 
-const GetUserUserGraps = `-- name: GetUserUserGraps :many
+const GetUserUserGraphs = `-- name: GetUserUserGraphs :many
 SELECT graph_id, username, uri, descr, shared, updated_on, created_on
 FROM user_graphs
 WHERE username = $1
@@ -118,8 +118,8 @@ ORDER BY username
 `
 
 // Relations
-func (q *Queries) GetUserUserGraps(ctx context.Context, username string) ([]UserGraph, error) {
-	rows, err := q.db.Query(ctx, GetUserUserGraps, username)
+func (q *Queries) GetUserUserGraphs(ctx context.Context, username string) ([]UserGraph, error) {
+	rows, err := q.db.Query(ctx, GetUserUserGraphs, username)
 	if err != nil {
 		return nil, err
 	}

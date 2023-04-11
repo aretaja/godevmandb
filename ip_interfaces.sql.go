@@ -161,33 +161,29 @@ WHERE (
     OR created_on <= $4
   )
   AND (
-    $5::text = ''
-    OR CAST(dev_id AS text) LIKE $5
+    $5::text IS NULL
+    OR ($5::text = 'isnull' AND ifindex IS NULL)
+    OR ($5::text = 'isempty' AND CAST(ifindex AS text) = '')
+    OR CAST(ifindex AS text) LIKE $5
   )
   AND (
     $6::text IS NULL
-    OR ($6::text = 'isnull' AND ifindex IS NULL)
-    OR ($6::text = 'isempty' AND CAST(ifindex AS text) = '')
-    OR CAST(ifindex AS text) LIKE $6
+    OR ($6::text = 'isnull' AND descr IS NULL)
+    OR ($6::text = 'isempty' AND descr = '')
+    OR descr ILIKE $6
   )
   AND (
     $7::text IS NULL
-    OR ($7::text = 'isnull' AND descr IS NULL)
-    OR ($7::text = 'isempty' AND descr = '')
-    OR descr ILIKE $7
+    OR ($7::text = 'isnull' AND alias IS NULL)
+    OR ($7::text = 'isempty' AND alias = '')
+    OR alias ILIKE $7
   )
   AND (
-    $8::text IS NULL
-    OR ($8::text = 'isnull' AND alias IS NULL)
-    OR ($8::text = 'isempty' AND alias = '')
-    OR alias ILIKE $8
-  )
-  AND (
-    $9::inet IS NULL
-    OR ip_addr <<= $9
+    $8::inet IS NULL
+    OR ip_addr <<= $8
   )
 ORDER BY created_on
-LIMIT NULLIF($11::int, 0) OFFSET NULLIF($10::int, 0)
+LIMIT NULLIF($10::int, 0) OFFSET NULLIF($9::int, 0)
 `
 
 type GetIpInterfacesParams struct {
@@ -195,7 +191,6 @@ type GetIpInterfacesParams struct {
 	UpdatedLe time.Time   `json:"updated_le"`
 	CreatedGe time.Time   `json:"created_ge"`
 	CreatedLe time.Time   `json:"created_le"`
-	DevIDF    string      `json:"dev_id_f"`
 	IfindexF  *string     `json:"ifindex_f"`
 	DescrF    *string     `json:"descr_f"`
 	AliasF    *string     `json:"alias_f"`
@@ -210,7 +205,6 @@ func (q *Queries) GetIpInterfaces(ctx context.Context, arg GetIpInterfacesParams
 		arg.UpdatedLe,
 		arg.CreatedGe,
 		arg.CreatedLe,
-		arg.DevIDF,
 		arg.IfindexF,
 		arg.DescrF,
 		arg.AliasF,

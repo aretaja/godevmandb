@@ -71,7 +71,7 @@ WHERE username = $1
 ORDER BY username;
 
 -- Relations
--- name: GetUserUserGraps :many
+-- name: GetUserUserGraphs :many
 SELECT *
 FROM user_graphs
 WHERE username = $1
