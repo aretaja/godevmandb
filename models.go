@@ -540,7 +540,8 @@ type Subinterface struct {
 }
 
 type User struct {
-	Username  string    `json:"username"`
+	Username string `json:"username"`
+	// Global level for user
 	Userlevel int16     `json:"userlevel"`
 	Notes     *string   `json:"notes"`
 	UpdatedOn time.Time `json:"updated_on"`
@@ -548,8 +549,9 @@ type User struct {
 }
 
 type UserAuthz struct {
-	Username  string    `json:"username"`
-	DomID     int64     `json:"dom_id"`
+	Username string `json:"username"`
+	DomID    int64  `json:"dom_id"`
+	// Domain level for user
 	Userlevel int16     `json:"userlevel"`
 	UpdatedOn time.Time `json:"updated_on"`
 	CreatedOn time.Time `json:"created_on"`

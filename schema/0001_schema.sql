@@ -1221,6 +1221,13 @@ CREATE TABLE public.user_authzs (
 ALTER TABLE public.user_authzs OWNER TO godevman;
 
 --
+-- Name: COLUMN user_authzs.userlevel; Type: COMMENT; Schema: public; Owner: godevman
+--
+
+COMMENT ON COLUMN public.user_authzs.userlevel IS 'Domain level for user';
+
+
+--
 -- Name: user_graphs; Type: TABLE; Schema: public; Owner: godevman
 --
 
@@ -1272,6 +1279,13 @@ CREATE TABLE public.users (
 
 
 ALTER TABLE public.users OWNER TO godevman;
+
+--
+-- Name: COLUMN users.userlevel; Type: COMMENT; Schema: public; Owner: godevman
+--
+
+COMMENT ON COLUMN public.users.userlevel IS 'Global level for user';
+
 
 --
 -- Name: vars; Type: TABLE; Schema: public; Owner: godevman
@@ -1689,6 +1703,14 @@ ALTER TABLE ONLY public.device_credentials
 
 ALTER TABLE ONLY public.device_credentials
     ADD CONSTRAINT device_credentials_pkey PRIMARY KEY (cred_id);
+
+
+--
+-- Name: device_domains device_domains_descr; Type: CONSTRAINT; Schema: public; Owner: godevman
+--
+
+ALTER TABLE ONLY public.device_domains
+    ADD CONSTRAINT device_domains_descr UNIQUE (descr);
 
 
 --
@@ -2308,6 +2330,13 @@ CREATE INDEX credentials_updated_on ON public.credentials USING btree (updated_o
 --
 
 CREATE INDEX custom_entities_created_on ON public.custom_entities USING btree (created_on);
+
+
+--
+-- Name: custom_entities_serial_nr; Type: INDEX; Schema: public; Owner: godevman
+--
+
+CREATE INDEX custom_entities_serial_nr ON public.custom_entities USING btree (serial_nr);
 
 
 --
@@ -3622,11 +3651,11 @@ ALTER TABLE ONLY public.user_authzs
 
 
 --
--- Name: user_authzs user_authz_username_fkey; Type: FK CONSTRAINT; Schema: public; Owner: godevman
+-- Name: user_authzs user_authzs_username_fkey; Type: FK CONSTRAINT; Schema: public; Owner: godevman
 --
 
 ALTER TABLE ONLY public.user_authzs
-    ADD CONSTRAINT user_authz_username_fkey FOREIGN KEY (username) REFERENCES public.users(username) ON DELETE CASCADE;
+    ADD CONSTRAINT user_authzs_username_fkey FOREIGN KEY (username) REFERENCES public.users(username) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --
@@ -3634,7 +3663,7 @@ ALTER TABLE ONLY public.user_authzs
 --
 
 ALTER TABLE ONLY public.user_graphs
-    ADD CONSTRAINT user_graphs_username_fkey FOREIGN KEY (username) REFERENCES public.users(username) ON DELETE CASCADE;
+    ADD CONSTRAINT user_graphs_username_fkey FOREIGN KEY (username) REFERENCES public.users(username) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --
