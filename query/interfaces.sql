@@ -1,8 +1,86 @@
 -- name: GetInterfaces :many
 SELECT *
 FROM interfaces
-ORDER BY dev_id,
-  ifindex;
+WHERE (
+    @updated_ge::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR updated_on >= @updated_ge
+  )
+  AND (
+    @updated_le::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR updated_on <= @updated_le
+  )
+  AND (
+    @created_ge::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR created_on >= @created_ge
+  )
+  AND (
+    @created_le::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR created_on <= @created_le
+  )
+  AND (
+    sqlc.narg('ifindex_f')::text IS NULL
+    OR (sqlc.narg('ifindex_f')::text = 'isnull' AND ifindex IS NULL)
+    OR (sqlc.narg('ifindex_f')::text = 'isempty' AND CAST(ifindex AS text) = '')
+    OR CAST(ifindex AS text) LIKE sqlc.narg('ifindex_f')
+  )
+  AND (
+    @descr_f::text = ''
+    OR descr ILIKE @descr_f
+  )
+  AND (
+    sqlc.narg('alias_f')::text IS NULL
+    OR (sqlc.narg('alias_f')::text = 'isnull' AND alias IS NULL)
+    OR (sqlc.narg('alias_f')::text = 'isempty' AND alias = '')
+    OR alias ILIKE sqlc.narg('alias_f')
+  )
+  AND (
+    sqlc.narg('oper_f')::text IS NULL
+    OR (sqlc.narg('oper_f')::text = 'isnull' AND oper IS NULL)
+    OR (sqlc.narg('oper_f')::text = 'isempty' AND CAST(oper AS text) = '')
+    OR CAST(oper AS text) LIKE sqlc.narg('oper_f')
+  )
+  AND (
+    sqlc.narg('adm_f')::text IS NULL
+    OR (sqlc.narg('adm_f')::text = 'isnull' AND adm IS NULL)
+    OR (sqlc.narg('adm_f')::text = 'isempty' AND CAST(adm AS text) = '')
+    OR CAST(adm AS text) LIKE sqlc.narg('adm_f')
+  )
+  AND (
+    sqlc.narg('speed_f')::text IS NULL
+    OR (sqlc.narg('speed_f')::text = 'isnull' AND speed IS NULL)
+    OR (sqlc.narg('speed_f')::text = 'isempty' AND CAST(speed AS text) = '')
+    OR CAST(speed AS text) LIKE sqlc.narg('speed_f')
+  )
+  AND (
+    sqlc.narg('minspeed_f')::text IS NULL
+    OR (sqlc.narg('minspeed_f')::text = 'isnull' AND minspeed IS NULL)
+    OR (sqlc.narg('minspeed_f')::text = 'isempty' AND CAST(minspeed AS text) = '')
+    OR CAST(minspeed AS text) LIKE sqlc.narg('minspeed_f')
+  )
+  AND (
+    sqlc.narg('type_enum_f')::text IS NULL
+    OR (sqlc.narg('type_enum_f')::text = 'isnull' AND type_enum IS NULL)
+    OR (sqlc.narg('type_enum_f')::text = 'isempty' AND CAST(type_enum AS text) = '')
+    OR CAST(type_enum AS text) LIKE sqlc.narg('type_enum_f')
+  )
+  AND (
+    @mac_f::macaddr IS NULL
+    OR mac = @mac_f
+  )
+  AND (
+    @monstatus_f::text = ''
+    OR CAST(monstatus AS text) = @monstatus_f
+  )
+  AND (
+    @monerrors_f::text = ''
+    OR CAST(monerrors AS text) = @monerrors_f
+  )
+  AND (
+    @monload_f::text = ''
+    OR CAST(monload AS text) = @monload_f
+  )
+ORDER BY created_on
+LIMIT NULLIF(@limit_q::int, 0) OFFSET NULLIF(@offset_q::int, 0);
 
 -- name: GetInterface :one
 SELECT *
@@ -98,7 +176,7 @@ FROM interfaces t1
 WHERE t1.if_id = $1;
 
 -- Foreign keys
--- name: GetInterfaceOtnIfId :one
+-- name: GetInterfaceOtnIf :one
 SELECT t2.*
 FROM interfaces t1
   INNER JOIN interfaces t2 ON t2.if_id = t1.otn_if_id
@@ -140,16 +218,18 @@ WHERE if_id = $1;
 
 -- Relations
 -- name: GetInterfaceInterfaceRelationsHigherFor :many
-SELECT t2.*
+SELECT t3.*
 FROM interfaces t1
   INNER JOIN interface_relations t2 ON t2.if_id_up = t1.if_id
+  INNER JOIN interfaces t3 ON t3.if_id = t2.if_id
 WHERE t1.if_id = $1;
 
 -- Relations
 -- name: GetInterfaceInterfaceRelationsLowerFor :many
-SELECT t2.*
+SELECT t3.*
 FROM interfaces t1
   INNER JOIN interface_relations t2 ON t2.if_id_down = t1.if_id
+  INNER JOIN interfaces t3 ON t2.if_id = t3.if_id
 WHERE t1.if_id = $1;
 
 -- Relations
@@ -162,14 +242,14 @@ WHERE t1.if_id = $1
 ORDER BY vlan;
 
 -- Relations
--- name: GetInterfaceInterfaceSubinterfaces :many
+-- name: GetInterfaceSubinterfaces :many
 SELECT *
 FROM subinterfaces
 WHERE if_id = $1
 ORDER BY descr;
 
 -- Relations
--- name: GetterfaceInterfaceXconnects :many
+-- name: GetInterfaceXconnects :many
 SELECT *
 FROM xconnects
 WHERE if_id = $1

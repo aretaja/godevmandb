@@ -1,6 +1,9 @@
 -- name: GetInterfaceRelations :many
 SELECT *
-FROM interface_relations;
+FROM interface_relations
+ORDER BY ir_id
+LIMIT $1
+OFFSET $2;
 
 -- name: GetInterfaceRelation :one
 SELECT *

@@ -1,6 +1,108 @@
 -- name: GetIntBwStats :many
 SELECT *
-FROM int_bw_stats;
+FROM int_bw_stats
+WHERE (
+    @updated_ge::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR updated_on >= @updated_ge
+  )
+  AND (
+    @updated_le::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR updated_on <= @updated_le
+  )
+  AND (
+    @created_ge::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR created_on >= @created_ge
+  )
+  AND (
+    @created_le::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR created_on <= @created_le
+  )
+  AND (
+    sqlc.narg('to50in_le')::text IS NULL
+    OR (sqlc.narg('to50in_le')::text = 'isnull' AND to50in IS NULL)
+    OR to50in <= CAST(sqlc.narg('to50in_le') AS integer)
+  )
+  AND (
+    sqlc.narg('to50in_ge')::text IS NULL
+    OR (sqlc.narg('to50in_ge')::text = 'isnull' AND to50in IS NULL)
+    OR to50in >= CAST(sqlc.narg('to50in_ge') AS integer)
+  )
+  AND (
+    sqlc.narg('to75in_le')::text IS NULL
+    OR (sqlc.narg('to75in_le')::text = 'isnull' AND to75in IS NULL)
+    OR to75in <= CAST(sqlc.narg('to75in_le') AS integer)
+  )
+  AND (
+    sqlc.narg('to75in_ge')::text IS NULL
+    OR (sqlc.narg('to75in_ge')::text = 'isnull' AND to75in IS NULL)
+    OR to75in >= CAST(sqlc.narg('to75in_ge') AS integer)
+  )
+  AND (
+    sqlc.narg('to90in_le')::text IS NULL
+    OR (sqlc.narg('to90in_le')::text = 'isnull' AND to90in IS NULL)
+    OR to90in <= CAST(sqlc.narg('to90in_le') AS integer)
+  )
+  AND (
+    sqlc.narg('to90in_ge')::text IS NULL
+    OR (sqlc.narg('to90in_ge')::text = 'isnull' AND to90in IS NULL)
+    OR to90in >= CAST(sqlc.narg('to90in_ge') AS integer)
+  )
+  AND (
+    sqlc.narg('to100in_le')::text IS NULL
+    OR (sqlc.narg('to100in_le')::text = 'isnull' AND to100in IS NULL)
+    OR to100in <= CAST(sqlc.narg('to100in_le') AS integer)
+  )
+  AND (
+    sqlc.narg('to100in_ge')::text IS NULL
+    OR (sqlc.narg('to100in_ge')::text = 'isnull' AND to100in IS NULL)
+    OR to100in >= CAST(sqlc.narg('to100in_ge') AS integer)
+  )
+  AND (
+    sqlc.narg('to50out_le')::text IS NULL
+    OR (sqlc.narg('to50out_le')::text = 'isnull' AND to50out IS NULL)
+    OR to50out <= CAST(sqlc.narg('to50out_le') AS integer)
+  )
+  AND (
+    sqlc.narg('to50out_ge')::text IS NULL
+    OR (sqlc.narg('to50out_ge')::text = 'isnull' AND to50out IS NULL)
+    OR to50out >= CAST(sqlc.narg('to50out_ge') AS integer)
+  )
+  AND (
+    sqlc.narg('to75out_le')::text IS NULL
+    OR (sqlc.narg('to75out_le')::text = 'isnull' AND to75out IS NULL)
+    OR to75out <= CAST(sqlc.narg('to75out_le') AS integer)
+  )
+  AND (
+    sqlc.narg('to75out_ge')::text IS NULL
+    OR (sqlc.narg('to75out_ge')::text = 'isnull' AND to75out IS NULL)
+    OR to75out >= CAST(sqlc.narg('to75out_ge') AS integer)
+  )
+  AND (
+    sqlc.narg('to90out_le')::text IS NULL
+    OR (sqlc.narg('to90out_le')::text = 'isnull' AND to90out IS NULL)
+    OR to90out <= CAST(sqlc.narg('to90out_le') AS integer)
+  )
+  AND (
+    sqlc.narg('to90out_ge')::text IS NULL
+    OR (sqlc.narg('to90out_ge')::text = 'isnull' AND to90out IS NULL)
+    OR to90out >= CAST(sqlc.narg('to90out_ge') AS integer)
+  )
+  AND (
+    sqlc.narg('to100out_le')::text IS NULL
+    OR (sqlc.narg('to100out_le')::text = 'isnull' AND to100out IS NULL)
+    OR to100out <= CAST(sqlc.narg('to100out_le') AS integer)
+  )
+  AND (
+    sqlc.narg('to100out_ge')::text IS NULL
+    OR (sqlc.narg('to100out_ge')::text = 'isnull' AND to100out IS NULL)
+    OR to100out >= CAST(sqlc.narg('to100out_ge') AS integer)
+  )
+  AND (
+    @if_group_f::text = ''
+    OR if_group ILIKE @if_group_f
+  )
+ORDER BY created_on
+LIMIT NULLIF(@limit_q::int, 0) OFFSET NULLIF(@offset_q::int, 0);
 
 -- name: GetIntBwStat :one
 SELECT *

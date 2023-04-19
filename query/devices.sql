@@ -1,7 +1,108 @@
 -- name: GetDevices :many
 SELECT *
 FROM devices
-ORDER BY host_name;
+WHERE (
+    @updated_ge::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR updated_on >= @updated_ge
+  )
+  AND (
+    @updated_le::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR updated_on <= @updated_le
+  )
+  AND (
+    @created_ge::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR created_on >= @created_ge
+  )
+  AND (
+    @created_le::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR created_on <= @created_le
+  )
+  AND (
+    @sys_id_f::text = ''
+    OR sys_id ILIKE @sys_id_f
+  )
+  AND (
+    @host_name_f::text = ''
+    OR host_name ILIKE @host_name_f
+  )
+  AND (
+    @source_f::text = ''
+    OR source ILIKE @source_f
+  )
+  AND (
+    sqlc.narg('sw_version_f')::text IS NULL
+    OR (sqlc.narg('sw_version_f')::text = 'isnull' AND sw_version IS NULL)
+    OR (sqlc.narg('sw_version_f')::text = 'isempty' AND sw_version = '')
+    OR sw_version ILIKE sqlc.narg('sw_version_f')
+  )
+  AND (
+    sqlc.narg('notes_f')::text IS NULL
+    OR (sqlc.narg('notes_f')::text = 'isnull' AND notes IS NULL)
+    OR (sqlc.narg('notes_f')::text = 'isempty' AND notes = '')
+    OR notes ILIKE sqlc.narg('notes_f')
+  )
+  AND (
+    sqlc.narg('sys_name_f')::text IS NULL
+    OR (sqlc.narg('sys_name_f')::text = 'isnull' AND sys_name IS NULL)
+    OR (sqlc.narg('sys_name_f')::text = 'isempty' AND sys_name = '')
+    OR sys_name ILIKE sqlc.narg('sys_name_f')
+  )
+  AND (
+    sqlc.narg('ext_model_f')::text IS NULL
+    OR (sqlc.narg('ext_model_f')::text = 'isnull' AND ext_model IS NULL)
+    OR (sqlc.narg('ext_model_f')::text = 'isempty' AND ext_model = '')
+    OR ext_model ILIKE sqlc.narg('ext_model_f')
+  )
+  AND (
+    @ip4_addr_f::inet IS NULL
+    OR ip4_addr <<= @ip4_addr_f
+  )
+  AND (
+    @ip6_addr_f::inet IS NULL
+    OR ip6_addr <<= @ip6_addr_f
+  )
+  AND (
+    @installed_f::text = ''
+    OR (@installed_f::text = 'true' AND installed = true)
+    OR (@installed_f::text = 'false' AND installed = false)
+  )
+  AND (
+    @monitor_f::text = ''
+    OR (@monitor_f::text = 'true' AND monitor = true)
+    OR (@monitor_f::text = 'false' AND monitor = false)
+  )
+  AND (
+    @graph_f::text = ''
+    OR (@graph_f::text = 'true' AND graph = true)
+    OR (@graph_f::text = 'false' AND graph = false)
+  )
+  AND (
+    @backup_f::text = ''
+    OR (@backup_f::text = 'true' AND backup = true)
+    OR (@backup_f::text = 'false' AND backup = false)
+  )
+  AND (
+    @type_changed_f::text = ''
+    OR (@type_changed_f::text = 'true' AND type_changed = true)
+    OR (@type_changed_f::text = 'false' AND type_changed = false)
+  )
+  AND (
+    @backup_failed_f::text = ''
+    OR (@backup_failed_f::text = 'true' AND backup_failed = true)
+    OR (@backup_failed_f::text = 'false' AND backup_failed = false)
+  )
+  AND (
+    @validation_failed_f::text = ''
+    OR (@validation_failed_f::text = 'true' AND validation_failed = true)
+    OR (@validation_failed_f::text = 'false' AND validation_failed = false)
+  )
+  AND (
+    @unresponsive_f::text = ''
+    OR (@unresponsive_f::text = 'true' AND unresponsive = true)
+    OR (@unresponsive_f::text = 'false' AND unresponsive = false)
+  )
+ORDER BY created_on
+LIMIT NULLIF(@limit_q::int, 0) OFFSET NULLIF(@offset_q::int, 0);
 
 -- name: GetDevice :one
 SELECT *
@@ -31,7 +132,7 @@ INSERT INTO devices (
     installed,
     monitor,
     graph,
-    BACKUP,
+    backup,
     source,
     type_changed,
     backup_failed,
@@ -86,7 +187,7 @@ SET site_id = $2,
   installed = $16,
   monitor = $17,
   graph = $18,
-  BACKUP = $19,
+  backup = $19,
   source = $20,
   type_changed = $21,
   backup_failed = $22,

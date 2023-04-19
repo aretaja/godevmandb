@@ -1,7 +1,35 @@
 -- name: GetConTypes :many
 SELECT *
 FROM con_types
-ORDER BY descr;
+WHERE (
+    @updated_ge::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR updated_on >= @updated_ge
+  )
+  AND (
+    @updated_le::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR updated_on <= @updated_le
+  )
+  AND (
+    @created_ge::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR created_on >= @created_ge
+  )
+  AND (
+    @created_le::TIMESTAMPTZ = '0001-01-01 00:00:00+00'
+    OR created_on <= @created_le
+  )
+  AND (
+    @descr_f::text = ''
+    OR (@descr_f = 'isempty' AND descr = '')
+    OR descr ILIKE @descr_f
+  )
+  AND (
+    sqlc.narg('notes_f')::text IS NULL
+    OR (sqlc.narg('notes_f')::text = 'isnull' AND notes IS NULL)
+    OR (sqlc.narg('notes_f')::text = 'isempty' AND notes = '')
+    OR notes ILIKE sqlc.narg('notes_f')
+  )
+ORDER BY created_on
+LIMIT NULLIF(@limit_q::int, 0) OFFSET NULLIF(@offset_q::int, 0);
 
 -- name: GetConType :one
 SELECT *

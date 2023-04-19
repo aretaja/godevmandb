@@ -5,7 +5,6 @@ import (
 	"crypto/cipher"
 	"crypto/rand"
 	"crypto/sha256"
-	"database/sql"
 	"encoding/hex"
 	"io"
 )
@@ -72,12 +71,4 @@ func DecryptStrAes(inStr string, secret string) (string, error) {
 	}
 
 	return string(dStr), nil
-}
-
-// Convert string to sql.NullString
-func ToNullString(s string) sql.NullString {
-	return sql.NullString{
-		String: s,
-		Valid:  true,
-	}
 }
