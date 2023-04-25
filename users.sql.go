@@ -175,7 +175,7 @@ WHERE (
   )
   AND (
     $7::text = ''
-    OR userlevel <= CAST($7 AS integer)
+    OR userlevel >= CAST($7 AS integer)
   )
   AND (
     $8::text IS NULL

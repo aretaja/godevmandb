@@ -27,7 +27,7 @@ WHERE (
   )
   AND (
     @userlevel_ge::text = ''
-    OR userlevel <= CAST(@userlevel_ge AS integer)
+    OR userlevel >= CAST(@userlevel_ge AS integer)
   )
   AND (
     sqlc.narg('notes_f')::text IS NULL
